@@ -1,0 +1,16 @@
+{
+  "mcpServers": {
+    "duartelabs-automation-suite": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@apify/actors-mcp-server",
+        "--actors",
+        "duartelabs/b2b-lead-whatsapp-pixel-scraper,duartelabs/shopify-competitor-price-stock-spy,duartelabs/ai-website-to-markdown-rag-chunker,duartelabs/seo-meta-schema-broken-links-auditor"
+      ],
+      "env": {
+        "APIFY_TOKEN": "YOUR_APIFY_API_TOKEN"
+      }
+    }
+  }
+}

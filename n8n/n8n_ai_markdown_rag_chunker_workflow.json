@@ -1,0 +1,55 @@
+{
+  "name": "DuarteLabs - AI Website to Clean Markdown & RAG Vector Chunker",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/duartelabs~ai-website-to-markdown-rag-chunker/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "YOUR_APIFY_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"targetUrls\": [{\"url\": \"https://stripe.com/docs/api\"}],\n  \"chunkSizeTokens\": 500,\n  \"chunkOverlapTokens\": 50,\n  \"includeLinksAndTables\": true,\n  \"reportLanguage\": \"en\"\n}"
+      },
+      "id": "2",
+      "name": "DuarteLabs AI Markdown & RAG Chunker",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "DuarteLabs AI Markdown & RAG Chunker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

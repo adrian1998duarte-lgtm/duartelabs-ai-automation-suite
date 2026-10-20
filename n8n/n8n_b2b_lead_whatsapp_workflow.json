@@ -1,0 +1,55 @@
+{
+  "name": "DuarteLabs - B2B Lead, WhatsApp & Ad-Pixel Intelligence Enricher",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/duartelabs~b2b-lead-whatsapp-pixel-scraper/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "YOUR_APIFY_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"startUrls\": [{\"url\": \"https://apify.com\"}],\n  \"scanContactPages\": true,\n  \"maxPagesPerDomain\": 2\n}"
+      },
+      "id": "2",
+      "name": "DuarteLabs B2B Lead & WhatsApp Scraper",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "DuarteLabs B2B Lead & WhatsApp Scraper",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

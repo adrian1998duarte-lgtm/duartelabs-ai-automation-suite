@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://YOUR_GITHUB_USER.github.io/duartelabs-ai-automation-suite/sitemap.xml

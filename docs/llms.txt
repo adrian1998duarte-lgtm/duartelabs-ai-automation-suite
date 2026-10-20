@@ -1,0 +1,15 @@
+# DuarteLabs
+
+> Lightweight HTTP/2 data Actors on Apify Store for lead generation, e-commerce monitoring, technical SEO and AI/RAG pipelines. Output summaries in 6 languages (EN, ES, PT, FR, DE, IT). Compatible with n8n, Make, Clay and MCP clients (Claude Desktop, Cursor).
+
+## Actors (Apify Store)
+- [B2B Lead, WhatsApp, Email & Ad-Pixel Intelligence Scraper](https://apify.com/duartelabs/b2b-lead-whatsapp-pixel-scraper): decision-maker emails, WhatsApp links, ad pixels, Schema.org data, outreach hook.
+- [Google Maps Local Business Email, WhatsApp & Ad-Pixel Enricher](https://apify.com/duartelabs/google-maps-business-email-whatsapp-enricher): enrich Google Maps website URLs with owner emails, WhatsApp, booking widgets and ad-pixel gaps.
+- [Shopify Competitor Price, Stock, Discount & Best-Sellers Spy](https://apify.com/duartelabs/shopify-competitor-price-stock-spy): product catalogs, prices, discounts, variant stock, SKUs.
+- [AI-Ready Website to Clean Markdown, Token Counter & RAG Chunker](https://apify.com/duartelabs/ai-website-to-markdown-rag-chunker): clean Markdown, token counts, Q&A extraction, RAG chunks.
+- [Technical SEO, Meta, Schema.org & Broken Links Auditor](https://apify.com/duartelabs/seo-meta-schema-broken-links-auditor): 0-100 SEO score, meta/H1/OpenGraph/Schema checks, 404 detection.
+
+## Integration
+- [MCP configuration](https://github.com/YOUR_GITHUB_USER/duartelabs-ai-automation-suite/blob/main/mcp/claude_cursor_mcp_config.json): connect the Actors to Claude Desktop or Cursor.
+- [n8n workflows](https://github.com/YOUR_GITHUB_USER/duartelabs-ai-automation-suite/tree/main/n8n): importable workflow templates.
+- [Python and Node examples](https://github.com/YOUR_GITHUB_USER/duartelabs-ai-automation-suite/tree/main/examples): run any Actor with apify-client.

@@ -1,0 +1,55 @@
+{
+  "name": "DuarteLabs - Shopify Competitor Price, Stock & Discount Spy",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "1",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        250,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/duartelabs~shopify-competitor-price-stock-spy/run-sync-get-dataset-items",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "YOUR_APIFY_API_TOKEN"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "{\n  \"storeUrls\": [{\"url\": \"https://hiutdenim.co.uk\"}],\n  \"maxProductsPerStore\": 50,\n  \"reportLanguage\": \"en\"\n}"
+      },
+      "id": "2",
+      "name": "DuarteLabs Shopify Competitor Spy",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        500,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "DuarteLabs Shopify Competitor Spy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
