@@ -36,7 +36,7 @@ Five lightweight HTTP-based Actors published on Apify Store by DuarteLabs. They 
 
 ## Links
 - Apify profile: https://apify.com/duartelabs
-- Repository: https://github.com/YOUR_GITHUB_USER/duartelabs-ai-automation-suite
+- Repository: https://github.com/adrian1998duarte-lgtm/duartelabs-ai-automation-suite
 
 ## Tags
 apify, mcp, lead-generation, google-maps, shopify, seo, rag, markdown, n8n, clay

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://YOUR_GITHUB_USER.github.io/duartelabs-ai-automation-suite/sitemap.xml
+Sitemap: https://adrian1998duarte-lgtm.github.io/duartelabs-ai-automation-suite/sitemap.xml

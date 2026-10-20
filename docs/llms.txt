@@ -10,6 +10,6 @@
 - [Technical SEO, Meta, Schema.org & Broken Links Auditor](https://apify.com/duartelabs/seo-meta-schema-broken-links-auditor): 0-100 SEO score, meta/H1/OpenGraph/Schema checks, 404 detection.
 
 ## Integration
-- [MCP configuration](https://github.com/YOUR_GITHUB_USER/duartelabs-ai-automation-suite/blob/main/mcp/claude_cursor_mcp_config.json): connect the Actors to Claude Desktop or Cursor.
-- [n8n workflows](https://github.com/YOUR_GITHUB_USER/duartelabs-ai-automation-suite/tree/main/n8n): importable workflow templates.
-- [Python and Node examples](https://github.com/YOUR_GITHUB_USER/duartelabs-ai-automation-suite/tree/main/examples): run any Actor with apify-client.
+- [MCP configuration](https://github.com/adrian1998duarte-lgtm/duartelabs-ai-automation-suite/blob/main/mcp/claude_cursor_mcp_config.json): connect the Actors to Claude Desktop or Cursor.
+- [n8n workflows](https://github.com/adrian1998duarte-lgtm/duartelabs-ai-automation-suite/tree/main/n8n): importable workflow templates.
+- [Python and Node examples](https://github.com/adrian1998duarte-lgtm/duartelabs-ai-automation-suite/tree/main/examples): run any Actor with apify-client.
