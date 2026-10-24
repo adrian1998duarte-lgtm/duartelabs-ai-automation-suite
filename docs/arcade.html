@@ -478,27 +478,16 @@ footer a:hover { color: var(--cyan); }
     <h1>
       <span class="shimmer-text" data-en="In-Browser Retro Gaming Hub" data-es="Centro de Emulación Retro en el Navegador">In-Browser Retro Gaming Hub</span>
     </h1>
-    <p data-en="Play Nintendo DS, PlayStation Portable, PS1, Game Boy Advance, and Nintendo 64 directly inside Chrome or Edge. Touchscreen stylus support with mouse/finger, gamepad auto-detection, and local save states." data-es="Juega a la Nintendo DS, PlayStation Portable, PS1, Game Boy Advance y Nintendo 64 directamente en Chrome o Edge. Soporte táctil con mouse o dedo, detección de mandos de PS4/PS5/Xbox y guardado local.">Play Nintendo DS, PlayStation Portable, PS1, Game Boy Advance, and Nintendo 64 directly inside Chrome or Edge. Touchscreen stylus support with mouse/finger, gamepad auto-detection, and local save states.</p>
+    <p data-en="Choose any of the 12 pre-loaded games below to play instantly in your browser at 60 FPS, or load your own ROM files. Dual-screen touchscreen for Nintendo DS, full gamepad support, and zero installations." data-es="Elige cualquiera de los 12 juegos listos para jugar al instante a 60 FPS en tu navegador, o carga tus propios juegos. Doble pantalla táctil para Nintendo DS, soporte para mandos y sin instalar nada.">Choose any of the 12 pre-loaded games below to play instantly in your browser at 60 FPS, or load your own ROM files. Dual-screen touchscreen for Nintendo DS, full gamepad support, and zero installations.</p>
 
-    <!-- Console Selector -->
-    <div class="console-bar">
-      <button class="console-btn active" onclick="switchConsole('nds', this)">
-        <span>📱</span> Nintendo DS (NDS)
-      </button>
-      <button class="console-btn" onclick="switchConsole('psp', this)">
-        <span>🎮</span> PlayStation Portable (PSP)
-      </button>
-      <button class="console-btn" onclick="switchConsole('psx', this)">
-        <span>🕹️</span> PlayStation 1 (PS1)
-      </button>
-      <button class="console-btn" onclick="switchConsole('gba', this)">
-        <span>👾</span> Game Boy Advance (GBA)
-      </button>
-      <button class="console-btn" onclick="switchConsole('n64', this)">
-        <span>🍄</span> Nintendo 64 (N64)
-      </button>
-      <button class="console-btn" onclick="switchConsole('snes', this)">
-        <span>⚡</span> Super Nintendo (SNES)
+    <div style="display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: 14px;">
+      <a href="#catalog" class="file-upload-btn" style="background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); text-decoration: none; padding: 12px 28px; box-shadow: 0 0 25px rgba(244, 63, 94, 0.4);">
+        <span>🕹️</span>
+        <span data-en="Browse 12 Ready Games ↓" data-es="Ver 12 Juegos Listos para Jugar ↓">Browse 12 Ready Games ↓</span>
+      </a>
+      <button class="stage-btn" onclick="triggerFileSelect()" style="padding: 12px 24px; font-size: 14px; border-radius: 12px; background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.15);">
+        <span>📁</span>
+        <span data-en="Load My Own ROM File" data-es="Cargar Mi Propia ROM (.nds/.gba/.iso)">Load My Own ROM File</span>
       </button>
     </div>
   </section>
@@ -508,26 +497,37 @@ footer a:hover { color: var(--cyan); }
     <div class="stage-bar">
       <div class="stage-status">
         <span class="status-light"></span>
-        <span id="currentConsoleDisplay">Active Engine: Nintendo DS (DeSmuME Wasm)</span>
+        <span id="currentConsoleDisplay">Active Engine: Ready to Play (12 Games Available)</span>
       </div>
       <div class="stage-actions">
+        <a href="#catalog" class="stage-btn" style="text-decoration:none;" data-en="🎮 Games Library" data-es="🎮 Catálogo de Juegos">🎮 Games Library</a>
         <button class="stage-btn" onclick="triggerFileSelect()" data-en="📁 Load ROM (.nds, .iso, .gba)" data-es="📁 Cargar Juego (.nds, .iso, .gba)">📁 Load ROM (.nds, .iso, .gba)</button>
         <button class="stage-btn" onclick="toggleFullScreen()" data-en="⛶ Fullscreen" data-es="⛶ Pantalla Completa">⛶ Fullscreen</button>
       </div>
     </div>
 
     <div class="game-viewport" id="viewport">
-      <!-- Dropzone / Launcher View -->
+      <!-- Dropzone / Standby View -->
       <div class="dropzone-overlay" id="dropzone" ondragover="handleDragOver(event)" ondrop="handleFileDrop(event)">
-        <div class="drop-icon">🎮</div>
-        <h3 data-en="Drop Your ROM File Here or Click to Load" data-es="Arrastra tu Juego Aquí o Haz Clic para Cargar">Drop Your ROM File Here or Click to Load</h3>
-        <p data-en="Supports .nds, .iso, .cso, .gba, .z64, .smc, and .zip files. Runs 100% locally in your browser memory via WebAssembly — no downloads or external programs required." data-es="Soporta archivos .nds, .iso, .cso, .gba, .z64, .smc y .zip. Corre 100% local en la memoria de tu navegador mediante WebAssembly sin instalar nada.">Supports .nds, .iso, .cso, .gba, .z64, .smc, and .zip files. Runs 100% locally in your browser memory via WebAssembly — no downloads or external programs required.</p>
-        <button class="file-upload-btn" onclick="triggerFileSelect()">
-          <span>📂</span>
-          <span data-en="Select ROM from Computer" data-es="Seleccionar Juego de tu Computadora">Select ROM from Computer</span>
-        </button>
-        <input type="file" id="romFileInput" class="rom-input" accept=".nds,.iso,.cso,.gba,.z64,.smc,.sfc,.bin,.zip,.7z" onchange="handleFileSelected(this)">
-        <div style="margin-top:16px;font-size:13px;color:var(--txt-dim)" data-en="✨ Touchscreen works via mouse click / finger tap on bottom screen" data-es="✨ La pantalla táctil de la DS funciona con clics del mouse o toques en la pantalla">✨ Touchscreen works via mouse click / finger tap on bottom screen</div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+          <div style="width: 76px; height: 76px; border-radius: 20px; background: linear-gradient(135deg, rgba(244, 63, 94, 0.25) 0%, rgba(99, 102, 241, 0.25) 100%); display: flex; align-items: center; justify-content: center; font-size: 38px; margin-bottom: 16px; border: 1px solid rgba(244, 63, 94, 0.35); box-shadow: 0 0 30px rgba(244, 63, 94, 0.25);">
+            🎮
+          </div>
+          <h3 style="font-size: 24px; margin: 0 0 10px; color: #fff; font-family: 'Space Grotesk', sans-serif;" data-en="Select Any Game Below to Play Instantly" data-es="Elige Cualquier Juego de Abajo para Jugar de Inmediato">Select Any Game Below to Play Instantly</h3>
+          <p style="max-width: 580px; color: var(--txt-muted); font-size: 15px; margin: 0 0 24px; line-height: 1.6;" data-en="Choose from 12 games in the library below (Nintendo DS touch, GBA, SNES, NES 31-in-1). Or drag and drop any .nds, .gba, or .iso ROM file from your PC." data-es="Elige entre los 12 juegos listos abajo (Nintendo DS táctil, GBA, SNES, NES 31-en-1). O arrastra cualquier archivo .nds, .gba o .iso de tu computadora para jugarlo.">Choose from 12 games in the library below (Nintendo DS touch, GBA, SNES, NES 31-in-1). Or drag and drop any .nds, .gba, or .iso ROM file from your PC.</p>
+          <div style="display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;">
+            <a href="#catalog" class="file-upload-btn" style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); text-decoration: none;">
+              <span>🕹️</span>
+              <span data-en="Choose a Game from Library ↓" data-es="Elegir Juego del Catálogo ↓">Choose a Game from Library ↓</span>
+            </a>
+            <button class="stage-btn" onclick="triggerFileSelect()" style="padding: 12px 22px; font-size: 14px; border-radius: 12px;">
+              <span>📁</span>
+              <span data-en="Upload My Own ROM" data-es="Cargar Mi Archivo ROM">Upload My Own ROM</span>
+            </button>
+          </div>
+          <input type="file" id="romFileInput" class="rom-input" accept=".nds,.iso,.cso,.gba,.z64,.smc,.sfc,.bin,.nes,.zip,.7z" onchange="handleFileSelected(this)">
+          <div style="margin-top:18px;font-size:12.5px;color:var(--txt-dim)" data-en="✨ Touchscreen works via mouse click / finger tap on bottom DS screen" data-es="✨ La pantalla táctil de la DS funciona con clics del ratón o toques en la pantalla">✨ Touchscreen works via mouse click / finger tap on bottom DS screen</div>
+        </div>
       </div>
 
       <!-- Game Container (Loaded when game starts) -->
@@ -537,29 +537,51 @@ footer a:hover { color: var(--cyan); }
     </div>
   </div>
 
-  <!-- Instant Playable Demos Section -->
-  <section class="demo-section">
+  <!-- Instant Playable Games Library Section -->
+  <section class="demo-section" id="catalog">
     <div class="section-title">
-      <h2 data-en="Quick Test Demos (1-Click Play)" data-es="Demos Rápidas de Prueba (1 Clic)">Quick Test Demos (1-Click Play)</h2>
-      <p data-en="Don't have a ROM on hand? Click any open-source homebrew game below to test the engine immediately." data-es="¿No tienes un juego a la mano? Haz clic en cualquiera de estos juegos homebrew para probar el emulador de inmediato.">Don't have a ROM on hand? Click any open-source homebrew game below to test the engine immediately.</p>
+      <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.35);color:#818cf8;font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.8px;">
+        ⚡ 1-Click Instant Play · Zero Downloads
+      </div>
+      <h2 data-en="Instant Playable Games Library (12 Games Ready)" data-es="Catálogo de Juegos Listos para Jugar (12 Juegos)">Instant Playable Games Library (12 Games Ready)</h2>
+      <p data-en="Click any game below to start playing immediately in your browser. Runs locally at 60 FPS via WebAssembly — no ROMs or downloads needed!" data-es="Haz clic en cualquier juego para empezar a jugar de inmediato en tu navegador a 60 FPS sin descargar nada.">Click any game below to start playing immediately in your browser. Runs locally at 60 FPS via WebAssembly — no ROMs or downloads needed!</p>
     </div>
 
-    <div class="games-grid">
-      <!-- Demo 1: NDS Flappy Bird Touch Edition -->
-      <div class="game-card" onclick="loadDemoGame('nds', 'assets/demos/flappy_bird.nds', 'Nintendo DS: Flappy Bird Touch')">
+    <!-- Category Filter Bar -->
+    <div class="console-bar" style="margin-bottom: 28px;">
+      <button class="console-btn active" onclick="filterCatalog('all', this)">
+        <span>🌟</span> <span data-en="All Games (12)" data-es="Todos (12)">All Games (12)</span>
+      </button>
+      <button class="console-btn" onclick="filterCatalog('nds', this)">
+        <span>📱</span> Nintendo DS (2)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('gba', this)">
+        <span>⚔️</span> Game Boy Advance (5)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('snes', this)">
+        <span>🚀</span> Super Nintendo (3)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('nes', this)">
+        <span>🕹️</span> NES 8-Bit (2)
+      </button>
+    </div>
+
+    <div class="games-grid" id="gamesGrid">
+      <!-- 1: NDS Flappy Bird Touch -->
+      <div class="game-card" data-cat="nds" onclick="loadDemoGame('nds', 'assets/demos/flappy_bird.nds', 'Nintendo DS: Flappy Bird Touch')">
         <div>
           <span class="game-card-icon">📱</span>
           <h4>Nintendo DS: Flappy Bird Touch</h4>
-          <p data-en="Fly through pipes using button A or tap the bottom touchscreen with mouse/stylus. Smooth 60 FPS dual-screen DeSmuME engine." data-es="Vuela entre tuberías con el botón A o toca la pantalla inferior con el ratón/lápiz táctil. Doble pantalla a 60 FPS.">Fly through pipes using button A or tap the bottom touchscreen with mouse/stylus. Smooth 60 FPS dual-screen DeSmuME engine.</p>
+          <p data-en="Fly through pipes using button A or tap the bottom touchscreen with mouse or stylus. Smooth 60 FPS dual-screen DeSmuME engine." data-es="Vuela entre tuberías con el botón A o toca la pantalla inferior táctil con el ratón o dedo. Doble pantalla a 60 FPS.">Fly through pipes using button A or tap the bottom touchscreen with mouse or stylus. Smooth 60 FPS dual-screen DeSmuME engine.</p>
         </div>
         <div class="game-card-footer">
           <span class="console-tag">NDS Dual Screen</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo ↗" data-es="Jugar Demo ↗">Play Demo ↗</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- Demo 2: NDS Snake Arcade -->
-      <div class="game-card" onclick="loadDemoGame('nds', 'assets/demos/snake.nds', 'Nintendo DS: Snake Arcade')">
+      <!-- 2: NDS Snake Arcade -->
+      <div class="game-card" data-cat="nds" onclick="loadDemoGame('nds', 'assets/demos/snake.nds', 'Nintendo DS: Snake Arcade')">
         <div>
           <span class="game-card-icon">🐍</span>
           <h4>Nintendo DS: Snake Arcade</h4>
@@ -567,46 +589,137 @@ footer a:hover { color: var(--cyan); }
         </div>
         <div class="game-card-footer">
           <span class="console-tag">NDS Dual Screen</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo ↗" data-es="Jugar Demo ↗">Play Demo ↗</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- Demo 3: GBA Anguna RPG -->
-      <div class="game-card" onclick="loadDemoGame('gba', 'assets/demos/anguna.gba', 'Game Boy Advance: Anguna RPG')">
+      <!-- 3: GBA Anguna RPG -->
+      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/anguna.gba', 'Game Boy Advance: Anguna RPG')">
         <div>
           <span class="game-card-icon">⚔️</span>
           <h4>Game Boy Advance: Anguna RPG</h4>
-          <p data-en="Retro action-adventure RPG in the style of Zelda with dungeons, monsters, and smooth 60 FPS combat." data-es="Aventura RPG de acción al estilo Zelda con mazmorras, monstruos y combate fluido a 60 FPS.">Retro action-adventure RPG in the style of Zelda with dungeons, monsters, and smooth 60 FPS combat.</p>
+          <p data-en="Epic action-adventure RPG in the style of Zelda with dungeons, monster combat, swords, and smooth 60 FPS mGBA." data-es="Aventura RPG al estilo Zelda con mazmorras, monstruos, espada y combate fluido a 60 FPS con mGBA.">Epic action-adventure RPG in the style of Zelda with dungeons, monster combat, swords, and smooth 60 FPS mGBA.</p>
         </div>
         <div class="game-card-footer">
           <span class="console-tag">GBA 32-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo ↗" data-es="Jugar Demo ↗">Play Demo ↗</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- Demo 4: SNES Astrohawk -->
-      <div class="game-card" onclick="loadDemoGame('snes', 'assets/demos/astrohawk.smc', 'Super Nintendo: Astrohawk')">
+      <!-- 4: GBA Doom Dark's Revenge -->
+      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/doomdarksrevenge.gba', 'Game Boy Advance: Doom Darks Revenge')">
+        <div>
+          <span class="game-card-icon">🔫</span>
+          <h4>GBA: Doom Dark's Revenge</h4>
+          <p data-en="First-person 3D action shooter inspired by classic Doom. Fast weapon swaps, dark corridors, and monster battles." data-es="Acción y disparos en primera persona 3D inspirado en el clásico Doom con armas y enemigos en pasillos oscuros.">First-person 3D action shooter inspired by classic Doom. Fast weapon swaps, dark corridors, and monster battles.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 5: GBA Another World -->
+      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/anotherworld.gba', 'Game Boy Advance: Another World')">
+        <div>
+          <span class="game-card-icon">🌌</span>
+          <h4>GBA: Another World (Sci-Fi Classic)</h4>
+          <p data-en="Legendary sci-fi cinematic platformer with groundbreaking vector animations, real-time puzzles, and alien worlds." data-es="Legendaria aventura cinematográfica de ciencia ficción con cinemáticas vectoriales y puzzles alienígenas en tiempo real.">Legendary sci-fi cinematic platformer with groundbreaking vector animations, real-time puzzles, and alien worlds.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 6: GBA Bridge Racer Advance -->
+      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/bridgeracer.gba', 'Game Boy Advance: Bridge Racer')">
+        <div>
+          <span class="game-card-icon">🏎️</span>
+          <h4>GBA: Bridge Racer Advance</h4>
+          <p data-en="High-speed retro highway racer. Dodge traffic at 200 MPH, hit speed boosts, and beat your best lap times." data-es="Carreras a alta velocidad en autopista. Esquiva el tráfico a 200 MPH, agarra turbos y supera tus récords.">High-speed retro highway racer. Dodge traffic at 200 MPH, hit speed boosts, and beat your best lap times.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 7: GBA Asteroids Advance -->
+      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/asteroidsb.gba', 'Game Boy Advance: Asteroids Advance')">
+        <div>
+          <span class="game-card-icon">☄️</span>
+          <h4>GBA: Asteroids Advance</h4>
+          <p data-en="The immortal space arcade classic with 360-degree rotation, ship thrusters, laser blasts, and flying saucers." data-es="El clásico espacial de destruir asteroides con rotación 360°, propulsores, ráfagas láser y platillos voladores.">The immortal space arcade classic with 360-degree rotation, ship thrusters, laser blasts, and flying saucers.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 8: SNES Astrohawk -->
+      <div class="game-card" data-cat="snes" onclick="loadDemoGame('snes', 'assets/demos/astrohawk.smc', 'Super Nintendo: Astrohawk')">
         <div>
           <span class="game-card-icon">🚀</span>
           <h4>Super Nintendo: Astrohawk</h4>
-          <p data-en="Fast-paced space arcade shoot-em-up with retro synth audio and 16-bit pixel explosions." data-es="Juego de disparos espacial retro con naves, asteroides, audio sintetizado y explosiones a 16 bits.">Fast-paced space arcade shoot-em-up with retro synth audio and 16-bit pixel explosions.</p>
+          <p data-en="Fast-paced space arcade shoot-em-up with retro synth audio, shield upgrades, and 16-bit explosions." data-es="Shoot'em up espacial a 16 bits con sintetizadores retro, escudos y olas de enemigos en el espacio profundo.">Fast-paced space arcade shoot-em-up with retro synth audio, shield upgrades, and 16-bit explosions.</p>
         </div>
         <div class="game-card-footer">
           <span class="console-tag">SNES 16-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo ↗" data-es="Jugar Demo ↗">Play Demo ↗</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- Demo 5: PS1 / Custom ROM -->
-      <div class="game-card" onclick="triggerFileSelect()">
+      <!-- 9: SNES Super Boss Gaiden -->
+      <div class="game-card" data-cat="snes" onclick="loadDemoGame('snes', 'assets/demos/superbossgaiden.sfc', 'Super Nintendo: Super Boss Gaiden')">
         <div>
-          <span class="game-card-icon">🕹️</span>
-          <h4>PlayStation / Custom ROM</h4>
-          <p data-en="Load your own PS1, PSP, NDS, or GBA ROM file (.iso, .nds, .gba, .z64, .smc) directly from your computer in 1 click." data-es="Carga cualquier juego de PS1, PSP, NDS o GBA (.iso, .nds, .gba, .z64, .smc) directamente de tu computadora en 1 clic.">Load your own PS1, PSP, NDS, or GBA ROM file (.iso, .nds, .gba, .z64, .smc) directly from your computer in 1 click.</p>
+          <span class="game-card-icon">🥊</span>
+          <h4>SNES: Super Boss Gaiden</h4>
+          <p data-en="High-energy anime action brawler with special combos, destructible stages, and hilarious boss fights." data-es="Juego de peleas brawler con combos especiales, escenarios destructibles y combates contra jefes épicos.">High-energy anime action brawler with special combos, destructible stages, and hilarious boss fights.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag">Upload ROM</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Load File ↗" data-es="Cargar Archivo ↗">Load File ↗</span>
+          <span class="console-tag">SNES 16-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 10: SNES Horizontal Shooter -->
+      <div class="game-card" data-cat="snes" onclick="loadDemoGame('snes', 'assets/demos/horizontal-shooter.sfc', 'Super Nintendo: Horizontal Shooter')">
+        <div>
+          <span class="game-card-icon">🛸</span>
+          <h4>SNES: Horizontal Shmup</h4>
+          <p data-en="Side-scrolling retro shooter in the vein of Gradius and R-Type with multi-directional weapons." data-es="Disparos de desplazamiento lateral al estilo Gradius y R-Type con armas multidireccionales y jefes.">Side-scrolling retro shooter in the vein of Gradius and R-Type with multi-directional weapons.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">SNES 16-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 11: NES 31-in-1 Multicart -->
+      <div class="game-card" data-cat="nes" onclick="loadDemoGame('nes', 'assets/demos/31in1_multicart.nes', 'NES: 31-in-1 Arcade Multicart')">
+        <div>
+          <span class="game-card-icon">🕹️</span>
+          <h4>NES: 31-in-1 Arcade Multicart</h4>
+          <p data-en="A massive collection of 31 full 8-bit retro games in one cartridge! Puzzles, sports, platformers, and action." data-es="¡Una colección de 31 juegos retro de 8 bits en un solo cartucho! Puzles, deportes, plataformas y acción.">A massive collection of 31 full 8-bit retro games in one cartridge! Puzzles, sports, platformers, and action.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES 8-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 12: NES Blaster -->
+      <div class="game-card" data-cat="nes" onclick="loadDemoGame('nes', 'assets/demos/blaster.nes', 'NES: Blaster Arcade')">
+        <div>
+          <span class="game-card-icon">💥</span>
+          <h4>NES: Blaster Arcade</h4>
+          <p data-en="Instant classic 8-bit arcade action. Rapid-fire shooting, retro chiptune audio, and nostalgic gameplay." data-es="Acción arcade pura de 8 bits. Disparo continuo, sonido chiptune retro y jugabilidad nostálgica inmediata.">Instant classic 8-bit arcade action. Rapid-fire shooting, retro chiptune audio, and nostalgic gameplay.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES 8-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
     </div>
@@ -656,8 +769,22 @@ var currentConsoleNames = {
   psx: 'PlayStation 1 (PCSX ReARMed Wasm)',
   gba: 'Game Boy Advance (mGBA Wasm)',
   n64: 'Nintendo 64 (Mupen64Plus Wasm)',
-  snes: 'Super Nintendo (Snes9x Wasm)'
+  snes: 'Super Nintendo (Snes9x Wasm)',
+  nes: 'NES 8-Bit (Nestopia / FCEUMM Wasm)'
 };
+
+function filterCatalog(cat, btn){
+  document.querySelectorAll('#catalog .console-btn').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  document.querySelectorAll('#gamesGrid .game-card').forEach(function(card){
+    var cardCat = card.getAttribute('data-cat');
+    if(cat === 'all' || cardCat === cat){
+      card.style.display = 'flex';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+}
 
 function switchConsole(core, btn){
   currentConsole = core;
@@ -702,6 +829,7 @@ function loadRomFile(file){
   else if(ext === 'gba'){ currentConsole = 'gba'; }
   else if(ext === 'z64' || ext === 'n64'){ currentConsole = 'n64'; }
   else if(ext === 'smc' || ext === 'sfc'){ currentConsole = 'snes'; }
+  else if(ext === 'nes'){ currentConsole = 'nes'; }
 
   var fileUrl = URL.createObjectURL(file);
   launchEmulator(currentConsole, fileUrl, file.name);
