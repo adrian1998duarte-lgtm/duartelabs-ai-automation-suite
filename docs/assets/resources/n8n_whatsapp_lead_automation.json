@@ -1,0 +1,131 @@
+{
+  "name": "DuarteLabs - Prospección B2B & Calificación Automática WhatsApp con IA",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "webhook-b2b-lead",
+        "options": {}
+      },
+      "name": "Webhook Receptor de Leads",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "model": "gpt-4o-mini",
+        "options": {
+          "temperature": 0.3
+        },
+        "messages": {
+          "messageValues": [
+            {
+              "role": "system",
+              "content": "Eres un asistente de prospección B2B experto en calificar clientes potenciales. Analiza el nombre de la empresa, su rubro y mensaje. Determina: 1) Score de 1 a 100, 2) Resumen en 1 frase, 3) Mensaje personalizado de bienvenida hiper-relevante para WhatsApp de no más de 35 palabras."
+            },
+            {
+              "role": "user",
+              "content": "=Empresa: {{ $json.body.company }}\nContacto: {{ $json.body.name }}\nRubro: {{ $json.body.industry }}\nMensaje o Necesidad: {{ $json.body.notes }}"
+            }
+          ]
+        }
+      },
+      "name": "OpenAI Calificación & Personalización",
+      "type": "n8n-nodes-base.openAi",
+      "typeVersion": 1,
+      "position": [460, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.qualification_score || 70 }}",
+              "operation": "largerEqual",
+              "value2": 60
+            }
+          ]
+        }
+      },
+      "name": "Filtro Score >= 60",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [680, 300]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://api.wadesk.io/v1/messages/send",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {
+              "name": "phone",
+              "value": "={{ $('Webhook Receptor de Leads').item.json.body.phone }}"
+            },
+            {
+              "name": "message",
+              "value": "={{ $json.custom_message }}"
+            }
+          ]
+        }
+      },
+      "name": "Despacho WhatsApp / WADesk",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [900, 240]
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "name": "Almacenamiento CRM / Sheets",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4,
+      "position": [900, 420]
+    }
+  ],
+  "connections": {
+    "Webhook Receptor de Leads": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Calificación & Personalización",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Calificación & Personalización": {
+      "main": [
+        [
+          {
+            "node": "Filtro Score >= 60",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filtro Score >= 60": {
+      "main": [
+        [
+          {
+            "node": "Despacho WhatsApp / WADesk",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Almacenamiento CRM / Sheets",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
