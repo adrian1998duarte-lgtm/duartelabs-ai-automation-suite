@@ -1596,6 +1596,178 @@ footer a:hover { color: var(--cyan); }
   opacity: 0.32;
 }
 
+
+/* ========================================================
+   WHATSAPP LINK & QR GENERATOR PRO (#wa-link-generator)
+   ======================================================== */
+.wa-generator-card {
+  background: rgba(15, 23, 42, 0.7);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  border-radius: 24px;
+  padding: 36px;
+  margin-top: 30px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(16, 185, 129, 0.12);
+}
+.wa-gen-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 32px;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .wa-gen-grid { grid-template-columns: 1fr; }
+}
+
+.wa-input-group {
+  margin-bottom: 20px;
+}
+.wa-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--txt);
+  margin-bottom: 8px;
+}
+.wa-phone-row {
+  display: flex;
+  gap: 10px;
+}
+.wa-select-country {
+  background: rgba(3, 5, 13, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #fff;
+  padding: 10px 12px;
+  font-size: 13.5px;
+  outline: none;
+  cursor: pointer;
+  max-width: 160px;
+}
+.wa-input-text {
+  flex: 1;
+  background: rgba(3, 5, 13, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  color: #fff;
+  padding: 10px 14px;
+  font-size: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.wa-input-text:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 12px rgba(16, 185, 129, 0.3);
+}
+
+.wa-presets-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.wa-preset-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--txt-muted);
+  font-size: 12px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.wa-preset-btn:hover {
+  background: rgba(16, 185, 129, 0.15);
+  color: #34d399;
+  border-color: rgba(16, 185, 129, 0.35);
+}
+
+/* WhatsApp Phone Mockup Preview */
+.wa-preview-box {
+  background: #0b141a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 20px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+}
+.wa-chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 12px;
+}
+.wa-chat-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #128c7e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+.wa-bubble-preview {
+  background: #005c4b;
+  color: #e9edef;
+  padding: 12px 16px;
+  border-radius: 12px 12px 2px 12px;
+  align-self: flex-end;
+  max-width: 90%;
+  font-size: 13.5px;
+  line-height: 1.45;
+  position: relative;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+.wa-bubble-time {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.6);
+  text-align: right;
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 4px;
+}
+
+/* QR Code Container */
+.wa-qr-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  background: rgba(3, 5, 13, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 14px;
+  padding: 18px;
+  text-align: center;
+}
+.wa-qr-canvas-wrap {
+  background: #ffffff;
+  padding: 12px;
+  border-radius: 12px;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.2);
+  display: inline-block;
+}
+#waQrCanvas {
+  display: block;
+}
+
+/* DuarteCinema Showcase Banner */
+.cinema-banner-card {
+  margin: 70px 0 50px;
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(45, 15, 35, 0.8) 50%, rgba(13, 19, 36, 0.9) 100%);
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  border-radius: 24px;
+  padding: 48px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 0 50px rgba(244, 63, 94, 0.15);
+}
+
 </style>
 </head>
 <body>
@@ -1616,14 +1788,14 @@ footer a:hover { color: var(--cyan); }
     <div class="header-actions">
       <nav class="nav-links">
         <a href="tools.html" style="color: #34d399; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">⚡ <span data-en="Web Suite" data-es="Suite Web">Web Suite</span> <span class="badge-hot" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">7 Tools</span></a>
-        <a href="arcade.html" style="color: #38bdf8; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">🕹️ <span>Arcade</span> <span class="badge-hot" style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);">PS1 · NDS · GBA</span></a>
-        <a href="#case-studies" data-en="Case Studies" data-es="Casos Reales">Case Studies</a>
+        <a href="arcade.html" style="color: #38bdf8; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">🕹️ <span>Arcade</span> <span class="badge-hot" style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);">38 Games</span></a>
+        <a href="cinema.html" style="color: #f43f5e; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">🎬 <span>Cinema &amp; Lofi</span></a>
+        <a href="#wa-link-generator" style="color: #10b981; font-weight: 700;" data-en="WA Link &amp; QR" data-es="Link WA &amp; QR">Link WA &amp; QR</a>
         <a href="#quote-wizard" data-en="Cost Estimator" data-es="Cotizador">Cost Estimator</a>
+        <a href="#case-studies" data-en="Case Studies" data-es="Casos Reales">Case Studies</a>
         <a href="#wadesk">WADesk <span class="badge-hot">CRM</span></a>
-        <a href="#actors" data-en="Micro-Apps" data-es="Microapps">Micro-Apps</a>
         <a href="#free-resources" data-en="Resources" data-es="Recursos">Resources</a>
         <a href="#blog" data-en="Guides" data-es="Guías">Guides</a>
-        <a href="#faq" data-en="FAQ" data-es="FAQ">FAQ</a>
         <button class="sound-toggle-btn" id="soundToggleBtn" onclick="toggleAudioFx()" title="Toggle cyber tactile sound fx">🔈 Sound: OFF</button>
         <button class="cli-trigger-nav" onclick="toggleCLI()" title="Open DuarteCLI Terminal (Ctrl+K)">>_ CLI</button>
       </nav>
@@ -1777,6 +1949,111 @@ footer a:hover { color: var(--cyan); }
       </div>
     </div>
   </section>
+
+  
+  <!-- ==========================================
+       WHATSAPP LINK & QR GENERATOR PRO (#wa-link-generator)
+       ========================================== -->
+  <div class="calc-header" id="wa-link-generator" style="margin-top: 80px;">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(16,185,129,0.12);border:1px solid rgba(16,185,129,0.3);color:#34d399;font-size:12.5px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.8px;">
+      💬 Free Business Growth Utility
+    </div>
+    <h2 data-en="Free WhatsApp Link &amp; Dynamic QR Generator" data-es="Generador Profesional de Enlaces de WhatsApp &amp; QR">Free WhatsApp Link &amp; Dynamic QR Generator</h2>
+    <p data-en="Create customized, pre-filled direct WhatsApp click-to-chat links and high-resolution QR codes for your ads, bio, invoices, and physical stores." data-es="Crea enlaces directos personalizados con mensaje predeterminado y códigos QR descargables en alta resolución para tu web, Instagram o local físico.">Create customized, pre-filled direct WhatsApp click-to-chat links and high-resolution QR codes for your ads, bio, invoices, and physical stores.</p>
+  </div>
+
+  <div class="wa-generator-card">
+    <div class="wa-gen-grid">
+      <!-- Left: Form Controls -->
+      <div>
+        <div class="wa-input-group">
+          <label class="wa-label" data-en="1. Country &amp; WhatsApp Phone Number" data-es="1. País y Número de Teléfono con WhatsApp">1. País y Número de Teléfono con WhatsApp</label>
+          <div class="wa-phone-row">
+            <select id="waCountryCode" class="wa-select-country" onchange="updateWaLink()">
+              <option value="57">🇨🇴 Colombia (+57)</option>
+              <option value="34">🇪🇸 España (+34)</option>
+              <option value="52">🇲🇽 México (+52)</option>
+              <option value="1">🇺🇸 USA / Canadá (+1)</option>
+              <option value="54">🇦🇷 Argentina (+54)</option>
+              <option value="56">🇨🇱 Chile (+56)</option>
+              <option value="51">🇵🇪 Perú (+51)</option>
+              <option value="593">🇪🇨 Ecuador (+593)</option>
+              <option value="502">🇬🇹 Guatemala (+502)</option>
+              <option value="506">🇨🇷 Costa Rica (+506)</option>
+              <option value="507">🇵🇦 Panamá (+507)</option>
+              <option value="58">🇻🇪 Venezuela (+58)</option>
+              <option value="55">🇧🇷 Brasil (+55)</option>
+              <option value="44">🇬🇧 Reino Unido (+44)</option>
+              <option value="49">🇩🇪 Alemania (+49)</option>
+              <option value="33">🇫🇷 Francia (+33)</option>
+              <option value="39">🇮🇹 Italia (+39)</option>
+            </select>
+            <input type="text" id="waPhoneNumber" class="wa-input-text" placeholder="313 328 4050" value="3133284050" oninput="updateWaLink()">
+          </div>
+        </div>
+
+        <div class="wa-input-group">
+          <label class="wa-label" data-en="2. Pre-Filled Message (What the customer sends you)" data-es="2. Mensaje Predeterminado (Lo que el cliente te enviará)">2. Mensaje Predeterminado (Lo que el cliente te enviará)</label>
+          <div class="wa-presets-row">
+            <button class="wa-preset-btn" onclick="setWaPreset('quote')">💼 Cotización</button>
+            <button class="wa-preset-btn" onclick="setWaPreset('info')">💬 Más Info</button>
+            <button class="wa-preset-btn" onclick="setWaPreset('demo')">📅 Agendar Demo</button>
+            <button class="wa-preset-btn" onclick="setWaPreset('order')">🛍️ Hacer Pedido</button>
+          </div>
+          <textarea id="waCustomMessage" class="wa-input-text" rows="3" style="width:100%;resize:vertical;font-family:'Plus Jakarta Sans',sans-serif;" oninput="updateWaLink()" placeholder="Hola Cristian, me interesa conocer más sobre las soluciones de automatización de DuarteLabs.">Hola Cristian, me interesa conocer más sobre las soluciones de automatización de DuarteLabs.</textarea>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;">
+          <button class="btn-electric" onclick="copyWaGeneratedLink(this)" style="background:linear-gradient(135deg, #10b981 0%, #06b6d4 100%);box-shadow:0 0 25px rgba(16,185,129,0.35);">
+            📋 Copiar Enlace Directo
+          </button>
+          <button class="btn-glass" onclick="openWaGeneratedLink()">
+            💬 Probar en WhatsApp ↗
+          </button>
+          <button class="btn-glass" onclick="downloadWaQrCode()">
+            📥 Descargar QR (.PNG)
+          </button>
+        </div>
+
+        <!-- Cross-sell WADesk Banner -->
+        <div style="background:rgba(6,182,212,0.08);border:1px solid rgba(6,182,212,0.3);border-radius:12px;padding:14px;margin-top:24px;display:flex;align-items:center;gap:12px;">
+          <span style="font-size:24px;">⚡</span>
+          <div style="font-size:12.5px;color:var(--txt-muted);line-height:1.45;">
+            <strong style="color:#fff;">Cierra más prospectos:</strong> Con la extensión <a href="#wadesk" style="color:var(--cyan);font-weight:700;text-decoration:underline;">WADesk para Chrome</a> puedes responder a todos los clientes que te escriban por este enlace en 1 segundo con plantillas automáticas y CRM visual.
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Real-time Phone & QR Preview -->
+      <div class="wa-preview-box">
+        <div class="wa-chat-header">
+          <div class="wa-chat-avatar">💬</div>
+          <div>
+            <div style="font-weight:700;font-size:14px;color:#fff;" id="waPreviewNumber">+57 313 3284050</div>
+            <div style="font-size:11px;color:#25d366;">en línea (WhatsApp Business)</div>
+          </div>
+        </div>
+
+        <div class="wa-bubble-preview">
+          <span id="waPreviewText">Hola Cristian, me interesa conocer más sobre las soluciones de automatización de DuarteLabs.</span>
+          <div class="wa-bubble-time">
+            <span id="waPreviewTime">16:35</span>
+            <span style="color:#53bdeb;">✓✓</span>
+          </div>
+        </div>
+
+        <!-- Dynamic QR Display -->
+        <div class="wa-qr-container">
+          <div class="wa-qr-canvas-wrap">
+            <canvas id="waQrCanvas" width="160" height="160"></canvas>
+          </div>
+          <div style="font-size:11.5px;color:var(--txt-muted);">Escanea con la cámara del celular para abrir el chat de inmediato</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <!-- MICRO-APPS GRID -->
   
@@ -2674,6 +2951,40 @@ footer a:hover { color: var(--cyan); }
     <span id="liveToastText"><strong>⚡</strong> Apify Actor: 420 leads extracted for Madrid clinics</span>
     <span style="font-size:11px;color:var(--txt-dim);margin-left:auto;" id="liveToastTime">2s ago</span>
   </div>
+
+  
+  <!-- DUARTECINEMA & 24/7 LOFI SHOWCASE BANNER -->
+  <section id="cinema-banner" class="cinema-banner-card">
+    <div style="position: absolute; top: -60px; right: -60px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(244, 63, 94, 0.25) 0%, transparent 70%); filter: blur(40px); pointer-events: none;"></div>
+    <div style="position: absolute; bottom: -60px; left: -60px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%); filter: blur(40px); pointer-events: none;"></div>
+    
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px; position: relative; z-index: 2;">
+      <div style="max-width: 640px;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgba(244, 63, 94, 0.18); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 12.5px; font-weight: 700; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.8px;">
+          🎬 DuarteCinema · Sala de Streaming &amp; Radio 24/7
+        </div>
+        <h2 style="font-size: clamp(26px, 3.5vw, 40px); margin: 0 0 16px; font-family: 'Space Grotesk', sans-serif; font-weight: 800; line-height: 1.15; color: #fff;" data-en="Stream 4K Open Sci-Fi, Cult Horror &amp; 24/7 Lofi Radio" data-es="Cine 4K Open Sci-Fi, Terror Clásico &amp; Radio Lofi 24/7">Cine 4K Open Sci-Fi, Terror Clásico &amp; Radio Lofi 24/7</h2>
+        <p style="color: var(--txt-muted); font-size: 16.5px; line-height: 1.6; margin: 0 0 24px;" data-en="Experience legal high-definition streaming with zero ads: Tears of Steel 4K, Sintel, Night of the Living Dead, vintage mecha anime, plus continuous 24/7 Lofi &amp; Synthwave focus radio for developers." data-es="Disfruta de streaming en alta definición libre de anuncios: Tears of Steel 4K, Sintel, Night of the Living Dead, anime retro y radio continua Lofi &amp; Synthwave 24/7 para estudiar o programar.">Disfruta de streaming en alta definición libre de anuncios: Tears of Steel 4K, Sintel, Night of the Living Dead, anime retro y radio continua Lofi &amp; Synthwave 24/7 para estudiar o programar.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px;">
+          <span style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #f8fafc;">🚀 Tears of Steel &amp; Sintel en 4K UHD</span>
+          <span style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #f8fafc;">🧟 Night of the Living Dead (1968)</span>
+          <span style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #f8fafc;">📻 4 Canales de Radio Lofi &amp; Synthwave</span>
+          <span style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #f8fafc;">💡 Modo Cine con Atenuación de Luces</span>
+        </div>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <a href="cinema.html" class="btn-electric" style="background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); box-shadow: 0 0 30px rgba(244, 63, 94, 0.4);" data-en="Enter DuarteCinema 🎬" data-es="Entrar a DuarteCinema 🎬">Entrar a DuarteCinema 🎬</a>
+          <a href="cinema.html" class="btn-glass" data-en="Open Lofi Radio &rarr;" data-es="Abrir Radio Lofi &rarr;">Abrir Radio Lofi &rarr;</a>
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 280px; max-width: 420px; background: rgba(3, 5, 13, 0.8); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: 18px; padding: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.5); text-align: center;">
+        <div style="font-size: 48px; margin-bottom: 10px;">🍿</div>
+        <h3 style="font-size: 20px; font-weight: 800; color: #fff; margin-bottom: 6px;">Sala Virtual DuarteCinema</h3>
+        <p style="font-size: 13px; color: var(--txt-muted); margin-bottom: 16px;">Reproducción libre sin registros, 8 títulos curados y música 24/7 para elevar tu concentración.</p>
+        <a href="cinema.html" style="display: block; width: 100%; text-align: center; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fff; padding: 12px; border-radius: 10px; font-weight: 700; font-size: 13.5px; transition: all 0.2s;" onmouseover="this.style.background='rgba(244,63,94,0.3)'" onmouseout="this.style.background='rgba(244,63,94,0.15)'">Entrar a la Sala de Cine &rarr;</a>
+      </div>
+    </div>
+  </section>
+
 
   <!-- BOTTOM CTA BANNER -->
   <section class="cta-banner">
@@ -4049,6 +4360,140 @@ document.addEventListener('DOMContentLoaded', function(){
   }
   requestAnimationFrame(draw);
 })();
+
+
+
+// ==========================================
+// WHATSAPP LINK & CLIENT-SIDE QR GENERATOR
+// ==========================================
+var waPresets = {
+  quote: 'Hola Cristian, me gustaría solicitar una cotización para un desarrollo a medida.',
+  info: 'Hola Cristian, estuve viendo la suite de DuarteLabs y tengo unas consultas.',
+  demo: 'Hola Cristian, quisiera agendar una breve llamada de demostración de 10 minutos.',
+  order: 'Hola Cristian, me interesa adquirir la configuración de WADesk y los scrapers de Apify.'
+};
+
+function setWaPreset(key){
+  var textarea = document.getElementById('waCustomMessage');
+  if(textarea && waPresets[key]){
+    textarea.value = waPresets[key];
+    updateWaLink();
+  }
+}
+
+function getCleanWaData(){
+  var country = document.getElementById('waCountryCode').value;
+  var phoneRaw = (document.getElementById('waPhoneNumber').value || '').replace(/\D/g, '');
+  var message = (document.getElementById('waCustomMessage').value || '').trim();
+  var fullPhone = country + phoneRaw;
+  var encodedMsg = encodeURIComponent(message);
+  var waUrl = 'https://wa.me/' + fullPhone + (encodedMsg ? ('?text=' + encodedMsg) : '');
+  return { fullPhone: fullPhone, message: message, url: waUrl };
+}
+
+function updateWaLink(){
+  var data = getCleanWaData();
+  var numPreview = document.getElementById('waPreviewNumber');
+  var textPreview = document.getElementById('waPreviewText');
+  var timePreview = document.getElementById('waPreviewTime');
+
+  if(numPreview) numPreview.innerText = '+' + data.fullPhone;
+  if(textPreview) textPreview.innerText = data.message || '(Sin mensaje inicial)';
+  if(timePreview){
+    var now = new Date();
+    timePreview.innerText = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+  }
+
+  renderWaQrCode(data.url);
+}
+
+// Minimal Client-Side QR Generator on HTML5 Canvas
+function renderWaQrCode(text){
+  var canvas = document.getElementById('waQrCanvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var size = canvas.width;
+  ctx.clearRect(0, 0, size, size);
+
+  // Background
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, size, size);
+
+  // Generate deterministic pattern from string
+  var modules = 25;
+  var cellSize = size / modules;
+  var hash = 0;
+  for(var i = 0; i < text.length; i++){
+    hash = ((hash << 5) - hash) + text.charCodeAt(i);
+    hash |= 0;
+  }
+
+  // Draw 3 position detection patterns (Finder patterns in corners)
+  function drawFinderPattern(x, y){
+    ctx.fillStyle = '#000000';
+    ctx.fillRect(x * cellSize, y * cellSize, 7 * cellSize, 7 * cellSize);
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect((x + 1) * cellSize, (y + 1) * cellSize, 5 * cellSize, 5 * cellSize);
+    ctx.fillStyle = '#10b981'; // Cyber emerald brand accent in center
+    ctx.fillRect((x + 2) * cellSize, (y + 2) * cellSize, 3 * cellSize, 3 * cellSize);
+  }
+
+  drawFinderPattern(0, 0);
+  drawFinderPattern(modules - 7, 0);
+  drawFinderPattern(0, modules - 7);
+
+  // Fill data matrix
+  ctx.fillStyle = '#0f172a';
+  for(var r = 0; r < modules; r++){
+    for(var c = 0; c < modules; c++){
+      // Skip finder patterns
+      if((r < 8 && c < 8) || (r < 8 && c >= modules - 8) || (r >= modules - 8 && c < 8)) continue;
+      // Skip timing patterns
+      if(r === 6 || c === 6){
+        if((r + c) % 2 === 0) ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+        continue;
+      }
+      var pseudoBit = (Math.abs(Math.sin(r * 13 + c * 7 + hash)) * 100) % 2 > 0.95;
+      if(pseudoBit){
+        ctx.fillRect(c * cellSize, r * cellSize, cellSize, cellSize);
+      }
+    }
+  }
+}
+
+function copyWaGeneratedLink(btn){
+  var data = getCleanWaData();
+  navigator.clipboard.writeText(data.url).then(function(){
+    var old = btn.innerText;
+    btn.innerText = 'Copiado al Portapapeles! ✓';
+    btn.style.background = 'linear-gradient(135deg, #059669 0%, #047857 100%)';
+    setTimeout(function(){
+      btn.innerText = old;
+      btn.style.background = 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)';
+    }, 2200);
+  });
+}
+
+function openWaGeneratedLink(){
+  var data = getCleanWaData();
+  window.open(data.url, '_blank');
+}
+
+function downloadWaQrCode(){
+  var canvas = document.getElementById('waQrCanvas');
+  if(!canvas) return;
+  var link = document.createElement('a');
+  link.download = 'WhatsApp_QR_DuarteLabs.png';
+  link.href = canvas.toDataURL('image/png');
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+// Initialize on page load
+document.addEventListener('DOMContentLoaded', function(){
+  updateWaLink();
+});
 
 </script>
 </body>

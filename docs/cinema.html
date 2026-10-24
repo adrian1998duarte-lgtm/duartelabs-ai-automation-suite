@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DuarteCinema · Cine Open-Source 4K, Retro Sci-Fi &amp; Radio Lofi 24/7 | DuarteLabs</title>
+<meta name="description" content="Sala de cine y streaming web inmersivo en 4K y 1080p con clásicos del cine de ciencia ficción de dominio público, animación abierta y radio Lofi/Synthwave 24/7 sin anuncios.">
+<link rel="icon" type="image/jpeg" href="assets/brand_avatar.jpg">
+<meta name="theme-color" content="#03050d">
+
+<!-- Modern Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg: #03050d;
+  --bg-card: rgba(13, 19, 36, 0.75);
+  --border: rgba(99, 102, 241, 0.22);
+  --border-glow: rgba(99, 102, 241, 0.55);
+  --txt: #f8fafc;
+  --txt-muted: #94a3b8;
+  --txt-dim: #64748b;
+  --primary: #6366f1;
+  --primary-glow: rgba(99, 102, 241, 0.35);
+  --cyan: #06b6d4;
+  --cyan-glow: rgba(6, 182, 212, 0.35);
+  --violet: #8b5cf6;
+  --rose: #f43f5e;
+  --amber: #f59e0b;
+  --emerald: #10b981;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background-color: var(--bg);
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(99, 102, 241, 0.15) 0%, transparent 60%),
+    radial-gradient(circle at 85% 30%, rgba(244, 63, 94, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 15% 60%, rgba(6, 182, 212, 0.12) 0%, transparent 50%),
+    radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 100% 100%, 36px 36px;
+  color: var(--txt);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  min-height: 100vh;
+  line-height: 1.6;
+  overflow-x: hidden;
+  transition: background-color 0.4s ease;
+}
+
+body.cinema-lights-dimmed {
+  background-color: #000000 !important;
+  background-image: none !important;
+}
+
+a { color: inherit; text-decoration: none; }
+.wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; position: relative; }
+
+/* Header */
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: rgba(3, 5, 13, 0.88);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 22px;
+}
+.brand img {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+.brand span {
+  background: linear-gradient(135deg, var(--rose) 0%, var(--violet) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--txt-muted);
+  transition: all 0.2s;
+}
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.25);
+}
+.badge-hot {
+  background: rgba(244, 63, 94, 0.2);
+  color: #f43f5e;
+  border: 1px solid rgba(244, 63, 94, 0.35);
+  padding: 2px 7px;
+  border-radius: 999px;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+/* Radio Sticky Player Bar */
+.radio-bar {
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 27, 75, 0.85) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  border-radius: 16px;
+  padding: 14px 22px;
+  margin: 24px 0 32px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 25px rgba(139, 92, 246, 0.15);
+}
+.radio-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.radio-pulse-circle {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.4);
+}
+.radio-channels {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.channel-btn {
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: var(--txt-muted);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.channel-btn:hover { background: rgba(255, 255, 255, 0.12); color: #fff; }
+.channel-btn.active {
+  background: var(--violet);
+  color: #fff;
+  border-color: #a78bfa;
+  box-shadow: 0 0 12px var(--violet-glow);
+}
+
+.radio-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.btn-play-radio {
+  background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%);
+  border: none;
+  color: #fff;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 13.5px;
+  cursor: pointer;
+  box-shadow: 0 0 20px rgba(244, 63, 94, 0.35);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+}
+.btn-play-radio:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 30px rgba(244, 63, 94, 0.55);
+}
+
+/* Theater Screen Stage */
+.theater-stage {
+  position: relative;
+  background: #000;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 50px rgba(99, 102, 241, 0.2);
+  margin-bottom: 36px;
+}
+.ambient-glow-back {
+  position: absolute;
+  top: -10%; left: 10%; right: 10%; bottom: -10%;
+  border-radius: 30px;
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.6;
+}
+.video-responsive-wrap {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 Aspect Ratio */
+  z-index: 1;
+  background: #050814;
+}
+.video-responsive-wrap iframe,
+.video-responsive-wrap video {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  border: none;
+}
+
+/* Theater Top Bar */
+.theater-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 22px;
+  background: #090e1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
+  z-index: 2;
+}
+.cinema-pill-tag {
+  background: rgba(244, 63, 94, 0.18);
+  border: 1px solid rgba(244, 63, 94, 0.4);
+  color: #f43f5e;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 3px 9px;
+  border-radius: 999px;
+  text-transform: uppercase;
+}
+
+/* Movie Catalog Grid */
+.catalog-header {
+  text-align: center;
+  margin: 50px 0 28px;
+}
+.catalog-header h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  color: #fff;
+  margin-bottom: 8px;
+}
+.movies-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+  margin-bottom: 60px;
+}
+.movie-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.2, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.movie-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(244, 63, 94, 0.5);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.6), 0 0 25px rgba(244, 63, 94, 0.2);
+}
+.movie-card.active {
+  border-color: #f43f5e;
+  box-shadow: 0 0 30px rgba(244, 63, 94, 0.4);
+}
+.movie-thumb {
+  position: relative;
+  width: 100%;
+  height: 165px;
+  background-size: cover;
+  background-position: center;
+  background-color: #0d1324;
+}
+.movie-thumb-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 40%, rgba(3, 5, 13, 0.95) 100%);
+  display: flex;
+  align-items: flex-end;
+  padding: 12px;
+}
+.movie-duration-badge {
+  background: rgba(0, 0, 0, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', monospace;
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+.movie-card-body {
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+.movie-genre-tag {
+  color: var(--cyan);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.movie-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.movie-desc {
+  font-size: 12.5px;
+  color: var(--txt-muted);
+  line-height: 1.5;
+  margin-bottom: 14px;
+  flex: 1;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 36px 0;
+  color: var(--txt-muted);
+  font-size: 13.5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand">
+      <img src="assets/brand_avatar.jpg" alt="DuarteLabs Avatar">
+      <div>Duarte<span>Cinema</span></div>
+    </a>
+    <div class="nav-actions">
+      <a href="arcade.html" class="nav-btn" style="color: #38bdf8; border-color: rgba(6,182,212,0.4);">
+        🕹️ <span>DuarteArcade (38 Games)</span>
+      </a>
+      <a href="tools.html" class="nav-btn" style="color: #34d399; border-color: rgba(16,185,129,0.4);">
+        🛠️ <span>Web Suite PRO</span>
+      </a>
+      <a href="index.html" class="nav-btn">
+        🏠 <span>Inicio</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Radio Sticky Player Bar -->
+  <div class="radio-bar">
+    <div class="radio-info">
+      <div class="radio-pulse-circle">📻</div>
+      <div>
+        <div style="font-weight:700;font-size:14.5px;color:#fff;display:flex;align-items:center;gap:8px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#10b981;box-shadow:0 0 10px #10b981;"></span>
+          Radio Lofi &amp; Synthwave 24/7
+        </div>
+        <div style="font-size:12px;color:var(--txt-muted);" id="currentRadioChannelLabel">Canal: Lofi Hip Hop Study Beats</div>
+      </div>
+    </div>
+
+    <!-- Channels -->
+    <div class="radio-channels">
+      <button class="channel-btn active" onclick="switchRadioChannel('lofi', this)">☕ Lofi Study</button>
+      <button class="channel-btn" onclick="switchRadioChannel('synthwave', this)">🌆 Cyber Synthwave</button>
+      <button class="channel-btn" onclick="switchRadioChannel('ambient', this)">🌌 Deep Space</button>
+      <button class="channel-btn" onclick="switchRadioChannel('chiptune', this)">🎮 8-Bit Retro</button>
+    </div>
+
+    <!-- Audio Player Controls -->
+    <div class="radio-controls">
+      <button class="btn-play-radio" id="radioPlayBtn" onclick="toggleRadio()">
+        <span id="radioIcon">▶️</span> <span id="radioBtnLabel">Escuchar Radio</span>
+      </button>
+      <input type="range" min="0" max="1" step="0.05" value="0.7" id="radioVolume" oninput="setRadioVolume(this.value)" style="width:75px;accent-color:var(--violet);" title="Volumen">
+    </div>
+  </div>
+
+  <!-- Theater Stage Container -->
+  <div class="theater-stage" id="theaterStage">
+    <div class="ambient-glow-back" id="ambientGlowBack"></div>
+    
+    <div class="theater-topbar">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <span class="cinema-pill-tag" id="currentMovieBadge">4K OPEN CINEMA</span>
+        <strong style="color:#fff;font-size:15px;" id="currentMovieTitle">Tears of Steel (4K Cyberpunk Sci-Fi)</strong>
+      </div>
+      <div style="display:flex;gap:10px;align-items:center;">
+        <button onclick="toggleCinemaLights()" class="nav-btn" id="cinemaLightsBtn" style="padding:4px 10px;font-size:12px;">
+          💡 Modo Cine: OFF
+        </button>
+        <button onclick="theaterFullscreen()" class="nav-btn" style="padding:4px 10px;font-size:12px;">
+          ⛶ Pantalla Completa
+        </button>
+      </div>
+    </div>
+
+    <div class="video-responsive-wrap" id="videoWrap">
+      <!-- Embedded Player -->
+      <iframe id="cinemaIframe" src="https://www.youtube-nocookie.com/embed/R6MlUcmOul8?autoplay=0&rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    </div>
+  </div>
+
+  <!-- Movies Catalog Grid -->
+  <div class="catalog-header">
+    <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(244,63,94,0.12);border:1px solid rgba(244,63,94,0.3);color:#f43f5e;font-size:12.5px;font-weight:700;margin-bottom:12px;text-transform:uppercase;">
+      🎬 Cartelera Abierta &amp; Libre de Derechos
+    </div>
+    <h2>Selecciona una Película o Clásico</h2>
+    <p style="color:var(--txt-muted);font-size:15px;">Disfruta de obras maestras cinematográficas, animación 4K y clásicos retro en streaming sin anuncios.</p>
+  </div>
+
+  <div class="movies-grid" id="moviesGrid">
+    <!-- Movie 1 -->
+    <div class="movie-card active" onclick="loadMovie('tears', this)">
+      <div class="movie-thumb" style="background-image: url('https://img.youtube.com/vi/R6MlUcmOul8/hqdefault.jpg');">
+        <div class="movie-thumb-overlay">
+          <span class="movie-duration-badge">12 min · 4K UHD</span>
+        </div>
+      </div>
+      <div class="movie-card-body">
+        <span class="movie-genre-tag">Cyberpunk Sci-Fi</span>
+        <div class="movie-title">Tears of Steel</div>
+        <div class="movie-desc">En un futuro distópico cyberpunk en Ámsterdam, un grupo de científicos y rebeldes lucha por reconectar con una IA que arrasó la civilización.</div>
+        <span style="color:#f43f5e;font-size:12.5px;font-weight:700;">▶ Reproducir Ahora</span>
+      </div>
+    </div>
+
+    <!-- Movie 2 -->
+    <div class="movie-card" onclick="loadMovie('sintel', this)">
+      <div class="movie-thumb" style="background-image: url('https://img.youtube.com/vi/eRsGyueVLvQ/hqdefault.jpg');">
+        <div class="movie-thumb-overlay">
+          <span class="movie-duration-badge">15 min · 4K UHD</span>
+        </div>
+      </div>
+      <div class="movie-card-body">
+        <span class="movie-genre-tag" style="color:#fbbf24;">Fantasía Épica</span>
+        <div class="movie-title">Sintel</div>
+        <div class="movie-desc">Una solitaria guerrera emprende un peligroso viaje a través de desiertos y montañas para rescatar a su dragón mascota capturado.</div>
+        <span style="color:#f43f5e;font-size:12.5px;font-weight:700;">▶ Reproducir Ahora</span>
+      </div>
+    </div>
+
+    <!-- Movie 3 -->
+    <div class="movie-card" onclick="loadMovie('cosmos', this)">
+      <div class="movie-thumb" style="background-image: url('https://img.youtube.com/vi/Y-rmzh0PI3c/hqdefault.jpg');">
+        <div class="movie-thumb-overlay">
+          <span class="movie-duration-badge">12 min · 4K UHD</span>
+        </div>
+      </div>
+      <div class="movie-card-body">
+        <span class="movie-genre-tag" style="color:#a78bfa;">Ciencia Ficción Surrealista</span>
+        <div class="movie-title">Cosmos Laundromat</div>
+        <div class="movie-desc">Una oveja desesperada en una isla desierta conoce a un misterioso vendedor que le ofrece vidas infinitas en universos alternos.</div>
+        <span style="color:#f43f5e;font-size:12.5px;font-weight:700;">▶ Reproducir Ahora</span>
+      </div>
+    </div>
+
+    <!-- Movie 4 -->
+    <div class="movie-card" onclick="loadMovie('bunny', this)">
+      <div class="movie-thumb" style="background-image: url('https://img.youtube.com/vi/aqz-KE-bpKQ/hqdefault.jpg');">
+        <div class="movie-thumb-overlay">
+          <span class="movie-duration-badge">10 min · 4K 60FPS</span>
+        </div>
+      </div>
+      <div class="movie-card-body">
+        <span class="movie-genre-tag" style="color:#34d399;">Animación Clásica</span>
+        <div class="movie-title">Big Buck Bunny</div>
+        <div class="movie-desc">El legendario conejo gigante se venga ingeniosamente de tres traviesos roedores del bosque que se dedicaban a acosar animales indefensos.</div>
+        <span style="color:#f43f5e;font-size:12.5px;font-weight:700;">▶ Reproducir Ahora</span>
+      </div>
+    </div>
+
+    <!-- Movie 5 -->
+    <div class="movie-card" onclick="loadMovie('night_dead', this)">
+      <div class="movie-thumb" style="background-image: url('https://img.youtube.com/vi/j5B_mO2xYnE/hqdefault.jpg');">
+        <div class="movie-thumb-overlay">
+          <span class="movie-duration-badge">96 min · Película Completa</span>
+        </div>
+      </div>
+      <div class="movie-card-body">
+        <span class="movie-genre-tag" style="color:#f87171;">Terror Clásico (1968)</span>
+        <div class="movie-title">Night of the Living Dead</div>
+        <div class="movie-desc">La obra maestra inmortal de George A. Romero que definió el género de zombies en la historia del cine. Dominio público restaurado.</div>
+        <span style="color:#f43f5e;font-size:12.5px;font-weight:700;">▶ Reproducir Ahora</span>
+      </div>
+    </div>
+
+    <!-- Movie 6 -->
+    <div class="movie-card" onclick="loadMovie('moon', this)">
+      <div class="movie-thumb" style="background-image: url('https://img.youtube.com/vi/_FrdVdKlxUk/hqdefault.jpg');">
+        <div class="movie-thumb-overlay">
+          <span class="movie-duration-badge">14 min · Restaurado en Color</span>
+        </div>
+      </div>
+      <div class="movie-card-body">
+        <span class="movie-genre-tag" style="color:#38bdf8;">Historia del Cine (1902)</span>
+        <div class="movie-title">Le Voyage dans la Lune</div>
+        <div class="movie-desc">La icónica película de ciencia ficción de Georges Méliès donde astrónomos viajan a la Luna en una cápsula espacial disparada por un cañón.</div>
+        <span style="color:#f43f5e;font-size:12.5px;font-weight:700;">▶ Reproducir Ahora</span>
+      </div>
+    </div>
+
+    <!-- Movie 7 -->
+    <div class="movie-card" onclick="loadMovie('prehistoric', this)">
+      <div class="movie-thumb" style="background-image: url('https://img.youtube.com/vi/H7o1v8d2x9k/hqdefault.jpg');">
+        <div class="movie-thumb-overlay">
+          <span class="movie-duration-badge">71 min · Retro Sci-Fi (1968)</span>
+        </div>
+      </div>
+      <div class="movie-card-body">
+        <span class="movie-genre-tag" style="color:#fb923c;">Aventura Espacial Retro</span>
+        <div class="movie-title">Voyage to the Prehistoric Planet</div>
+        <div class="movie-desc">Astronautas terrestres exploran la superficie inexplorada de Venus, enfrentándose a criaturas prehistóricas y peligros volcánicos desconocidos.</div>
+        <span style="color:#f43f5e;font-size:12.5px;font-weight:700;">▶ Reproducir Ahora</span>
+      </div>
+    </div>
+
+    <!-- Movie 8 -->
+    <div class="movie-card" onclick="loadMovie('anime_retro', this)">
+      <div class="movie-thumb" style="background-image: url('https://img.youtube.com/vi/5qap5aO4i9A/hqdefault.jpg');">
+        <div class="movie-thumb-overlay">
+          <span class="movie-duration-badge">60 min · Retro OVA Vibe</span>
+        </div>
+      </div>
+      <div class="movie-card-body">
+        <span class="movie-genre-tag" style="color:#c084fc;">Anime Retro 80s/90s</span>
+        <div class="movie-title">Cyberpunk City &amp; Mecha OVA</div>
+        <div class="movie-desc">Selección y montaje curado de estética retro anime de los años 80 y 90, mechas gigantes y ciudades cyberpunk iluminadas por neones.</div>
+        <span style="color:#f43f5e;font-size:12.5px;font-weight:700;">▶ Reproducir Ahora</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div>© 2026 DuarteLabs · Cristian Duarte. DuarteCinema Open Media Hub.</div>
+    <div style="display:flex;gap:20px;flex-wrap:wrap">
+      <a href="arcade.html" style="color:#f43f5e;font-weight:700">🕹️ DuarteArcade</a>
+      <a href="tools.html" style="color:#34d399;font-weight:700">🛠️ Web Suite PRO</a>
+      <a href="index.html">🏠 Inicio</a>
+      <a href="https://apify.com/duartelabs" target="_blank" rel="noopener noreferrer">Apify Store</a>
+    </div>
+  </footer>
+</div>
+
+<!-- Background Audio Element for Lofi Radio -->
+<audio id="radioAudio" preload="none"></audio>
+
+<script>
+// Movies Database
+var movies = {
+  tears: {
+    title: 'Tears of Steel (4K Cyberpunk Sci-Fi)',
+    badge: '4K OPEN CINEMA',
+    ytId: 'R6MlUcmOul8',
+    glow: 'rgba(6, 182, 212, 0.4)'
+  },
+  sintel: {
+    title: 'Sintel (Fantasía Épica 4K)',
+    badge: '4K ANIMATION',
+    ytId: 'eRsGyueVLvQ',
+    glow: 'rgba(245, 158, 11, 0.4)'
+  },
+  cosmos: {
+    title: 'Cosmos Laundromat (Ciencia Ficción Surrealista 4K)',
+    badge: '4K SCI-FI',
+    ytId: 'Y-rmzh0PI3c',
+    glow: 'rgba(139, 92, 246, 0.4)'
+  },
+  bunny: {
+    title: 'Big Buck Bunny (Animación Clásica 4K 60FPS)',
+    badge: '4K 60 FPS',
+    ytId: 'aqz-KE-bpKQ',
+    glow: 'rgba(16, 185, 129, 0.4)'
+  },
+  night_dead: {
+    title: 'Night of the Living Dead (1968 - Clásico de Terror Completo)',
+    badge: 'PUBLIC DOMAIN FILM',
+    ytId: 'j5B_mO2xYnE',
+    glow: 'rgba(239, 68, 68, 0.4)'
+  },
+  moon: {
+    title: 'Le Voyage dans la Lune (1902 - Restaurado en Color)',
+    badge: 'HISTORIC MASTERPIECE',
+    ytId: '_FrdVdKlxUk',
+    glow: 'rgba(56, 189, 248, 0.4)'
+  },
+  prehistoric: {
+    title: 'Voyage to the Planet of Prehistoric Women (1968)',
+    badge: 'RETRO SCI-FI',
+    ytId: 'H7o1v8d2x9k',
+    glow: 'rgba(251, 146, 60, 0.4)'
+  },
+  anime_retro: {
+    title: 'Cyberpunk City & Mecha Retro OVA 80s/90s',
+    badge: 'RETRO ANIME VIBE',
+    ytId: '5qap5aO4i9A',
+    glow: 'rgba(192, 132, 252, 0.4)'
+  }
+};
+
+function loadMovie(key, el){
+  var m = movies[key];
+  if(!m) return;
+  
+  document.querySelectorAll('.movie-card').forEach(c => c.classList.remove('active'));
+  if(el) el.classList.add('active');
+
+  var iframe = document.getElementById('cinemaIframe');
+  var titleEl = document.getElementById('currentMovieTitle');
+  var badgeEl = document.getElementById('currentMovieBadge');
+  var glowEl = document.getElementById('ambientGlowBack');
+  var stage = document.getElementById('theaterStage');
+
+  if(iframe){
+    iframe.src = 'https://www.youtube-nocookie.com/embed/' + m.ytId + '?autoplay=1&rel=0&modestbranding=1';
+  }
+  if(titleEl) titleEl.innerText = m.title;
+  if(badgeEl) badgeEl.innerText = m.badge;
+  if(glowEl) glowEl.style.background = 'radial-gradient(circle, ' + m.glow + ' 0%, transparent 70%)';
+
+  if(stage){
+    stage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+}
+
+// Cinema Lights Dimming
+var cinemaLightsOn = true;
+function toggleCinemaLights(){
+  cinemaLightsOn = !cinemaLightsOn;
+  var btn = document.getElementById('cinemaLightsBtn');
+  if(!cinemaLightsOn){
+    document.body.classList.add('cinema-lights-dimmed');
+    if(btn) btn.innerHTML = '💡 Modo Cine: ON (Luces Apagadas)';
+  } else {
+    document.body.classList.remove('cinema-lights-dimmed');
+    if(btn) btn.innerHTML = '💡 Modo Cine: OFF';
+  }
+}
+
+function theaterFullscreen(){
+  var stage = document.getElementById('theaterStage');
+  if(!stage) return;
+  if(!document.fullscreenElement){
+    stage.requestFullscreen().catch(err => {});
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// ==========================================
+// 24/7 LOFI & SYNTHWAVE FOCUS RADIO
+// ==========================================
+var radioChannels = {
+  lofi: {
+    name: 'Canal: Lofi Hip Hop Study & Code Beats',
+    streamUrl: 'https://stream.zeno.fm/f3wvbbqmdg8uv'
+  },
+  synthwave: {
+    name: 'Canal: Cyberpunk Synthwave & Retrowave',
+    streamUrl: 'https://stream.zeno.fm/0r0xa792kwzuv'
+  },
+  ambient: {
+    name: 'Canal: Deep Space Ambient & Focus Drone',
+    streamUrl: 'https://stream.zeno.fm/75h4s6p7ug8uv'
+  },
+  chiptune: {
+    name: 'Canal: 8-Bit Chiptune Retro Arcade Melodies',
+    streamUrl: 'https://stream.zeno.fm/p2w57p08ug8uv'
+  }
+};
+
+var currentRadioKey = 'lofi';
+var isRadioPlaying = false;
+var radioAudio = document.getElementById('radioAudio');
+
+function switchRadioChannel(chKey, btn){
+  currentRadioKey = chKey;
+  document.querySelectorAll('.channel-btn').forEach(b => b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+
+  var ch = radioChannels[chKey] || radioChannels.lofi;
+  var label = document.getElementById('currentRadioChannelLabel');
+  if(label) label.innerText = ch.name;
+
+  if(isRadioPlaying){
+    radioAudio.src = ch.streamUrl;
+    radioAudio.play().catch(e => {});
+  }
+}
+
+function toggleRadio(){
+  if(!radioAudio) radioAudio = document.getElementById('radioAudio');
+  var playBtn = document.getElementById('radioPlayBtn');
+  var icon = document.getElementById('radioIcon');
+  var label = document.getElementById('radioBtnLabel');
+
+  if(!isRadioPlaying){
+    var ch = radioChannels[currentRadioKey] || radioChannels.lofi;
+    radioAudio.src = ch.streamUrl;
+    radioAudio.play().then(() => {
+      isRadioPlaying = true;
+      if(icon) icon.innerText = '⏸️';
+      if(label) label.innerText = 'Pausar Radio';
+      if(playBtn) playBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #06b6d4 100%)';
+    }).catch(err => {
+      alert('Iniciando reproducción de audio streaming...');
+    });
+  } else {
+    radioAudio.pause();
+    isRadioPlaying = false;
+    if(icon) icon.innerText = '▶️';
+    if(label) label.innerText = 'Escuchar Radio';
+    if(playBtn) playBtn.style.background = 'linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%)';
+  }
+}
+
+function setRadioVolume(val){
+  if(radioAudio){
+    radioAudio.volume = parseFloat(val);
+  }
+}
+</script>
+</body>
+</html>
