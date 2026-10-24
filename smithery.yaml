@@ -1,0 +1,27 @@
+# Smithery.ai MCP Server Configuration
+startCommand:
+  type: stdio
+  configSchema:
+    type: object
+    required:
+      - apifyToken
+    properties:
+      apifyToken:
+        type: string
+        title: "Apify API Token"
+        description: "Your personal Apify API Token from https://console.apify.com/settings/integrations"
+  commandFunction: |-
+    (config) => ({
+      command: "npx",
+      args: [
+        "-y",
+        "@apify/actors-mcp-server",
+        "--actors",
+        "duartelabs/b2b-lead-whatsapp-pixel-scraper,duartelabs/google-maps-business-email-whatsapp-enricher,duartelabs/shopify-competitor-price-stock-spy,duartelabs/ai-website-to-markdown-rag-chunker,duartelabs/seo-meta-schema-broken-links-auditor,duartelabs/sitemap-to-llms-txt-markdown-rag-builder"
+      ],
+      env: {
+        APIFY_TOKEN: config.apifyToken
+      }
+    })
+  exampleConfig:
+    apifyToken: "apify_api_sample_token_here"
