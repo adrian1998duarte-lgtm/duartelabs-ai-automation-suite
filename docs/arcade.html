@@ -664,20 +664,17 @@ footer a:hover { color: var(--cyan); }
       <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.35);color:#818cf8;font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.8px;">
         ⚡ 1-Click Instant Play · Zero Downloads
       </div>
-      <h2 data-en="Instant Playable Games Library (31 Games Ready)" data-es="Catálogo de Juegos Listos para Jugar (31 Juegos)">Instant Playable Games Library (31 Games Ready)</h2>
-      <p data-en="Click any game below to start playing immediately in your browser. PS1, PS2, NDS, GBA, Mario & Counter-Strike — no downloads needed!" data-es="Haz clic en cualquier juego para empezar a jugar de inmediato en tu navegador. PS1, PS2, Nintendo DS, GBA, Mario y Counter-Strike sin descargar nada.">Click any game below to start playing immediately in your browser. PS1, PS2, NDS, GBA, Mario & Counter-Strike — no downloads needed!</p>
+      <h2 data-en="Instant Playable Games Library (30 Games Ready)" data-es="Catálogo de Juegos Listos para Jugar (30 Juegos)">Instant Playable Games Library (30 Games Ready)</h2>
+      <p data-en="Click any game below to start playing immediately in your browser. PS1 3D, NDS Touch, GBA, Mario & Counter-Strike — no downloads needed!" data-es="Haz clic en cualquier juego para empezar a jugar de inmediato en tu navegador. PS1 3D, Nintendo DS táctil, GBA, Mario y Counter-Strike sin descargar nada.">Click any game below to start playing immediately in your browser. PS1 3D, NDS Touch, GBA, Mario & Counter-Strike — no downloads needed!</p>
     </div>
 
     <!-- Category Filter Bar -->
     <div class="console-bar" style="margin-bottom: 28px;">
       <button class="console-btn active" onclick="filterCatalog('all', this)">
-        <span>🌟</span> <span data-en="All Games (31)" data-es="Todos (31)">All Games (31)</span>
+        <span>🌟</span> <span data-en="All Games (30)" data-es="Todos (30)">All Games (30)</span>
       </button>
       <button class="console-btn" onclick="filterCatalog('psx', this)" style="border-color: rgba(99, 102, 241, 0.5); color: #a5b4fc;">
         <span>🎮</span> PlayStation 1 (10)
-      </button>
-      <button class="console-btn" onclick="filterCatalog('ps2', this)" style="border-color: rgba(59, 130, 246, 0.5); color: #60a5fa;">
-        <span>📀</span> PlayStation 2
       </button>
       <button class="console-btn" onclick="filterCatalog('mario', this)" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24;">
         <span>🍄</span> Mario Bros (4)
@@ -1107,19 +1104,6 @@ footer a:hover { color: var(--cyan); }
           <span style="color:var(--cyan);font-weight:700" data-en="Play Online 🕹️" data-es="Jugar Online 🕹️">Jugar Online 🕹️</span>
         </div>
       </div>
-
-      <!-- PS2: Play!.js Web Engine -->
-      <div class="game-card" data-cat="ps2" onclick="launchPS2Engine()" style="border-color: rgba(59, 130, 246, 0.5); background: linear-gradient(135deg, rgba(20, 30, 60, 0.8) 0%, rgba(15, 20, 40, 0.95) 100%);">
-        <div>
-          <span class="game-card-icon">📀</span>
-          <h4 style="color: #60a5fa;">PlayStation 2: Play!.js Web Engine</h4>
-          <p data-en="The revolutionary WebAssembly virtual machine for PlayStation 2! Zero BIOS setup required. Emulates PS2 Emotion Engine directly in your browser." data-es="¡La máquina virtual en WebAssembly para PlayStation 2! Sin necesidad de configurar BIOS. Emula el motor Emotion Engine de PS2 directo en tu navegador.">¡La máquina virtual en WebAssembly para PlayStation 2! Sin necesidad de configurar BIOS. Emula el motor Emotion Engine de PS2 directo en tu navegador.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag" style="background: rgba(59, 130, 246, 0.2); color: #60a5fa; border-color: rgba(59, 130, 246, 0.4);">PlayStation 2 · WebAssembly</span>
-          <span style="color:#60a5fa;font-weight:700" data-en="Launch Engine 🕹️" data-es="Iniciar Motor 🕹️">Iniciar Motor 🕹️</span>
-        </div>
-      </div>
     </div>
 
     <!-- Dedicated PlayStation ISO Power Banner -->
@@ -1274,37 +1258,6 @@ function launchWebGame(url, title){
     var f = document.getElementById('emulatorIframe');
     if(f) { try { f.focus(); if(f.contentWindow) f.contentWindow.focus(); } catch(e){} }
   }, 400);
-}
-
-function launchPS2Engine(){
-  document.getElementById('dropzone').style.display = 'none';
-  var container = document.getElementById('gameContainer');
-  container.style.display = 'block';
-  
-  var rGrid = document.getElementById('retroControlsGrid');
-  var fGrid = document.getElementById('fpsControlsGrid');
-  if(rGrid) rGrid.style.display = 'none';
-  if(fGrid) fGrid.style.display = 'none';
-  
-  var vp = document.getElementById('viewport');
-  if(vp) { vp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
-  
-  document.getElementById('currentConsoleDisplay').innerText = 'Active Engine: PlayStation 2 (Play!.js Web Virtual Machine)';
-
-  container.innerHTML = '<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; text-align:center; padding:30px; box-sizing:border-box; background:radial-gradient(circle at center, rgba(30,58,138,0.35) 0%, rgba(3,7,18,0.98) 100%);">' +
-    '<div style="width:76px; height:76px; border-radius:20px; background:rgba(59,130,246,0.18); border:1px solid rgba(59,130,246,0.45); display:flex; align-items:center; justify-content:center; font-size:38px; margin-bottom:16px; box-shadow:0 0 35px rgba(59,130,246,0.35);">📀</div>' +
-    '<h3 style="color:#60a5fa; font-size:24px; margin:0 0 10px; font-family:\'Space Grotesk\', sans-serif;">PlayStation 2: Play!.js Web VM</h3>' +
-    '<p style="max-width:560px; color:var(--txt-muted); font-size:15px; line-height:1.6; margin:0 0 24px;">' +
-      'La arquitectura de PS2 (Emotion Engine) exige hilos dedicados y aceleración WebGPU de hardware. Por seguridad del navegador (políticas COOP/COEP), el motor corre en una pestaña independiente a 60 FPS sin descargas manuales ni archivos BIOS.' +
-    '</p>' +
-    '<div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">' +
-      '<a href="https://playjs.purei.org/" target="_blank" class="file-upload-btn" style="background:linear-gradient(135deg, #2563eb 0%, #06b6d4 100%); text-decoration:none; font-size:15px; padding:13px 28px; box-shadow:0 0 30px rgba(37,99,235,0.4);">' +
-        '<span>🚀</span> <span>Iniciar Máquina Virtual PS2 en Pantalla Completa &rarr;</span>' +
-      '</a>' +
-    '</div>' +
-  '</div>';
-
-  try { window.open('https://playjs.purei.org/', '_blank'); } catch(e){}
 }
 
 function launchEmulator(core, gameUrl, gameTitle){
