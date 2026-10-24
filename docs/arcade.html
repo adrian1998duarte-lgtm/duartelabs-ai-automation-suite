@@ -7,6 +7,7 @@
 <meta name="description" content="Play Nintendo DS, PlayStation Portable, PS1, and Game Boy Advance games directly in your browser. Dual screen touch support, gamepad controls, and zero installations.">
 <link rel="icon" type="image/jpeg" href="assets/brand_avatar.jpg">
 <meta name="theme-color" content="#03050d">
+<script src="coi-serviceworker.min.js"></script>
 
 <!-- Modern Google Fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -544,42 +545,68 @@ footer a:hover { color: var(--cyan); }
     </div>
 
     <div class="games-grid">
-      <!-- Demo 1: NDS Touch Test -->
-      <div class="game-card" onclick="loadDemoGame('nds', 'https://raw.githubusercontent.com/adrian1998duarte-lgtm/duartelabs-ai-automation-suite/main/docs/assets/demo_2048.nds')">
+      <!-- Demo 1: NDS Flappy Bird Touch Edition -->
+      <div class="game-card" onclick="loadDemoGame('nds', 'assets/demos/flappy_bird.nds', 'Nintendo DS: Flappy Bird Touch')">
         <div>
           <span class="game-card-icon">📱</span>
-          <h4>Nintendo DS: 2048 Touch Edition</h4>
-          <p data-en="Classic number puzzle compiled for Nintendo DS with full dual-screen touch stylus support." data-es="Puzle numérico clásico para Nintendo DS con soporte táctil en la pantalla inferior.">Classic number puzzle compiled for Nintendo DS with full dual-screen touch stylus support.</p>
+          <h4>Nintendo DS: Flappy Bird Touch</h4>
+          <p data-en="Fly through pipes using button A or tap the bottom touchscreen with mouse/stylus. Smooth 60 FPS dual-screen DeSmuME engine." data-es="Vuela entre tuberías con el botón A o toca la pantalla inferior con el ratón/lápiz táctil. Doble pantalla a 60 FPS.">Fly through pipes using button A or tap the bottom touchscreen with mouse/stylus. Smooth 60 FPS dual-screen DeSmuME engine.</p>
         </div>
         <div class="game-card-footer">
           <span class="console-tag">NDS Dual Screen</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo →" data-es="Jugar Demo →">Play Demo →</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo ↗" data-es="Jugar Demo ↗">Play Demo ↗</span>
         </div>
       </div>
 
-      <!-- Demo 2: GBA Retro Runner -->
-      <div class="game-card" onclick="loadDemoGame('gba', 'https://raw.githubusercontent.com/adrian1998duarte-lgtm/duartelabs-ai-automation-suite/main/docs/assets/demo_anguna.gba')">
+      <!-- Demo 2: NDS Snake Arcade -->
+      <div class="game-card" onclick="loadDemoGame('nds', 'assets/demos/snake.nds', 'Nintendo DS: Snake Arcade')">
         <div>
-          <span class="game-card-icon">👾</span>
+          <span class="game-card-icon">🐍</span>
+          <h4>Nintendo DS: Snake Arcade</h4>
+          <p data-en="Classic retro snake built for Nintendo DS with directional D-Pad, dual-screen score tracker, and fluid mechanics." data-es="El clásico juego de la serpiente adaptado a Nintendo DS con cruceta, contador en pantalla superior y mecánicas fluidas.">Classic retro snake built for Nintendo DS with directional D-Pad, dual-screen score tracker, and fluid mechanics.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NDS Dual Screen</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo ↗" data-es="Jugar Demo ↗">Play Demo ↗</span>
+        </div>
+      </div>
+
+      <!-- Demo 3: GBA Anguna RPG -->
+      <div class="game-card" onclick="loadDemoGame('gba', 'assets/demos/anguna.gba', 'Game Boy Advance: Anguna RPG')">
+        <div>
+          <span class="game-card-icon">⚔️</span>
           <h4>Game Boy Advance: Anguna RPG</h4>
           <p data-en="Retro action-adventure RPG in the style of Zelda with dungeons, monsters, and smooth 60 FPS combat." data-es="Aventura RPG de acción al estilo Zelda con mazmorras, monstruos y combate fluido a 60 FPS.">Retro action-adventure RPG in the style of Zelda with dungeons, monsters, and smooth 60 FPS combat.</p>
         </div>
         <div class="game-card-footer">
           <span class="console-tag">GBA 32-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo →" data-es="Jugar Demo →">Play Demo →</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo ↗" data-es="Jugar Demo ↗">Play Demo ↗</span>
         </div>
       </div>
 
-      <!-- Demo 3: PS1 Tech Showcase -->
+      <!-- Demo 4: SNES Astrohawk -->
+      <div class="game-card" onclick="loadDemoGame('snes', 'assets/demos/astrohawk.smc', 'Super Nintendo: Astrohawk')">
+        <div>
+          <span class="game-card-icon">🚀</span>
+          <h4>Super Nintendo: Astrohawk</h4>
+          <p data-en="Fast-paced space arcade shoot-em-up with retro synth audio and 16-bit pixel explosions." data-es="Juego de disparos espacial retro con naves, asteroides, audio sintetizado y explosiones a 16 bits.">Fast-paced space arcade shoot-em-up with retro synth audio and 16-bit pixel explosions.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">SNES 16-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Demo ↗" data-es="Jugar Demo ↗">Play Demo ↗</span>
+        </div>
+      </div>
+
+      <!-- Demo 5: PS1 / Custom ROM -->
       <div class="game-card" onclick="triggerFileSelect()">
         <div>
           <span class="game-card-icon">🕹️</span>
-          <h4>PlayStation 1 / PSP: Custom ISO</h4>
-          <p data-en="Load your favorite PS1 or PSP .iso / .cso backup file with 1 click. Full 3D acceleration and gamepad support." data-es="Carga cualquier copia de seguridad de PS1 o PSP (.iso/.cso) con un clic. Aceleración 3D y mandos.">Load your favorite PS1 or PSP .iso / .cso backup file with 1 click. Full 3D acceleration and gamepad support.</p>
+          <h4>PlayStation / Custom ROM</h4>
+          <p data-en="Load your own PS1, PSP, NDS, or GBA ROM file (.iso, .nds, .gba, .z64, .smc) directly from your computer in 1 click." data-es="Carga cualquier juego de PS1, PSP, NDS o GBA (.iso, .nds, .gba, .z64, .smc) directamente de tu computadora en 1 clic.">Load your own PS1, PSP, NDS, or GBA ROM file (.iso, .nds, .gba, .z64, .smc) directly from your computer in 1 click.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag">PSP / PS1</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Load ISO →" data-es="Cargar ISO →">Load ISO →</span>
+          <span class="console-tag">Upload ROM</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Load File ↗" data-es="Cargar Archivo ↗">Load File ↗</span>
         </div>
       </div>
     </div>
@@ -680,34 +707,63 @@ function loadRomFile(file){
   launchEmulator(currentConsole, fileUrl, file.name);
 }
 
-function loadDemoGame(core, url){
+function loadDemoGame(core, url, title){
   currentConsole = core;
-  launchEmulator(core, url, 'Demo Game');
+  launchEmulator(core, url, title || 'Demo Game');
 }
 
 function launchEmulator(core, gameUrl, gameTitle){
   document.getElementById('dropzone').style.display = 'none';
   var container = document.getElementById('gameContainer');
   container.style.display = 'block';
-  container.innerHTML = '<div id="game" style="width:100%;height:100%;"></div>';
   
-  document.getElementById('currentConsoleDisplay').innerText = 'Playing: ' + gameTitle + ' (' + (currentConsoleNames[core] || core) + ')';
+  // Smooth scroll to emulator view
+  var vp = document.getElementById('viewport');
+  if(vp) { vp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  
+  document.getElementById('currentConsoleDisplay').innerText = 'Playing: ' + gameTitle + ' (' + (currentConsoleNames[core] || core.toUpperCase()) + ')';
 
-  // Configure EmulatorJS globals
-  window.EJS_player = '#game';
-  window.EJS_core = core;
-  window.EJS_gameUrl = gameUrl;
-  window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-  window.EJS_startOnLoaded = true;
-  window.EJS_color = '#6366f1';
-  window.EJS_backgroundColor = '#000000';
-  window.EJS_threads = true;
+  // Build clean, isolated iframe container to prevent global collisions & audio leaks
+  container.innerHTML = '';
+  var iframe = document.createElement('iframe');
+  iframe.id = 'emulatorIframe';
+  iframe.style.width = '100%';
+  iframe.style.height = '100%';
+  iframe.style.border = 'none';
+  iframe.setAttribute('allow', 'autoplay; gamepad; fullscreen; cross-origin-isolated');
+  container.appendChild(iframe);
+
+  var hasThreads = (typeof window.SharedArrayBuffer === 'function');
   
-  // Load EmulatorJS script dynamically
-  var script = document.createElement('script');
-  script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-  script.async = true;
-  document.body.appendChild(script);
+  // Resolve relative URLs so EmulatorJS loader can fetch the ROM without path issues
+  var fullGameUrl = (gameUrl.startsWith('http://') || gameUrl.startsWith('https://') || gameUrl.startsWith('blob:'))
+    ? gameUrl
+    : (new URL(gameUrl, window.location.href)).href;
+
+  var safeTitle = (gameTitle || 'Game').replace(/"/g, '');
+
+  var iframeDoc = iframe.contentWindow.document;
+  iframeDoc.open();
+  iframeDoc.write('<!DOCTYPE html>' +
+    '<html><head><meta charset="utf-8">' +
+    '<style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}</style>' +
+    '</head><body>' +
+    '<div id="game" style="width:100%;height:100%;"></div>' +
+    '<script>' +
+    'window.EJS_player = "#game";' +
+    'window.EJS_core = "' + core + '";' +
+    'window.EJS_gameUrl = "' + fullGameUrl + '";' +
+    'window.EJS_gameName = "' + safeTitle + '";' +
+    'window.EJS_pathtodata = "https://cdn.emulatorjs.org/stable/data/";' +
+    'window.EJS_startOnLoaded = true;' +
+    'window.EJS_color = "#6366f1";' +
+    'window.EJS_backgroundColor = "#000000";' +
+    'window.EJS_threads = ' + hasThreads + ';' +
+    '<\/script>' +
+    '<script src="https://cdn.emulatorjs.org/stable/data/loader.js"><\/script>' +
+    '</body></html>'
+  );
+  iframeDoc.close();
 }
 
 function toggleFullScreen(){
