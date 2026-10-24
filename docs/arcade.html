@@ -320,6 +320,56 @@ header {
 }
 .rom-input { display: none; }
 
+/* Keyboard Controls HUD */
+.controls-guide-bar {
+  margin-top: 14px;
+  background: rgba(15, 23, 42, 0.92);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  border-radius: 14px;
+  padding: 14px 20px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+.guide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
+}
+.guide-keys-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+  align-items: center;
+}
+.key-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13.5px;
+}
+.key-cap {
+  display: inline-block;
+  padding: 4px 9px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  box-shadow: 0 2px 0 rgba(0, 0, 0, 0.5);
+  border-radius: 6px;
+  font-family: monospace;
+  font-weight: 700;
+  font-size: 12px;
+  color: #fff;
+  letter-spacing: 0.5px;
+}
+.key-desc {
+  color: var(--txt-muted);
+  font-size: 13px;
+}
+
 /* Demo Games Grid */
 .demo-section {
   margin-bottom: 60px;
@@ -535,6 +585,77 @@ footer a:hover { color: var(--cyan); }
         <div id="game" style="width:100%;height:100%;"></div>
       </div>
     </div>
+
+    <!-- Controls Guide Bar -->
+    <div class="controls-guide-bar" id="controlsGuide">
+      <div class="guide-header">
+        <div style="display:flex; align-items:center; gap:8px;">
+          <span style="font-size:18px;">⌨️</span>
+          <strong style="color:#fff; font-size:14px; letter-spacing:0.5px;" data-en="LAPTOP & PC KEYBOARD CONTROLS" data-es="CONTROLES DE TECLADO PARA LAPTOP / PC">CONTROLES DE TECLADO PARA LAPTOP / PC</strong>
+        </div>
+        <span style="font-size:12px; color:#38bdf8; background:rgba(56,189,248,0.12); padding:4px 12px; border-radius:999px; border:1px solid rgba(56,189,248,0.3);">
+          💡 <span data-en="Click the game screen to activate keyboard focus" data-es="Haz clic dentro de la pantalla para activar el foco del teclado">Haz clic dentro de la pantalla para activar el foco del teclado</span>
+        </span>
+      </div>
+
+      <div class="guide-keys-grid" id="retroControlsGrid">
+        <div class="key-item">
+          <span class="key-cap" style="background:rgba(99,102,241,0.25); border-color:#818cf8; color:#c7d2fe;">ENTER</span>
+          <span class="key-desc" data-en="START (Begin Game / Pause)" data-es="START (Iniciar Partida / Pausa)">START (Iniciar Partida / Pausa)</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap">V</span> <span style="color:var(--txt-dim)">/</span> <span class="key-cap">SHIFT</span>
+          <span class="key-desc" data-en="SELECT (1 or 2 Players)" data-es="SELECT (1 o 2 Jugadores)">SELECT (1 o 2 Jugadores)</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap">↑</span> <span class="key-cap">↓</span> <span class="key-cap">←</span> <span class="key-cap">→</span>
+          <span class="key-desc" data-en="Move / Duck / Aim" data-es="Flechas (Moverse / Agacharse)">Flechas (Moverse / Agacharse)</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap" style="border-color:#38bdf8; color:#38bdf8;">X</span>
+          <span class="key-desc" data-en="Button A (Jump / Accept)" data-es="Botón A (Saltar / Aceptar)">Botón A (Saltar / Aceptar)</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap" style="border-color:#f43f5e; color:#f43f5e;">Z</span>
+          <span class="key-desc" data-en="Button B (Run / Fire / Attack)" data-es="Botón B (Correr / Fuego)">Botón B (Correr / Fuego)</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap">Q</span> <span style="color:var(--txt-dim)">/</span> <span class="key-cap">E</span>
+          <span class="key-desc" data-en="L / R Triggers (DS/GBA/PS1)" data-es="Gatillos L / R (DS/GBA)">Gatillos L / R (DS/GBA)</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap" style="border-color:#10b981; color:#34d399;">🖱️ CLIC</span>
+          <span class="key-desc" data-en="Touchscreen (NDS Stylus)" data-es="Pantalla Táctil (Lápiz NDS)">Pantalla Táctil (Lápiz NDS)</span>
+        </div>
+      </div>
+
+      <div class="guide-keys-grid" id="fpsControlsGrid" style="display:none;">
+        <div class="key-item">
+          <span class="key-cap">W</span> <span class="key-cap">A</span> <span class="key-cap">S</span> <span class="key-cap">D</span>
+          <span class="key-desc" data-en="Move Around" data-es="Moverse Adelante / Atrás / Lados">Moverse Adelante / Atrás / Lados</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap" style="border-color:#f59e0b; color:#fbbf24;">🖱️ RATÓN</span>
+          <span class="key-desc" data-en="Aim & Left-Click to Shoot" data-es="Apuntar y Clic Izquierdo Disparar">Apuntar y Clic Izquierdo Disparar</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap">ESPACIO</span>
+          <span class="key-desc" data-en="Jump" data-es="Saltar">Saltar</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap">R</span>
+          <span class="key-desc" data-en="Reload Weapon" data-es="Recargar Arma">Recargar Arma</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap">B</span>
+          <span class="key-desc" data-en="Buy Weapons / Equipment" data-es="Menú de Compra de Armas">Menú de Compra de Armas</span>
+        </div>
+        <div class="key-item">
+          <span class="key-cap">TAB</span>
+          <span class="key-desc" data-en="Scoreboard" data-es="Tabla de Puntuaciones">Tabla de Puntuaciones</span>
+        </div>
+      </div>
+    </div>
   </div>
 
   <!-- Instant Playable Games Library Section -->
@@ -551,6 +672,9 @@ footer a:hover { color: var(--cyan); }
     <div class="console-bar" style="margin-bottom: 28px;">
       <button class="console-btn active" onclick="filterCatalog('all', this)">
         <span>🌟</span> <span data-en="All Games (22)" data-es="Todos (22)">All Games (22)</span>
+      </button>
+      <button class="console-btn" onclick="filterCatalog('fps', this)" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24;">
+        <span>🎯</span> Counter-Strike
       </button>
       <button class="console-btn" onclick="filterCatalog('mario', this)" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24;">
         <span>🍄</span> Mario Bros (4)
@@ -851,16 +975,16 @@ footer a:hover { color: var(--cyan); }
         </div>
       </div>
 
-      <!-- 14: PSP Counter-Strike 2D (CSPSP) -->
-      <div class="game-card" data-cat="psp" onclick="loadDemoGame('psp', 'assets/demos/cspsp.zip', 'PlayStation Portable: CSPSP')">
+      <!-- 14: Counter-Strike 1.6 3D Web Edition -->
+      <div class="game-card" data-cat="fps" onclick="launchWebGame('https://play-cs.com/', 'Counter-Strike 1.6 (Web 3D)')" style="border-color: rgba(245, 158, 11, 0.45); background: linear-gradient(135deg, rgba(30, 25, 15, 0.8) 0%, rgba(20, 20, 35, 0.9) 100%);">
         <div>
-          <span class="game-card-icon">⚡</span>
-          <h4>PlayStation Portable: CSPSP (Counter-Strike)</h4>
-          <p data-en="The most famous tactical multiplayer and bot action shooter made for PSP! Fast weapon buys, defusal mode, and intense firefights." data-es="¡El shooter táctico más famoso de PSP con bots, compra de armas, bombas y combates intensos a 60 FPS!">The most famous tactical multiplayer and bot action shooter made for PSP! Fast weapon buys, defusal mode, and intense firefights.</p>
+          <span class="game-card-icon">🎯</span>
+          <h4 style="color: #fbbf24;">Counter-Strike 1.6 (Web 3D Edition)</h4>
+          <p data-en="The authentic 3D Counter-Strike 1.6 running directly in your browser! Classic de_dust2, AK-47, AWP, bots, and online multiplayer with zero install." data-es="¡El auténtico Counter-Strike 1.6 en 3D corriendo directamente en tu navegador! Mapas clásicos (de_dust2, aztec, inferno), armas, bots y multijugador online sin instalar nada.">¡El auténtico Counter-Strike 1.6 en 3D corriendo directamente en tu navegador! Mapas clásicos (de_dust2, aztec, inferno), armas, bots y multijugador online sin instalar nada.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border-color: rgba(244, 63, 94, 0.35);">PSP Wasm</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+          <span class="console-tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">WebAssembly 3D · 60 FPS</span>
+          <span style="color:#fbbf24;font-weight:700" data-en="Play Online 🕹️" data-es="Jugar Online 🕹️">Play Online 🕹️</span>
         </div>
       </div>
 
@@ -1009,10 +1133,38 @@ function loadDemoGame(core, url, title){
   launchEmulator(core, url, title || 'Demo Game');
 }
 
+function launchWebGame(url, title){
+  document.getElementById('dropzone').style.display = 'none';
+  var container = document.getElementById('gameContainer');
+  container.style.display = 'block';
+  
+  var rGrid = document.getElementById('retroControlsGrid');
+  var fGrid = document.getElementById('fpsControlsGrid');
+  if(rGrid) rGrid.style.display = 'none';
+  if(fGrid) fGrid.style.display = 'flex';
+  
+  var vp = document.getElementById('viewport');
+  if(vp) { vp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  
+  document.getElementById('currentConsoleDisplay').innerText = 'Playing: ' + title + ' (Native 3D WebAssembly)';
+
+  container.innerHTML = '<iframe id="emulatorIframe" src="' + url + '" style="width:100%;height:100%;border:none;background:#000;" allow="autoplay; gamepad; fullscreen; pointer-lock"></iframe>';
+  
+  setTimeout(function(){
+    var f = document.getElementById('emulatorIframe');
+    if(f) { try { f.focus(); if(f.contentWindow) f.contentWindow.focus(); } catch(e){} }
+  }, 400);
+}
+
 function launchEmulator(core, gameUrl, gameTitle){
   document.getElementById('dropzone').style.display = 'none';
   var container = document.getElementById('gameContainer');
   container.style.display = 'block';
+  
+  var rGrid = document.getElementById('retroControlsGrid');
+  var fGrid = document.getElementById('fpsControlsGrid');
+  if(rGrid) rGrid.style.display = 'flex';
+  if(fGrid) fGrid.style.display = 'none';
   
   // Smooth scroll to emulator view
   var vp = document.getElementById('viewport');
@@ -1043,10 +1195,11 @@ function launchEmulator(core, gameUrl, gameTitle){
   iframeDoc.open();
   iframeDoc.write('<!DOCTYPE html>' +
     '<html><head><meta charset="utf-8">' +
-    '<style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;}</style>' +
-    '</head><body>' +
+    '<style>html,body{margin:0;padding:0;width:100%;height:100%;overflow:hidden;background:#000;outline:none;}</style>' +
+    '</head><body tabindex="0">' +
     '<div id="game" style="width:100%;height:100%;"></div>' +
     '<script>' +
+    'try { localStorage.removeItem("ejs_controls"); localStorage.removeItem("ejs_settings"); } catch(e){}' +
     'window.EJS_player = "#game";' +
     'window.EJS_core = "' + core + '";' +
     'window.EJS_gameUrl = "' + fullGameUrl + '";' +
@@ -1056,11 +1209,69 @@ function launchEmulator(core, gameUrl, gameTitle){
     'window.EJS_color = "#6366f1";' +
     'window.EJS_backgroundColor = "#000000";' +
     'window.EJS_threads = ' + hasThreads + ';' +
+    'window.EJS_defaultControls = {' +
+    '  0: {' +
+    '    0: { "value": "x", "value2": "BUTTON_2" },' +
+    '    1: { "value": "s", "value2": "BUTTON_4" },' +
+    '    2: { "value": "v", "value2": "SELECT" },' +
+    '    3: { "value": "enter", "value2": "START" },' +
+    '    4: { "value": "up arrow", "value2": "DPAD_UP" },' +
+    '    5: { "value": "down arrow", "value2": "DPAD_DOWN" },' +
+    '    6: { "value": "left arrow", "value2": "DPAD_LEFT" },' +
+    '    7: { "value": "right arrow", "value2": "DPAD_RIGHT" },' +
+    '    8: { "value": "z", "value2": "BUTTON_1" },' +
+    '    9: { "value": "a", "value2": "BUTTON_3" },' +
+    '    10: { "value": "q", "value2": "LEFT_TOP_SHOULDER" },' +
+    '    11: { "value": "e", "value2": "RIGHT_TOP_SHOULDER" },' +
+    '    12: { "value": "tab", "value2": "LEFT_BOTTOM_SHOULDER" },' +
+    '    13: { "value": "r", "value2": "RIGHT_BOTTOM_SHOULDER" }' +
+    '  }' +
+    '};' +
+    'window.focus();' +
+    'window.addEventListener("load", function(){' +
+    '  setTimeout(function(){ window.focus(); var c = document.querySelector("canvas"); if(c) c.focus(); }, 400);' +
+    '});' +
+    'document.addEventListener("click", function(){ window.focus(); });' +
     '<\/script>' +
     '<script src="https://cdn.emulatorjs.org/stable/data/loader.js"><\/script>' +
     '</body></html>'
   );
   iframeDoc.close();
+
+  setTimeout(function(){
+    try {
+      iframe.focus();
+      if(iframe.contentWindow) iframe.contentWindow.focus();
+    } catch(err){}
+  }, 450);
+}
+
+// Global auto-focus helper so laptop keyboard strokes go straight to the game
+window.addEventListener('keydown', function(e){
+  var f = document.getElementById('emulatorIframe');
+  if(!f) return;
+  var keys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' ', 'z', 'x', 'c', 'v', 'a', 's', 'q', 'e', 'w', 'd'];
+  if(keys.indexOf(e.key.toLowerCase()) !== -1 || keys.indexOf(e.key) !== -1){
+    if(document.activeElement !== f){
+      try {
+        f.focus();
+        if(f.contentWindow) f.contentWindow.focus();
+      } catch(err){}
+    }
+  }
+});
+
+var vpElem = document.getElementById('viewport');
+if(vpElem){
+  vpElem.addEventListener('click', function(){
+    var f = document.getElementById('emulatorIframe');
+    if(f){
+      try {
+        f.focus();
+        if(f.contentWindow) f.contentWindow.focus();
+      } catch(err){}
+    }
+  });
 }
 
 function toggleFullScreen(){
