@@ -1,0 +1,2380 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DuarteSuite · 7 Herramientas Web &amp; IA de Alta Productividad | DuarteLabs</title>
+  <meta name="description" content="Suite de herramientas web 100% en el navegador: Estudio de Voz a Texto, Mockups 3D, Monitor Cripto en Vivo, Generador de Prompts, Cifrado Militar AES-256, Compresor de Imágenes y Probador de APIs.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛠️</text></svg>">
+
+  <style>
+    :root {
+      --bg: #03050d;
+      --bg-card: rgba(13, 19, 36, 0.75);
+      --card-hover: rgba(22, 31, 58, 0.9);
+      --border: rgba(99, 102, 241, 0.2);
+      --border-glow: rgba(99, 102, 241, 0.5);
+      --txt: #f8fafc;
+      --txt-muted: #94a3b8;
+      --txt-dim: #64748b;
+      --primary: #6366f1;
+      --primary-glow: rgba(99, 102, 241, 0.35);
+      --cyan: #06b6d4;
+      --cyan-glow: rgba(6, 182, 212, 0.35);
+      --violet: #8b5cf6;
+      --emerald: #10b981;
+      --rose: #f43f5e;
+      --amber: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--bg);
+      color: var(--txt);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    /* Ambient Background Glow */
+    .glow-orb {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(120px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.25;
+    }
+    .orb-1 { width: 500px; height: 500px; background: var(--primary); top: -100px; left: -100px; }
+    .orb-2 { width: 450px; height: 450px; background: var(--cyan); bottom: 10%; right: -100px; }
+    .orb-3 { width: 400px; height: 400px; background: var(--rose); top: 50%; left: 30%; opacity: 0.15; }
+
+    /* Header Nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(3, 5, 13, 0.85);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 28px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+    }
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -0.5px;
+    }
+    .brand-title span { color: var(--emerald); }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.04);
+      color: var(--txt);
+      cursor: pointer;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.09);
+      border-color: rgba(255, 255, 255, 0.25);
+      transform: translateY(-1px);
+    }
+    .nav-btn.primary {
+      background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+      border-color: transparent;
+      color: #03050d;
+      font-weight: 700;
+      box-shadow: 0 0 20px rgba(16, 185, 129, 0.35);
+    }
+    .nav-btn.primary:hover {
+      box-shadow: 0 0 30px rgba(16, 185, 129, 0.55);
+    }
+
+    /* Main Container with Sidebar + Content */
+    .suite-layout {
+      position: relative;
+      z-index: 10;
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 24px;
+      display: grid;
+      grid-template-columns: 290px 1fr;
+      gap: 28px;
+      min-height: calc(100vh - 72px);
+    }
+
+    @media (max-width: 1024px) {
+      .suite-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Sidebar Navigation */
+    .tools-sidebar {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 20px;
+      backdrop-filter: blur(16px);
+      height: fit-content;
+      position: sticky;
+      top: 96px;
+    }
+    .sidebar-header {
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .sidebar-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--emerald);
+      margin-bottom: 6px;
+    }
+    .sidebar-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+
+    .tool-tab-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .tool-tab {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--txt-muted);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      width: 100%;
+    }
+    .tool-tab:hover {
+      background: rgba(255, 255, 255, 0.04);
+      color: #fff;
+    }
+    .tool-tab.active {
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%);
+      border-color: rgba(16, 185, 129, 0.4);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
+    }
+    .tool-tab-icon {
+      font-size: 20px;
+      min-width: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .tool-tab-badge {
+      margin-left: auto;
+      font-size: 10.5px;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--txt-dim);
+      font-weight: 700;
+    }
+    .tool-tab.active .tool-tab-badge {
+      background: rgba(16, 185, 129, 0.25);
+      color: #34d399;
+    }
+
+    /* Content Area */
+    .tools-workspace {
+      min-width: 0;
+    }
+
+    /* Tool Panel Container */
+    .tool-panel {
+      display: none;
+      animation: fadeIn 0.3s ease forwards;
+    }
+    .tool-panel.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .tool-hero {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 24px;
+      backdrop-filter: blur(16px);
+      position: relative;
+      overflow: hidden;
+    }
+    .tool-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.15);
+      border: 1px solid rgba(16, 185, 129, 0.35);
+      color: var(--emerald);
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+    .tool-hero h2 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(24px, 3vw, 32px);
+      font-weight: 800;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    .tool-hero p {
+      color: var(--txt-muted);
+      font-size: 15px;
+      max-width: 800px;
+    }
+
+    /* Common Card Box */
+    .suite-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      backdrop-filter: blur(16px);
+      margin-bottom: 24px;
+    }
+
+    /* Form Inputs */
+    .input-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--txt-muted);
+      margin-bottom: 8px;
+    }
+    .suite-input, .suite-select, .suite-textarea {
+      width: 100%;
+      background: rgba(3, 5, 13, 0.8);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 14px;
+      transition: all 0.2s;
+      outline: none;
+    }
+    .suite-input:focus, .suite-select:focus, .suite-textarea:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+    }
+    .suite-textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'Fira Code', monospace;
+      font-size: 13.5px;
+      line-height: 1.6;
+    }
+
+    /* Buttons */
+    .suite-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+    .suite-btn.emerald {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.3);
+    }
+    .suite-btn.emerald:hover {
+      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.5);
+      transform: translateY(-1px);
+    }
+    .suite-btn.cyan {
+      background: linear-gradient(135deg, #06b6d4 0%, #0284c7 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(6, 182, 212, 0.3);
+    }
+    .suite-btn.cyan:hover {
+      box-shadow: 0 6px 28px rgba(6, 182, 212, 0.5);
+      transform: translateY(-1px);
+    }
+    .suite-btn.ghost {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: var(--border);
+      color: var(--txt);
+    }
+    .suite-btn.ghost:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    .suite-btn.rose {
+      background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(244, 63, 94, 0.3);
+    }
+    .suite-btn.rose:hover {
+      box-shadow: 0 6px 28px rgba(244, 63, 94, 0.5);
+      transform: translateY(-1px);
+    }
+
+    /* Grid layout utils */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+
+    /* Toast Notification */
+    #toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: rgba(13, 19, 36, 0.95);
+      border: 1px solid var(--emerald);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.3);
+      display: none;
+      z-index: 1000;
+      align-items: center;
+      gap: 10px;
+      backdrop-filter: blur(12px);
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Pulse animation for voice */
+    .pulse-ring {
+      display: inline-block;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #f43f5e;
+      box-shadow: 0 0 0 rgba(244, 63, 94, 0.7);
+      animation: pulse 1.5s infinite;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0.7); }
+      70% { box-shadow: 0 0 0 14px rgba(244, 63, 94, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
+    }
+
+    /* Range slider custom */
+    input[type=range] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      outline: none;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+    input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  </style>
+</head>
+<body>
+  <div class="glow-orb orb-1"></div>
+  <div class="glow-orb orb-2"></div>
+  <div class="glow-orb orb-3"></div>
+
+  <!-- Header -->
+  <header>
+    <a href="index.html" class="brand">
+      <div class="brand-icon">🛠️</div>
+      <div class="brand-title">Duarte<span>Suite</span></div>
+    </a>
+    <div class="nav-actions">
+      <a href="index.html" class="nav-btn">
+        <span>🏠</span> <span data-en="Home" data-es="Inicio">Inicio</span>
+      </a>
+      <a href="arcade.html" class="nav-btn">
+        <span>🕹️</span> <span data-en="Arcade Hub" data-es="DuarteArcade">DuarteArcade</span>
+      </a>
+      <button class="nav-btn" onclick="toggleLang()" id="langBtn">
+        <span>🌐</span> <span id="langLabel">EN</span>
+      </button>
+      <a href="https://wa.me/573024564887?text=Hola%20Cristian,%20vi%20tu%20suite%20de%20herramientas%20en%20DuarteLabs" target="_blank" class="nav-btn primary">
+        <span>💬</span> <span data-en="Contact" data-es="Contactar">Contactar</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Suite Layout -->
+  <div class="suite-layout">
+    <!-- Sidebar -->
+    <aside class="tools-sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-tag" data-en="Web &amp; AI Tools" data-es="Herramientas Web &amp; IA">Herramientas Web &amp; IA</span>
+        <h3 class="sidebar-title" data-en="Productivity Suite" data-es="Suite de Productividad">Suite de Productividad</h3>
+      </div>
+      <div class="tool-tab-list">
+        <button class="tool-tab active" onclick="switchTool('voice-studio', this)">
+          <span class="tool-tab-icon">🎙️</span>
+          <span data-en="Voice Studio" data-es="Estudio de Voz">Estudio de Voz</span>
+          <span class="tool-tab-badge">AI</span>
+        </button>
+        <button class="tool-tab" onclick="switchTool('mockup-studio', this)">
+          <span class="tool-tab-icon">🖼️</span>
+          <span data-en="3D Mockup Studio" data-es="Maquetas 3D">Maquetas 3D</span>
+          <span class="tool-tab-badge">Canvas</span>
+        </button>
+        <button class="tool-tab" onclick="switchTool('crypto-hub', this)">
+          <span class="tool-tab-icon">🪙</span>
+          <span data-en="Crypto &amp; Market" data-es="Cripto &amp; Finanzas">Cripto &amp; Finanzas</span>
+          <span class="tool-tab-badge">Live</span>
+        </button>
+        <button class="tool-tab" onclick="switchTool('prompt-studio', this)">
+          <span class="tool-tab-icon">🧠</span>
+          <span data-en="Prompt Studio" data-es="Prompt Studio">Prompt Studio</span>
+          <span class="tool-tab-badge">LLMs</span>
+        </button>
+        <button class="tool-tab" onclick="switchTool('crypto-vault', this)">
+          <span class="tool-tab-icon">🔐</span>
+          <span data-en="AES-256 Vault" data-es="Caja Fuerte AES">Caja Fuerte AES</span>
+          <span class="tool-tab-badge">Crypto</span>
+        </button>
+        <button class="tool-tab" onclick="switchTool('image-optimizer', this)">
+          <span class="tool-tab-icon">🛠️</span>
+          <span data-en="Image Optimizer" data-es="Compresor Imagen">Compresor Imagen</span>
+          <span class="tool-tab-badge">Fast</span>
+        </button>
+        <button class="tool-tab" onclick="switchTool('api-tester', this)">
+          <span class="tool-tab-icon">🧪</span>
+          <span data-en="API &amp; Webhook Tester" data-es="Probador de APIs">Probador de APIs</span>
+          <span class="tool-tab-badge">HTTP</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Workspace Area -->
+    <main class="tools-workspace">
+
+      <!-- ========================================== -->
+      <!-- TOOL 1: VOICE STUDIO -->
+      <!-- ========================================== -->
+      <section id="voice-studio" class="tool-panel active">
+        <div class="tool-hero">
+          <span class="tool-badge">🎙️ Web Audio AI · Speech Recognition</span>
+          <h2 data-en="Voice Studio: Real-Time Dictation &amp; Meeting Notes" data-es="Estudio de Voz: Dictado en Tiempo Real &amp; Actas de Reunión">Estudio de Voz: Dictado en Tiempo Real &amp; Actas de Reunión</h2>
+          <p data-en="Dictate directly into your browser with zero latency. Converts your voice into clean text, formats meeting minutes, extracts action items, and sends to WhatsApp." data-es="Habla directamente en tu navegador sin retraso. Convierte tu voz en texto limpio, genera actas de reunión automáticas, extrae tareas pendientes y comparte por WhatsApp.">Habla directamente en tu navegador sin retraso. Convierte tu voz en texto limpio, genera actas de reunión automáticas, extrae tareas pendientes y comparte por WhatsApp.</p>
+        </div>
+
+        <div class="suite-card">
+          <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <button id="recordBtn" class="suite-btn rose" onclick="toggleRecording()">
+                <span id="recordIcon">🎙️</span>
+                <span id="recordBtnText" data-en="Start Dictation" data-es="Iniciar Dictado">Iniciar Dictado</span>
+              </button>
+              <div id="recordingStatus" style="display: none; align-items: center; gap: 8px; font-size: 13.5px; color: #fb7185; font-weight: 600;">
+                <span class="pulse-ring"></span>
+                <span data-en="Listening..." data-es="Escuchando voz...">Escuchando voz...</span>
+              </div>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 10px;">
+              <label class="input-label" style="margin: 0;" data-en="Language:" data-es="Idioma:">Idioma:</label>
+              <select id="voiceLang" class="suite-select" style="width: auto; padding: 8px 14px;">
+                <option value="es-ES">Español (España)</option>
+                <option value="es-CO" selected>Español (Colombia / Latam)</option>
+                <option value="es-MX">Español (México)</option>
+                <option value="en-US">English (US)</option>
+                <option value="en-GB">English (UK)</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="margin-bottom: 16px;">
+            <label class="input-label" data-en="Live Transcript &amp; Working Text:" data-es="Transcripción en Vivo &amp; Texto de Trabajo:">Transcripción en Vivo &amp; Texto de Trabajo:</label>
+            <textarea id="voiceTranscript" class="suite-textarea" style="min-height: 220px;" placeholder="Haz clic en 'Iniciar Dictado' y comienza a hablar, o escribe/pega tus notas aquí..."></textarea>
+          </div>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <button class="suite-btn cyan" onclick="formatMeetingNotes()">
+              <span>📝</span> <span data-en="Format as Meeting Minutes" data-es="Formatear como Acta">Formatear como Acta</span>
+            </button>
+            <button class="suite-btn emerald" onclick="extractActionItems()">
+              <span>✅</span> <span data-en="Extract Action Items" data-es="Extraer Tareas Pendientes">Extraer Tareas Pendientes</span>
+            </button>
+            <button class="suite-btn ghost" onclick="copyVoiceText()">
+              <span>📋</span> <span data-en="Copy Text" data-es="Copiar Texto">Copiar Texto</span>
+            </button>
+            <button class="suite-btn ghost" onclick="sendVoiceToWhatsApp()">
+              <span>💬</span> <span data-en="Send to WhatsApp" data-es="Enviar a WhatsApp">Enviar a WhatsApp</span>
+            </button>
+            <button class="suite-btn ghost" onclick="downloadVoiceTxt()">
+              <span>💾</span> <span data-en="Download .TXT" data-es="Descargar .TXT">Descargar .TXT</span>
+            </button>
+            <button class="suite-btn ghost" onclick="clearVoiceText()" style="margin-left: auto;">
+              <span>🧹</span> <span data-en="Clear" data-es="Limpiar">Limpiar</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TOOL 2: 3D MOCKUP STUDIO -->
+      <!-- ========================================== -->
+      <section id="mockup-studio" class="tool-panel">
+        <div class="tool-hero">
+          <span class="tool-badge">🖼️ HTML5 Canvas · Device Framing</span>
+          <h2 data-en="3D Mockup Studio: iPhone, MacBook &amp; Browser Frames" data-es="Estudio de Maquetas 3D: iPhone, MacBook &amp; Navegador">Estudio de Maquetas 3D: iPhone, MacBook &amp; Navegador</h2>
+          <p data-en="Transform any screenshot into a high-end presentation mockup in seconds. Choose iPhone 16 Pro Titanium, MacBook Pro, or dark-mode browser with transparent or gradient export." data-es="Convierte cualquier captura de pantalla en una maqueta profesional para presentaciones y redes. Elige marco de iPhone 16 Pro, MacBook Pro o Navegador con exportación en PNG transparente o degradado.">Convierte cualquier captura de pantalla en una maqueta profesional para presentaciones y redes. Elige marco de iPhone 16 Pro, MacBook Pro o Navegador con exportación en PNG transparente o degradado.</p>
+        </div>
+
+        <div class="grid-2">
+          <!-- Controls Panel -->
+          <div class="suite-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 17px; margin-bottom: 16px;" data-en="Mockup Controls" data-es="Controles de la Maqueta">Controles de la Maqueta</h3>
+
+            <div style="margin-bottom: 16px;">
+              <label class="input-label" data-en="1. Upload Screenshot / Image:" data-es="1. Subir Captura de Pantalla / Imagen:">1. Subir Captura de Pantalla / Imagen:</label>
+              <input type="file" id="mockupFileInput" accept="image/*" class="suite-input" onchange="loadMockupImage(event)" style="padding: 9px;">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label class="input-label" data-en="2. Device Frame Style:" data-es="2. Estilo de Marco del Dispositivo:">2. Estilo de Marco del Dispositivo:</label>
+              <select id="mockupDevice" class="suite-select" onchange="renderMockup()">
+                <option value="iphone">📱 iPhone 16 Pro (Titanium Dark + Dynamic Island)</option>
+                <option value="macbook" selected>💻 MacBook Pro Space Black (Display + Notch)</option>
+                <option value="browser">🌐 Clean Browser Window (Dark macOS Style)</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label class="input-label" data-en="3. Background Canvas Style:" data-es="3. Fondo del Lienzo:">3. Fondo del Lienzo:</label>
+              <select id="mockupBg" class="suite-select" onchange="renderMockup()">
+                <option value="obsidian" selected>🌌 Cyber Obsidian (Azul Oscuro &amp; Púrpura)</option>
+                <option value="sunset">🌅 Sunset Neon (Magenta &amp; Fuego)</option>
+                <option value="emerald">🌿 Emerald AI (Verde Esmeralda &amp; Cian)</option>
+                <option value="midnight">🌑 Deep Midnight (Negro Minimalista)</option>
+                <option value="transparent">✨ Transparente (PNG sin fondo)</option>
+              </select>
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <label class="input-label" style="margin: 0;" data-en="Padding / Margen:" data-es="Padding / Margen:">Padding / Margen:</label>
+                <span id="paddingVal" style="font-size: 12px; color: var(--cyan); font-weight: 700;">60px</span>
+              </div>
+              <input type="range" id="mockupPadding" min="20" max="120" value="60" oninput="updateMockupPadding(this.value)">
+            </div>
+
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <label class="input-label" style="margin: 0;" data-en="Drop Shadow Intensity:" data-es="Intensidad de Sombra:">Intensidad de Sombra:</label>
+                <span id="shadowVal" style="font-size: 12px; color: var(--cyan); font-weight: 700;">50%</span>
+              </div>
+              <input type="range" id="mockupShadow" min="0" max="100" value="50" oninput="updateMockupShadow(this.value)">
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+              <button class="suite-btn emerald" style="flex: 1;" onclick="downloadMockup()">
+                <span>💾</span> <span data-en="Download High-Res PNG" data-es="Descargar Mockup en PNG">Descargar Mockup en PNG</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Preview Canvas Panel -->
+          <div class="suite-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--txt-muted);">LIVE CANVAS PREVIEW</span>
+              <span id="canvasDims" style="font-size: 11px; font-family: monospace; color: var(--emerald);">1200 x 800 PX</span>
+            </div>
+            <div style="width: 100%; overflow: auto; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 10px;">
+              <canvas id="mockupCanvas" width="1200" height="800" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);"></canvas>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TOOL 3: CRYPTO & MARKET HUB -->
+      <!-- ========================================== -->
+      <section id="crypto-hub" class="tool-panel">
+        <div class="tool-hero">
+          <span class="tool-badge">🪙 Real-Time Crypto API · Finance Simulator</span>
+          <h2 data-en="Live Crypto Ticker &amp; Compound Interest Growth Calculator" data-es="Monitor Cripto en Vivo &amp; Calculadora de Crecimiento Compuesto">Monitor Cripto en Vivo &amp; Calculadora de Crecimiento Compuesto</h2>
+          <p data-en="Live streaming prices for Solana, Bitcoin, Ethereum, and stablecoins. Includes instant multi-currency converter and dynamic compound interest wealth simulator." data-es="Precios en tiempo real para Solana, Bitcoin, Ethereum y stablecoins. Incluye conversor instantáneo de divisas y simulador dinámico de interés compuesto y libertad financiera.">Precios en tiempo real para Solana, Bitcoin, Ethereum y stablecoins. Incluye conversor instantáneo de divisas y simulador dinámico de interés compuesto y libertad financiera.</p>
+        </div>
+
+        <!-- Live Crypto Ribbon -->
+        <div class="grid-3" style="margin-bottom: 24px;" id="cryptoCardsGrid">
+          <!-- SOL -->
+          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(6, 182, 212, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-weight: 700; font-size: 15px; color: #38bdf8;">Solana (SOL)</span>
+              <span id="solChange" style="font-size: 12px; font-weight: 700; color: #4ade80;">+3.8%</span>
+            </div>
+            <div id="solPrice" style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 800; color: #fff;">$118.40 USD</div>
+            <div id="solCop" style="font-size: 12px; color: var(--txt-muted); margin-top: 4px;">~ $465,000 COP</div>
+          </div>
+
+          <!-- BTC -->
+          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(245, 158, 11, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-weight: 700; font-size: 15px; color: #fbbf24;">Bitcoin (BTC)</span>
+              <span id="btcChange" style="font-size: 12px; font-weight: 700; color: #4ade80;">+2.1%</span>
+            </div>
+            <div id="btcPrice" style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 800; color: #fff;">$68,250 USD</div>
+            <div id="btcCop" style="font-size: 12px; color: var(--txt-muted); margin-top: 4px;">~ $268,000,000 COP</div>
+          </div>
+
+          <!-- ETH -->
+          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(139, 92, 246, 0.4);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <span style="font-weight: 700; font-size: 15px; color: #a78bfa;">Ethereum (ETH)</span>
+              <span id="ethChange" style="font-size: 12px; font-weight: 700; color: #f87171;">-0.8%</span>
+            </div>
+            <div id="ethPrice" style="font-family: 'Space Grotesk', sans-serif; font-size: 26px; font-weight: 800; color: #fff;">$3,420 USD</div>
+            <div id="ethCop" style="font-size: 12px; color: var(--txt-muted); margin-top: 4px;">~ $13,440,000 COP</div>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <!-- Converter -->
+          <div class="suite-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Instant Currency &amp; Token Converter" data-es="Conversor Instantáneo de Divisas y Cripto">Conversor Instantáneo de Divisas y Cripto</h3>
+            
+            <div style="margin-bottom: 14px;">
+              <label class="input-label" data-en="Amount to Convert:" data-es="Cantidad a Convertir:">Cantidad a Convertir:</label>
+              <input type="number" id="convertAmount" class="suite-input" value="1.5" min="0" step="any" oninput="runConversion()">
+            </div>
+
+            <div class="grid-2" style="gap: 12px; margin-bottom: 16px;">
+              <div>
+                <label class="input-label" data-en="From:" data-es="De:">De:</label>
+                <select id="convertFrom" class="suite-select" onchange="runConversion()">
+                  <option value="SOL" selected>Solana (SOL)</option>
+                  <option value="BTC">Bitcoin (BTC)</option>
+                  <option value="ETH">Ethereum (ETH)</option>
+                  <option value="USD">Dólar USD ($)</option>
+                  <option value="COP">Pesos Colombianos (COP)</option>
+                  <option value="EUR">Euros (€)</option>
+                </select>
+              </div>
+              <div>
+                <label class="input-label" data-en="To:" data-es="A:">A:</label>
+                <select id="convertTo" class="suite-select" onchange="runConversion()">
+                  <option value="USD" selected>Dólar USD ($)</option>
+                  <option value="COP">Pesos Colombianos (COP)</option>
+                  <option value="SOL">Solana (SOL)</option>
+                  <option value="BTC">Bitcoin (BTC)</option>
+                  <option value="ETH">Ethereum (ETH)</option>
+                  <option value="EUR">Euros (€)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="background: rgba(3, 5, 13, 0.85); border: 1px solid var(--border); border-radius: 14px; padding: 18px; text-align: center;">
+              <span style="font-size: 12px; text-transform: uppercase; color: var(--txt-muted); letter-spacing: 1px; font-weight: 700;">VALOR ESTIMADO</span>
+              <div id="convertResult" style="font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 800; color: var(--emerald); margin-top: 6px;">$177.60 USD</div>
+            </div>
+          </div>
+
+          <!-- Compound Interest Simulator -->
+          <div class="suite-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Compound Interest Wealth Simulator" data-es="Simulador de Inversión e Interés Compuesto">Simulador de Inversión e Interés Compuesto</h3>
+
+            <div class="grid-2" style="gap: 12px; margin-bottom: 12px;">
+              <div>
+                <label class="input-label" data-en="Initial Capital ($):" data-es="Capital Inicial ($):">Capital Inicial ($):</label>
+                <input type="number" id="ciInitial" class="suite-input" value="1000" oninput="calculateCompoundInterest()">
+              </div>
+              <div>
+                <label class="input-label" data-en="Monthly Contribution ($):" data-es="Aporte Mensual ($):">Aporte Mensual ($):</label>
+                <input type="number" id="ciMonthly" class="suite-input" value="200" oninput="calculateCompoundInterest()">
+              </div>
+            </div>
+
+            <div class="grid-2" style="gap: 12px; margin-bottom: 16px;">
+              <div>
+                <label class="input-label" data-en="Annual Return / APY (%):" data-es="Rendimiento Anual (%):">Rendimiento Anual (%):</label>
+                <input type="number" id="ciRate" class="suite-input" value="12" step="0.5" oninput="calculateCompoundInterest()">
+              </div>
+              <div>
+                <label class="input-label" data-en="Time Horizon (Years):" data-es="Plazo en Años:">Plazo en Años:</label>
+                <input type="number" id="ciYears" class="suite-input" value="5" min="1" max="40" oninput="calculateCompoundInterest()">
+              </div>
+            </div>
+
+            <!-- Canvas Chart -->
+            <div style="background: rgba(3, 5, 13, 0.85); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px;">
+              <canvas id="compoundChart" width="480" height="180" style="width: 100%; height: auto; display: block;"></canvas>
+            </div>
+
+            <div class="grid-3" style="text-align: center; gap: 10px;">
+              <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+                <div style="font-size: 11px; color: var(--txt-muted);">Total Invertido</div>
+                <div id="ciTotalContributed" style="font-weight: 700; font-size: 16px; color: #fff;">$13,000</div>
+              </div>
+              <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+                <div style="font-size: 11px; color: var(--txt-muted);">Intereses Ganados</div>
+                <div id="ciTotalInterest" style="font-weight: 700; font-size: 16px; color: #38bdf8;">$5,487</div>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.15); padding: 10px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.4);">
+                <div style="font-size: 11px; color: var(--emerald);">Balance Final</div>
+                <div id="ciFinalBalance" style="font-weight: 800; font-size: 18px; color: #34d399;">$18,487</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TOOL 4: PROMPT STUDIO -->
+      <!-- ========================================== -->
+      <section id="prompt-studio" class="tool-panel">
+        <div class="tool-hero">
+          <span class="tool-badge">🧠 LLM Prompt Engineering · ChatGPT &amp; Claude</span>
+          <h2 data-en="Prompt Studio: Senior AI System Prompt Architect" data-es="Prompt Studio: Arquitecto Senior de Prompts de IA">Prompt Studio: Arquitecto Senior de Prompts de IA</h2>
+          <p data-en="Engineer production-grade structured prompts for ChatGPT-4o, Claude 3.5 Sonnet, and DeepSeek. Features role grounding, few-shot boundaries, and a curated library of battle-tested prompts." data-es="Diseña prompts profesionales y estructurados para ChatGPT-4o, Claude 3.5 Sonnet y DeepSeek. Incluye definición de rol, restricciones, contexto y una biblioteca de prompts de alto impacto listos para copiar.">Diseña prompts profesionales y estructurados para ChatGPT-4o, Claude 3.5 Sonnet y DeepSeek. Incluye definición de rol, restricciones, contexto y una biblioteca de prompts de alto impacto listos para copiar.</p>
+        </div>
+
+        <div class="grid-2">
+          <!-- Prompt Builder Form -->
+          <div class="suite-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Prompt Engineering Builder" data-es="Constructor de Prompts">Constructor de Prompts</h3>
+
+            <div class="grid-2" style="gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label class="input-label" data-en="Target Domain / Objective:" data-es="Dominio / Objetivo:">Dominio / Objetivo:</label>
+                <select id="promptDomain" class="suite-select" onchange="generatePrompt()">
+                  <option value="code" selected>💻 Arquitectura de Software &amp; Código</option>
+                  <option value="sales">💼 Ventas B2B &amp; Prospección en Frío</option>
+                  <option value="copy">✍️ Copywriting &amp; Landing Pages</option>
+                  <option value="data">📊 Análisis de Datos &amp; Finanzas</option>
+                  <option value="automation">⚡ Automatización de Procesos (n8n / APIs)</option>
+                </select>
+              </div>
+              <div>
+                <label class="input-label" data-en="Target AI Model:" data-es="Modelo de IA Objetivo:">Modelo de IA Objetivo:</label>
+                <select id="promptModel" class="suite-select" onchange="generatePrompt()">
+                  <option value="claude" selected>Claude 3.5 Sonnet (XML &amp; Razonamiento)</option>
+                  <option value="gpt">ChatGPT-4o (Directo &amp; Estructurado)</option>
+                  <option value="deepseek">DeepSeek R1 / V3 (Lógica Profunda)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label class="input-label" data-en="Main Task / Goal:" data-es="Tarea Principal / Misión:">Tarea Principal / Misión:</label>
+              <input type="text" id="promptTask" class="suite-input" value="Crear un script en Python para extraer clientes potenciales de Google Maps con teléfonos y emails" oninput="generatePrompt()">
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label class="input-label" data-en="Context / Company Background:" data-es="Contexto del Proyecto o Empresa:">Contexto del Proyecto o Empresa:</label>
+              <input type="text" id="promptContext" class="suite-input" value="Agencia de automatización de ventas B2B que busca prospectar clínicas dentales y restaurantes en Bogotá" oninput="generatePrompt()">
+            </div>
+
+            <div style="margin-bottom: 14px;">
+              <label class="input-label" data-en="Strict Constraints &amp; Rules:" data-es="Restricciones &amp; Reglas Críticas:">Restricciones &amp; Reglas Críticas:</label>
+              <input type="text" id="promptConstraints" class="suite-input" value="Código limpio y tipado, manejo de excepciones, sin librerías obsoletas, incluir comentarios claros" oninput="generatePrompt()">
+            </div>
+
+            <div style="margin-bottom: 16px;">
+              <label class="input-label" data-en="Tone / Personality:" data-es="Tono / Personalidad:">Tono / Personalidad:</label>
+              <select id="promptTone" class="suite-select" onchange="generatePrompt()">
+                <option value="senior" selected>Ingeniero de Software Senior (Riguroso, técnico y modular)</option>
+                <option value="persuasive">Especialista en Ventas de Alta Conversión (Persuasivo y directo)</option>
+                <option value="executive">Consultor Ejecutivo (Estratégico, conciso y orientado a ROI)</option>
+                <option value="pedagogical">Profesor / Mentor (Didáctico, paso a paso con analogías)</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Prompt Output -->
+          <div class="suite-card" style="display: flex; flex-direction: column;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+              <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px;" data-en="Generated Production Prompt" data-es="Prompt Estructurado Generado">Prompt Estructurado Generado</h3>
+              <button class="suite-btn emerald" style="padding: 6px 14px; font-size: 13px;" onclick="copyGeneratedPrompt()">
+                <span>📋</span> <span data-en="Copy Prompt" data-es="Copiar Prompt">Copiar Prompt</span>
+              </button>
+            </div>
+            <textarea id="promptOutput" class="suite-textarea" style="flex: 1; min-height: 340px; font-size: 13px;" readonly></textarea>
+          </div>
+        </div>
+
+        <!-- Curated Prompt Library -->
+        <div class="suite-card">
+          <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="⚡ Ready-to-Use Power Prompts" data-es="⚡ Biblioteca de Prompts de Élite Listos para Usar">⚡ Biblioteca de Prompts de Élite Listos para Usar</h3>
+          <div class="grid-3" id="promptLibraryGrid">
+            <!-- P1 -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase;">SOFTWARE / DEV</span>
+                <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Refactorizador &amp; Auditor de Código</h4>
+                <p style="font-size: 13px; color: var(--txt-muted); line-height: 1.4; margin-bottom: 14px;">Audita scripts en busca de vulnerabilidades, cuellos de botella y patrones antipatrón.</p>
+              </div>
+              <button class="suite-btn ghost" style="width: 100%; font-size: 12.5px; padding: 8px;" onclick="loadLibraryPrompt(0)">
+                <span>📋</span> <span>Copiar Este Prompt</span>
+              </button>
+            </div>
+
+            <!-- P2 -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; color: #34d399; text-transform: uppercase;">VENTAS B2B</span>
+                <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Cold Email de 4 Oraciones (Alta Apertura)</h4>
+                <p style="font-size: 13px; color: var(--txt-muted); line-height: 1.4; margin-bottom: 14px;">Correo frío hiper-personalizado sin relleno comercial que genera respuestas inmediatas.</p>
+              </div>
+              <button class="suite-btn ghost" style="width: 100%; font-size: 12.5px; padding: 8px;" onclick="loadLibraryPrompt(1)">
+                <span>📋</span> <span>Copiar Este Prompt</span>
+              </button>
+            </div>
+
+            <!-- P3 -->
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
+              <div>
+                <span style="font-size: 11px; font-weight: 700; color: #fbbf24; text-transform: uppercase;">AUTOMATION / N8N</span>
+                <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Diseñador de Workflows JSON n8n</h4>
+                <p style="font-size: 13px; color: var(--txt-muted); line-height: 1.4; margin-bottom: 14px;">Estructura la lógica de nodos, transformaciones y webhooks paso a paso.</p>
+              </div>
+              <button class="suite-btn ghost" style="width: 100%; font-size: 12.5px; padding: 8px;" onclick="loadLibraryPrompt(2)">
+                <span>📋</span> <span>Copiar Este Prompt</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TOOL 5: AES-256 VAULT -->
+      <!-- ========================================== -->
+      <section id="crypto-vault" class="tool-panel">
+        <div class="tool-hero">
+          <span class="tool-badge">🔐 Web Cryptography API · Military Grade</span>
+          <h2 data-en="Digital Vault: Military-Grade AES-GCM 256-Bit Cryptography" data-es="Caja Fuerte Digital: Cifrado Militar AES-GCM de 256 Bits">Caja Fuerte Digital: Cifrado Militar AES-GCM de 256 Bits</h2>
+          <p data-en="100% Client-side cryptography using native browser subtle crypto. Encrypt confidential messages, passwords, and sensitive contracts with PBKDF2 key derivation and random IVs. Zero server transmission." data-es="Criptografía 100% en el procesador del usuario usando Web Crypto nativo. Cifra mensajes confidenciales, credenciales y contratos con derivación de clave PBKDF2 y vectores IV aleatorios. Cero envío a servidores externos.">Criptografía 100% en el procesador del usuario usando Web Crypto nativo. Cifra mensajes confidenciales, credenciales y contratos con derivación de clave PBKDF2 y vectores IV aleatorios. Cero envío a servidores externos.</p>
+        </div>
+
+        <div class="grid-2">
+          <!-- Encrypt / Decrypt Tabs -->
+          <div class="suite-card">
+            <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
+              <button id="btnTabEncrypt" class="suite-btn emerald" style="padding: 8px 18px;" onclick="switchVaultTab('encrypt')">
+                <span>🔒</span> <span data-en="Encrypt Message" data-es="Cifrar Mensaje">Cifrar Mensaje</span>
+              </button>
+              <button id="btnTabDecrypt" class="suite-btn ghost" style="padding: 8px 18px;" onclick="switchVaultTab('decrypt')">
+                <span>🔓</span> <span data-en="Decrypt Message" data-es="Descifrar Mensaje">Descifrar Mensaje</span>
+              </button>
+            </div>
+
+            <!-- Subtab Encrypt -->
+            <div id="vaultEncryptArea">
+              <div style="margin-bottom: 14px;">
+                <label class="input-label" data-en="Secret Plaintext Message:" data-es="Mensaje Secreto en Texto Claro:">Mensaje Secreto en Texto Claro:</label>
+                <textarea id="vaultPlaintext" class="suite-textarea" placeholder="Escribe aquí tu mensaje confidencial, contraseñas, claves privadas o datos sensibles..."></textarea>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label class="input-label" data-en="Secret Master Passphrase:" data-es="Contraseña Secreta de Bloqueo:">Contraseña Secreta de Bloqueo:</label>
+                <input type="password" id="vaultPassword" class="suite-input" placeholder="Ingresa una clave segura que compartirás con el destinatario...">
+              </div>
+
+              <button class="suite-btn emerald" style="width: 100%;" onclick="runEncryption()">
+                <span>🔒</span> <span data-en="Encrypt with AES-256 GCM" data-es="Cifrar con AES-256 GCM">Cifrar con AES-256 GCM</span>
+              </button>
+
+              <div id="encryptResultArea" style="display: none; margin-top: 18px;">
+                <label class="input-label" style="color: var(--emerald);" data-en="Encrypted Ciphertext (Base64):" data-es="Texto Cifrado Militar (Base64):">Texto Cifrado Militar (Base64):</label>
+                <textarea id="vaultCiphertext" class="suite-textarea" style="height: 100px; font-size: 11px; word-break: break-all;" readonly></textarea>
+                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                  <button class="suite-btn ghost" style="flex: 1;" onclick="copyVaultCiphertext()">
+                    <span>📋</span> <span data-en="Copy" data-es="Copiar Cifrado">Copiar Cifrado</span>
+                  </button>
+                  <button class="suite-btn ghost" style="flex: 1;" onclick="sendCiphertextToWhatsApp()">
+                    <span>💬</span> <span data-en="Send WhatsApp" data-es="Enviar WhatsApp">Enviar WhatsApp</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Subtab Decrypt -->
+            <div id="vaultDecryptArea" style="display: none;">
+              <div style="margin-bottom: 14px;">
+                <label class="input-label" data-en="Paste Encrypted Ciphertext (Base64):" data-es="Pegar Texto Cifrado (Base64):">Pegar Texto Cifrado (Base64):</label>
+                <textarea id="vaultDecryptInput" class="suite-textarea" placeholder="Pega aquí el código cifrado que recibiste..."></textarea>
+              </div>
+
+              <div style="margin-bottom: 16px;">
+                <label class="input-label" data-en="Master Passphrase:" data-es="Contraseña de Desbloqueo:">Contraseña de Desbloqueo:</label>
+                <input type="password" id="vaultDecryptPassword" class="suite-input" placeholder="Ingresa la clave acordada...">
+              </div>
+
+              <button class="suite-btn cyan" style="width: 100%;" onclick="runDecryption()">
+                <span>🔓</span> <span data-en="Decrypt Message" data-es="Descifrar Mensaje">Descifrar Mensaje</span>
+              </button>
+
+              <div id="decryptResultArea" style="display: none; margin-top: 18px;">
+                <label class="input-label" style="color: #38bdf8;" data-en="Decrypted Original Message:" data-es="Mensaje Original Descifrado:">Mensaje Original Descifrado:</label>
+                <textarea id="vaultDecryptedPlaintext" class="suite-textarea" style="height: 110px; color: #4ade80;" readonly></textarea>
+              </div>
+            </div>
+          </div>
+
+          <!-- Strong Password Generator with Entropy -->
+          <div class="suite-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Ultra-Secure Password Generator" data-es="Generador de Contraseñas Ultra Seguras">Generador de Contraseñas Ultra Seguras</h3>
+
+            <div style="background: rgba(3, 5, 13, 0.9); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+              <span id="generatedPassword" style="font-family: 'Fira Code', monospace; font-size: 17px; font-weight: 700; color: var(--emerald); word-break: break-all;">k8#Wq9$Lm2!Zp7@Vx4</span>
+              <button class="suite-btn ghost" style="padding: 8px 14px;" onclick="copyPassword()">
+                <span>📋</span>
+              </button>
+            </div>
+
+            <!-- Entropy Meter -->
+            <div style="margin-bottom: 18px;">
+              <div style="display: flex; justify-content: space-between; font-size: 12.5px; margin-bottom: 6px;">
+                <span style="color: var(--txt-muted);">Nivel de Seguridad:</span>
+                <span id="entropyText" style="color: var(--emerald); font-weight: 700;">Militar (128 bits)</span>
+              </div>
+              <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden;">
+                <div id="entropyBar" style="width: 95%; height: 100%; background: var(--emerald); border-radius: 999px; transition: all 0.3s;"></div>
+              </div>
+              <span id="crackTimeText" style="display: block; font-size: 11.5px; color: var(--txt-dim); margin-top: 4px;">Tiempo estimado para descifrar por fuerza bruta: ~300 billones de años</span>
+            </div>
+
+            <!-- Sliders & Toggles -->
+            <div style="margin-bottom: 16px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <label class="input-label" style="margin: 0;" data-en="Password Length:" data-es="Longitud de la Contraseña:">Longitud de la Contraseña:</label>
+                <span id="pwdLengthVal" style="font-size: 13px; color: var(--cyan); font-weight: 700;">20 caracteres</span>
+              </div>
+              <input type="range" id="pwdLengthSlider" min="8" max="64" value="20" oninput="updatePasswordLength(this.value)">
+            </div>
+
+            <div class="grid-2" style="gap: 10px; margin-bottom: 20px;">
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                <input type="checkbox" id="chkUpper" checked onchange="generateRandomPassword()">
+                <span>Mayúsculas (A-Z)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                <input type="checkbox" id="chkLower" checked onchange="generateRandomPassword()">
+                <span>Minúsculas (a-z)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                <input type="checkbox" id="chkNumbers" checked onchange="generateRandomPassword()">
+                <span>Números (0-9)</span>
+              </label>
+              <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; cursor: pointer;">
+                <input type="checkbox" id="chkSymbols" checked onchange="generateRandomPassword()">
+                <span>Símbolos (!@#$%^&amp;*)</span>
+              </label>
+            </div>
+
+            <button class="suite-btn cyan" style="width: 100%;" onclick="generateRandomPassword()">
+              <span>🔄</span> <span data-en="Generate New Password" data-es="Generar Nueva Contraseña">Generar Nueva Contraseña</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TOOL 6: IMAGE OPTIMIZER -->
+      <!-- ========================================== -->
+      <section id="image-optimizer" class="tool-panel">
+        <div class="tool-hero">
+          <span class="tool-badge">🛠️ Zero-Server Image Engine · Client-Side WebP</span>
+          <h2 data-en="Image Optimizer &amp; Social Media Resizer" data-es="Compresor &amp; Redimensionador de Imágenes Local">Compresor &amp; Redimensionador de Imágenes Local</h2>
+          <p data-en="Compress JPEG, PNG, and WebP images by up to 85% with zero quality loss. 100% processed in your browser processor with presets for Instagram posts, stories, and YouTube thumbnails." data-es="Comprime imágenes JPG, PNG y WebP hasta un 85% sin pérdida visible. Procesado 100% en tu computadora con presets exactos para publicaciones de Instagram, historias y miniaturas de YouTube.">Comprime imágenes JPG, PNG y WebP hasta un 85% sin pérdida visible. Procesado 100% en tu computadora con presets exactos para publicaciones de Instagram, historias y miniaturas de YouTube.</p>
+        </div>
+
+        <div class="grid-2">
+          <!-- Upload & Controls -->
+          <div class="suite-card">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Compression Controls" data-es="Controles de Optimización">Controles de Optimización</h3>
+
+            <div style="margin-bottom: 16px;">
+              <label class="input-label" data-en="Select Image to Optimize:" data-es="Seleccionar Imagen:">Seleccionar Imagen:</label>
+              <input type="file" id="optimizerFileInput" accept="image/*" class="suite-input" onchange="loadOptimizerImage(event)" style="padding: 9px;">
+            </div>
+
+            <div class="grid-2" style="gap: 12px; margin-bottom: 16px;">
+              <div>
+                <label class="input-label" data-en="Output Format:" data-es="Formato de Salida:">Formato de Salida:</label>
+                <select id="optFormat" class="suite-select" onchange="runImageOptimization()">
+                  <option value="image/webp" selected>WebP (Máxima compresión web)</option>
+                  <option value="image/jpeg">JPEG (Fotografías estándar)</option>
+                  <option value="image/png">PNG (Transparencias &amp; Gráficos)</option>
+                </select>
+              </div>
+              <div>
+                <label class="input-label" data-en="Social Media Preset:" data-es="Dimensiones &amp; Redes:">Dimensiones &amp; Redes:</label>
+                <select id="optPreset" class="suite-select" onchange="runImageOptimization()">
+                  <option value="original" selected>Original (Mantener resolución)</option>
+                  <option value="ig_post">Instagram Post Cuadrado (1080x1080)</option>
+                  <option value="ig_story">Instagram Story / TikTok (1080x1920)</option>
+                  <option value="yt_thumb">YouTube Thumbnail / Twitter (1280x720)</option>
+                  <option value="web_hd">Web HD Máximo (1920px ancho)</option>
+                </select>
+              </div>
+            </div>
+
+            <div style="margin-bottom: 24px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                <label class="input-label" style="margin: 0;" data-en="Quality Level:" data-es="Nivel de Calidad:">Nivel de Calidad:</label>
+                <span id="optQualityVal" style="font-size: 13px; color: var(--emerald); font-weight: 700;">80%</span>
+              </div>
+              <input type="range" id="optQualitySlider" min="10" max="100" value="80" oninput="updateOptimizerQuality(this.value)">
+            </div>
+
+            <!-- Savings Stats -->
+            <div class="grid-2" style="gap: 12px; margin-bottom: 20px;">
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center;">
+                <div style="font-size: 11.5px; color: var(--txt-muted);">Peso Original</div>
+                <div id="optOriginalSize" style="font-size: 18px; font-weight: 700; color: #fff; margin-top: 4px;">0 KB</div>
+              </div>
+              <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 14px; text-align: center;">
+                <div style="font-size: 11.5px; color: var(--emerald);">Peso Optimizado</div>
+                <div id="optNewSize" style="font-size: 18px; font-weight: 800; color: #34d399; margin-top: 4px;">0 KB</div>
+              </div>
+            </div>
+
+            <button id="btnDownloadOpt" class="suite-btn emerald" style="width: 100%;" disabled onclick="downloadOptimizedImage()">
+              <span>💾</span> <span data-en="Download Optimized Image" data-es="Descargar Imagen Optimizada">Descargar Imagen Optimizada</span>
+            </button>
+          </div>
+
+          <!-- Preview Area -->
+          <div class="suite-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+            <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 12px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--txt-muted);">PREVIEW</span>
+              <span id="optSavingsBadge" style="font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(16, 185, 129, 0.2); color: #34d399; font-weight: 700;">Ahorro: 0%</span>
+            </div>
+            <div style="width: 100%; max-height: 420px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 10px;">
+              <img id="optPreviewImg" src="" alt="Vista previa de imagen" style="max-width: 100%; max-height: 380px; object-fit: contain; border-radius: 8px; display: none;">
+              <div id="optEmptyState" style="text-align: center; color: var(--txt-dim); padding: 40px;">
+                <span style="font-size: 40px; display: block; margin-bottom: 8px;">🖼️</span>
+                <span>Arrastra o selecciona una imagen para optimizar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ========================================== -->
+      <!-- TOOL 7: API & WEBHOOK TESTER -->
+      <!-- ========================================== -->
+      <section id="api-tester" class="tool-panel">
+        <div class="tool-hero">
+          <span class="tool-badge">🧪 In-Browser HTTP Client · Webhook Inspector</span>
+          <h2 data-en="API &amp; Webhook Tester: Lightweight Browser HTTP Client" data-es="Probador de APIs &amp; Webhooks: Cliente HTTP Ligero">Probador de APIs &amp; Webhooks: Cliente HTTP Ligero</h2>
+          <p data-en="Dispatch GET, POST, PUT, and DELETE requests directly from your browser. Inspect JSON response headers, payload latency timers, and generate terminal cURL commands." data-es="Envía peticiones GET, POST, PUT y DELETE en tiempo real. Inspecciona respuestas JSON con formateo de colores, mide la latencia en milisegundos y copia comandos cURL para terminal.">Envía peticiones GET, POST, PUT y DELETE en tiempo real. Inspecciona respuestas JSON con formateo de colores, mide la latencia en milisegundos y copia comandos cURL para terminal.</p>
+        </div>
+
+        <div class="suite-card">
+          <!-- Request Bar -->
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
+            <select id="apiMethod" class="suite-select" style="width: 120px;" onchange="updateCurlCommand()">
+              <option value="GET" selected>GET</option>
+              <option value="POST">POST</option>
+              <option value="PUT">PUT</option>
+              <option value="DELETE">DELETE</option>
+              <option value="PATCH">PATCH</option>
+            </select>
+            <input type="url" id="apiUrl" class="suite-input" style="flex: 1; min-width: 260px;" value="https://api.coingecko.com/api/v3/ping" oninput="updateCurlCommand()">
+            <button class="suite-btn cyan" onclick="runApiRequest()">
+              <span>🚀</span> <span data-en="Send Request" data-es="Enviar Petición">Enviar Petición</span>
+            </button>
+          </div>
+
+          <!-- Quick Presets -->
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px;">
+            <span style="font-size: 12px; color: var(--txt-muted); font-weight: 600;">Presets de Prueba:</span>
+            <button class="nav-btn" style="padding: 4px 10px; font-size: 12px;" onclick="loadApiPreset('coingecko')">🪙 CoinGecko Ping</button>
+            <button class="nav-btn" style="padding: 4px 10px; font-size: 12px;" onclick="loadApiPreset('dummyjson')">📦 DummyJSON Products</button>
+            <button class="nav-btn" style="padding: 4px 10px; font-size: 12px;" onclick="loadApiPreset('post_test')">✉️ POST JsonPlaceholder</button>
+          </div>
+
+          <!-- Request Body (JSON) -->
+          <div id="apiBodyContainer" style="display: none; margin-bottom: 18px;">
+            <label class="input-label" data-en="Request Body (JSON):" data-es="Cuerpo de la Petición (JSON):">Cuerpo de la Petición (JSON):</label>
+            <textarea id="apiBody" class="suite-textarea" style="height: 120px;" oninput="updateCurlCommand()">{\n  "title": "Lead Calificado DuarteLabs",\n  "company": "Tech Corp",\n  "status": "PROSPECT"\n}</textarea>
+          </div>
+
+          <!-- cURL Preview -->
+          <div style="background: rgba(3, 5, 13, 0.9); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
+            <code id="curlOutput" style="font-family: 'Fira Code', monospace; font-size: 12px; color: var(--txt-muted); overflow-x: auto; white-space: nowrap;">curl -X GET "https://api.coingecko.com/api/v3/ping"</code>
+            <button class="suite-btn ghost" style="padding: 4px 10px; font-size: 12px;" onclick="copyCurl()">
+              <span>📋 Copiar cURL</span>
+            </button>
+          </div>
+
+          <!-- Response Panel -->
+          <div>
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px;">
+              <span style="font-size: 13px; font-weight: 700; color: var(--txt-muted);">RESPONSE PAYLOAD</span>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span id="apiStatusBadge" style="display: none; font-size: 12px; font-weight: 700; padding: 2px 10px; border-radius: 999px;">200 OK</span>
+                <span id="apiTimeBadge" style="display: none; font-size: 12px; color: var(--txt-dim); font-family: monospace;">145 ms</span>
+                <button class="suite-btn ghost" style="padding: 4px 10px; font-size: 12px;" onclick="copyApiResponse()">
+                  <span>📋 Copiar JSON</span>
+                </button>
+              </div>
+            </div>
+            <textarea id="apiResponseViewer" class="suite-textarea" style="min-height: 260px; font-size: 13px;" readonly placeholder="Haz clic en 'Enviar Petición' para ver la respuesta del servidor en tiempo real..."></textarea>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast">
+    <span id="toastIcon">✅</span>
+    <span id="toastMsg">Acción completada con éxito</span>
+  </div>
+
+  <script>
+    // ==========================================
+    // GLOBAL STATE & NAVIGATION
+    // ==========================================
+    var currentLang = 'es';
+
+    function showToast(msg, icon) {
+      var t = document.getElementById('toast');
+      var m = document.getElementById('toastMsg');
+      var ic = document.getElementById('toastIcon');
+      m.innerText = msg;
+      ic.innerText = icon || '✅';
+      t.style.display = 'flex';
+      setTimeout(function() {
+        t.style.display = 'none';
+      }, 3000);
+    }
+
+    function switchTool(toolId, btn) {
+      document.querySelectorAll('.tool-tab').forEach(function(b) { b.classList.remove('active'); });
+      document.querySelectorAll('.tool-panel').forEach(function(p) { p.classList.remove('active'); });
+      if(btn) btn.classList.add('active');
+      var target = document.getElementById(toolId);
+      if(target) target.classList.add('active');
+
+      // Trigger redraws if needed
+      if(toolId === 'mockup-studio') renderMockup();
+      if(toolId === 'crypto-hub') { calculateCompoundInterest(); }
+    }
+
+    function toggleLang() {
+      currentLang = (currentLang === 'es') ? 'en' : 'es';
+      document.getElementById('langLabel').innerText = (currentLang === 'es') ? 'EN' : 'ES';
+      document.querySelectorAll('[data-en]').forEach(function(el) {
+        var text = el.getAttribute('data-' + currentLang);
+        if(text) el.innerHTML = text;
+      });
+      showToast(currentLang === 'es' ? 'Idioma cambiado a Español' : 'Language switched to English', '🌐');
+    }
+
+    // ==========================================
+    // TOOL 1: VOICE STUDIO
+    // ==========================================
+    var recognition = null;
+    var isRecording = false;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechRec();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+
+      recognition.onresult = function(event) {
+        var transcript = '';
+        for (var i = 0; i < event.results.length; i++) {
+          transcript += event.results[i][0].transcript + ' ';
+        }
+        var area = document.getElementById('voiceTranscript');
+        area.value = transcript.trim();
+        area.scrollTop = area.scrollHeight;
+      };
+
+      recognition.onerror = function(event) {
+        console.warn('Speech recognition error:', event.error);
+        if(event.error === 'not-allowed') {
+          showToast('Permiso de micrófono denegado en el navegador', '⚠️');
+        }
+        stopRecordingUI();
+      };
+
+      recognition.onend = function() {
+        if (isRecording) {
+          try { recognition.start(); } catch(e){}
+        } else {
+          stopRecordingUI();
+        }
+      };
+    }
+
+    function toggleRecording() {
+      if (!recognition) {
+        showToast('Tu navegador no soporta reconocimiento de voz nativo (usa Chrome/Edge)', '⚠️');
+        return;
+      }
+
+      if (!isRecording) {
+        var lang = document.getElementById('voiceLang').value;
+        recognition.lang = lang;
+        try {
+          recognition.start();
+          isRecording = true;
+          document.getElementById('recordIcon').innerText = '⏹️';
+          document.getElementById('recordBtnText').innerText = (currentLang === 'es') ? 'Detener Dictado' : 'Stop Dictation';
+          document.getElementById('recordBtn').classList.remove('rose');
+          document.getElementById('recordBtn').classList.add('ghost');
+          document.getElementById('recordingStatus').style.display = 'flex';
+          showToast((currentLang === 'es') ? 'Grabando voz... habla con claridad' : 'Listening... speak clearly', '🎙️');
+        } catch(err) {
+          console.error(err);
+        }
+      } else {
+        isRecording = false;
+        try { recognition.stop(); } catch(e){}
+        stopRecordingUI();
+        showToast((currentLang === 'es') ? 'Dictado finalizado' : 'Dictation finished', '✅');
+      }
+    }
+
+    function stopRecordingUI() {
+      isRecording = false;
+      document.getElementById('recordIcon').innerText = '🎙️';
+      document.getElementById('recordBtnText').innerText = (currentLang === 'es') ? 'Iniciar Dictado' : 'Start Dictation';
+      document.getElementById('recordBtn').classList.remove('ghost');
+      document.getElementById('recordBtn').classList.add('rose');
+      document.getElementById('recordingStatus').style.display = 'none';
+    }
+
+    function formatMeetingNotes() {
+      var text = document.getElementById('voiceTranscript').value.trim();
+      if(!text) { showToast('No hay texto para formatear', '⚠️'); return; }
+
+      var dateStr = new Date().toLocaleDateString();
+      var formatted = "📋 ACTA DE REUNIÓN / RESUMEN EJECUTIVO\n" +
+        "Fecha: " + dateStr + "\n" +
+        "Generado con: DuarteSuite AI Voice Studio\n" +
+        "--------------------------------------------------\n\n" +
+        "📌 PUNTOS TRATADOS & CONTEXTO:\n" +
+        text.replace(/\\.\s+/g, ".\\n• ") + "\n\n" +
+        "--------------------------------------------------\n" +
+        "✨ Estado: Documento listo para archivo o envío.";
+      document.getElementById('voiceTranscript').value = formatted;
+      showToast('Formato de acta estructurada aplicado', '📝');
+    }
+
+    function extractActionItems() {
+      var text = document.getElementById('voiceTranscript').value.trim();
+      if(!text) { showToast('No hay texto para analizar', '⚠️'); return; }
+
+      var sentences = text.split(/[\\.\\n]+/);
+      var tasks = [];
+      sentences.forEach(function(s) {
+        var clean = s.trim();
+        if(clean.length > 5) {
+          tasks.push("[ ] " + clean);
+        }
+      });
+
+      var res = "✅ LISTA DE TAREAS PENDIENTES & ACTION ITEMS:\n\n" + tasks.slice(0, 10).join("\\n") + "\n\nResponsable: DuarteLabs Automation";
+      document.getElementById('voiceTranscript').value = res;
+      showToast('Tareas pendientes extraídas', '✅');
+    }
+
+    function copyVoiceText() {
+      var t = document.getElementById('voiceTranscript').value;
+      navigator.clipboard.writeText(t).then(function() {
+        showToast('Texto copiado al portapapeles', '📋');
+      });
+    }
+
+    function sendVoiceToWhatsApp() {
+      var t = document.getElementById('voiceTranscript').value.trim();
+      if(!t) { showToast('El texto está vacío', '⚠️'); return; }
+      window.open('https://wa.me/?text=' + encodeURIComponent(t), '_blank');
+    }
+
+    function downloadVoiceTxt() {
+      var t = document.getElementById('voiceTranscript').value.trim();
+      if(!t) { showToast('El texto está vacío', '⚠️'); return; }
+      var blob = new Blob([t], { type: 'text/plain;charset=utf-8' });
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'notas_duartelabs_' + Date.now() + '.txt';
+      a.click();
+      showToast('Archivo .TXT descargado', '💾');
+    }
+
+    function clearVoiceText() {
+      document.getElementById('voiceTranscript').value = '';
+      showToast('Área de texto limpia', '🧹');
+    }
+
+    // ==========================================
+    // TOOL 2: 3D MOCKUP STUDIO
+    // ==========================================
+    var loadedMockupImg = null;
+    var mockupPadding = 60;
+    var mockupShadow = 50;
+
+    function loadMockupImage(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          loadedMockupImg = img;
+          renderMockup();
+          showToast('Imagen cargada correctamente', '🖼️');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateMockupPadding(val) {
+      mockupPadding = parseInt(val);
+      document.getElementById('paddingVal').innerText = val + 'px';
+      renderMockup();
+    }
+
+    function updateMockupShadow(val) {
+      mockupShadow = parseInt(val);
+      document.getElementById('shadowVal').innerText = val + '%';
+      renderMockup();
+    }
+
+    function drawRoundedRect(ctx, x, y, width, height, radius) {
+      ctx.beginPath();
+      ctx.moveTo(x + radius, y);
+      ctx.lineTo(x + width - radius, y);
+      ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+      ctx.lineTo(x + width, y + height - radius);
+      ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+      ctx.lineTo(x + radius, y + height);
+      ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+      ctx.lineTo(x, y + radius);
+      ctx.quadraticCurveTo(x, y, x + radius, y);
+      ctx.closePath();
+    }
+
+    function renderMockup() {
+      var canvas = document.getElementById('mockupCanvas');
+      var ctx = canvas.getContext('2d');
+      var device = document.getElementById('mockupDevice').value;
+      var bgStyle = document.getElementById('mockupBg').value;
+
+      var w = 1200;
+      var h = (device === 'iphone') ? 1000 : 800;
+      canvas.width = w;
+      canvas.height = h;
+      document.getElementById('canvasDims').innerText = w + ' x ' + h + ' PX';
+
+      // 1. Draw Background
+      ctx.clearRect(0, 0, w, h);
+      if (bgStyle !== 'transparent') {
+        var grad;
+        if (bgStyle === 'obsidian') {
+          grad = ctx.createLinearGradient(0, 0, w, h);
+          grad.addColorStop(0, '#0b0f19');
+          grad.addColorStop(0.5, '#111827');
+          grad.addColorStop(1, '#1e1b4b');
+        } else if (bgStyle === 'sunset') {
+          grad = ctx.createLinearGradient(0, 0, w, h);
+          grad.addColorStop(0, '#831843');
+          grad.addColorStop(0.5, '#4c0519');
+          grad.addColorStop(1, '#1e1b4b');
+        } else if (bgStyle === 'emerald') {
+          grad = ctx.createLinearGradient(0, 0, w, h);
+          grad.addColorStop(0, '#064e3b');
+          grad.addColorStop(0.5, '#022c22');
+          grad.addColorStop(1, '#0f172a');
+        } else {
+          grad = ctx.createLinearGradient(0, 0, w, h);
+          grad.addColorStop(0, '#050505');
+          grad.addColorStop(1, '#111111');
+        }
+        ctx.fillStyle = grad;
+        ctx.fillRect(0, 0, w, h);
+      }
+
+      var pad = mockupPadding;
+      var shadowAlpha = mockupShadow / 100;
+
+      // 2. Render Selected Device
+      if (device === 'browser') {
+        var frameW = w - (pad * 2);
+        var frameH = h - (pad * 2);
+        var frameX = pad;
+        var frameY = pad;
+        var titleBarH = 42;
+
+        // Shadow
+        if (shadowAlpha > 0) {
+          ctx.save();
+          ctx.shadowColor = 'rgba(0, 0, 0, ' + (0.7 * shadowAlpha) + ')';
+          ctx.shadowBlur = 40 * shadowAlpha;
+          ctx.shadowOffsetY = 20 * shadowAlpha;
+          ctx.fillStyle = '#1e293b';
+          drawRoundedRect(ctx, frameX, frameY, frameW, frameH, 16);
+          ctx.fill();
+          ctx.restore();
+        }
+
+        // Window Frame
+        ctx.save();
+        drawRoundedRect(ctx, frameX, frameY, frameW, frameH, 16);
+        ctx.fillStyle = '#0f172a';
+        ctx.fill();
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+
+        // Title Bar
+        ctx.fillStyle = '#1e293b';
+        ctx.fillRect(frameX, frameY, frameW, titleBarH);
+
+        // macOS Dots
+        var dotY = frameY + (titleBarH / 2);
+        ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(frameX + 22, dotY, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#eab308'; ctx.beginPath(); ctx.arc(frameX + 40, dotY, 6, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(frameX + 58, dotY, 6, 0, Math.PI * 2); ctx.fill();
+
+        // URL bar
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+        drawRoundedRect(ctx, frameX + 90, frameY + 8, frameW - 180, 26, 8);
+        ctx.fill();
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '12px Inter, sans-serif';
+        ctx.fillText('🔒 https://duartelabs.ai/portfolio', frameX + 110, frameY + 25);
+
+        // Inner Screen Content
+        var screenX = frameX;
+        var screenY = frameY + titleBarH;
+        var screenW = frameW;
+        var screenH = frameH - titleBarH;
+
+        ctx.beginPath();
+        ctx.rect(screenX, screenY, screenW, screenH);
+        ctx.clip();
+
+        if (loadedMockupImg) {
+          ctx.drawImage(loadedMockupImg, screenX, screenY, screenW, screenH);
+        } else {
+          // Placeholder artwork
+          ctx.fillStyle = '#0a0f1d';
+          ctx.fillRect(screenX, screenY, screenW, screenH);
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 24px "Space Grotesk", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('Sube tu captura de pantalla en el panel izquierdo 🚀', screenX + (screenW / 2), screenY + (screenH / 2));
+          ctx.textAlign = 'left';
+        }
+        ctx.restore();
+
+      } else if (device === 'macbook') {
+        var mbW = w - (pad * 2);
+        var mbH = mbW * 0.62;
+        var mbX = pad;
+        var mbY = (h - mbH) / 2 - 15;
+
+        // Screen bezel
+        ctx.save();
+        if (shadowAlpha > 0) {
+          ctx.shadowColor = 'rgba(0, 0, 0, ' + (0.8 * shadowAlpha) + ')';
+          ctx.shadowBlur = 45 * shadowAlpha;
+          ctx.shadowOffsetY = 25 * shadowAlpha;
+        }
+        drawRoundedRect(ctx, mbX, mbY, mbW, mbH, 18);
+        ctx.fillStyle = '#0a0a0a';
+        ctx.fill();
+        ctx.strokeStyle = '#262626';
+        ctx.lineWidth = 3;
+        ctx.stroke();
+        ctx.restore();
+
+        // Screen Inner
+        var bz = 18;
+        var scX = mbX + bz;
+        var scY = mbY + bz;
+        var scW = mbW - (bz * 2);
+        var scH = mbH - (bz * 2);
+
+        ctx.save();
+        drawRoundedRect(ctx, scX, scY, scW, scH, 8);
+        ctx.clip();
+        if (loadedMockupImg) {
+          ctx.drawImage(loadedMockupImg, scX, scY, scW, scH);
+        } else {
+          ctx.fillStyle = '#0f172a';
+          ctx.fillRect(scX, scY, scW, scH);
+          ctx.fillStyle = '#a78bfa';
+          ctx.font = 'bold 24px "Space Grotesk", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('💻 MacBook Pro Space Black Mockup', scX + (scW / 2), scY + (scH / 2));
+          ctx.textAlign = 'left';
+        }
+        // Top camera notch
+        ctx.fillStyle = '#000';
+        drawRoundedRect(ctx, mbX + (mbW / 2) - 30, scY, 60, 14, 6);
+        ctx.fill();
+        ctx.restore();
+
+        // Aluminum Base Hinge
+        var baseW = mbW * 1.15;
+        var baseX = mbX - (baseW - mbW) / 2;
+        var baseY = mbY + mbH;
+        ctx.save();
+        drawRoundedRect(ctx, baseX, baseY, baseW, 16, 6);
+        ctx.fillStyle = '#1c1917';
+        ctx.fill();
+        ctx.strokeStyle = '#44403c';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Thumb notch
+        ctx.fillStyle = '#0c0a09';
+        drawRoundedRect(ctx, baseX + (baseW / 2) - 40, baseY, 80, 6, 3);
+        ctx.fill();
+        ctx.restore();
+
+      } else if (device === 'iphone') {
+        var ipW = 380;
+        var ipH = 760;
+        var ipX = (w - ipW) / 2;
+        var ipY = (h - ipH) / 2;
+
+        ctx.save();
+        if (shadowAlpha > 0) {
+          ctx.shadowColor = 'rgba(0, 0, 0, ' + (0.85 * shadowAlpha) + ')';
+          ctx.shadowBlur = 50 * shadowAlpha;
+          ctx.shadowOffsetY = 25 * shadowAlpha;
+        }
+        // Titanium Outer Bezel
+        drawRoundedRect(ctx, ipX - 4, ipY - 4, ipW + 8, ipH + 8, 48);
+        ctx.fillStyle = '#262626';
+        ctx.fill();
+        ctx.restore();
+
+        // Screen Body
+        ctx.save();
+        drawRoundedRect(ctx, ipX, ipY, ipW, ipH, 44);
+        ctx.fillStyle = '#000';
+        ctx.fill();
+        ctx.clip();
+
+        if (loadedMockupImg) {
+          ctx.drawImage(loadedMockupImg, ipX, ipY, ipW, ipH);
+        } else {
+          ctx.fillStyle = '#064e3b';
+          ctx.fillRect(ipX, ipY, ipW, ipH);
+          ctx.fillStyle = '#34d399';
+          ctx.font = 'bold 20px "Space Grotesk", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('📱 iPhone 16 Pro', ipX + (ipW / 2), ipY + (ipH / 2) - 20);
+          ctx.font = '14px Inter, sans-serif';
+          ctx.fillText('Carga tu captura vertical', ipX + (ipW / 2), ipY + (ipH / 2) + 15);
+          ctx.textAlign = 'left';
+        }
+
+        // Dynamic Island
+        ctx.fillStyle = '#000';
+        drawRoundedRect(ctx, ipX + (ipW / 2) - 45, ipY + 14, 90, 24, 12);
+        ctx.fill();
+
+        // Home Indicator
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+        drawRoundedRect(ctx, ipX + (ipW / 2) - 60, ipY + ipH - 14, 120, 4, 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function downloadMockup() {
+      var canvas = document.getElementById('mockupCanvas');
+      var a = document.createElement('a');
+      a.download = 'duartelabs-mockup-' + Date.now() + '.png';
+      a.href = canvas.toDataURL('image/png');
+      a.click();
+      showToast('Mockup descargado en alta resolución', '💾');
+    }
+
+    // ==========================================
+    // TOOL 3: CRYPTO & MARKET HUB
+    // ==========================================
+    var cryptoState = {
+      SOL: 118.40,
+      BTC: 68250.00,
+      ETH: 3420.00,
+      USD: 1.00,
+      COP: 3950.00,
+      EUR: 0.92
+    };
+
+    function fetchCryptoPrices() {
+      fetch('https://api.coingecko.com/api/v3/simple/price?ids=solana,bitcoin,ethereum&vs_currencies=usd,cop,eur&include_24hr_change=true')
+        .then(function(res){ return res.json(); })
+        .then(function(data){
+          if(data.solana && data.solana.usd) {
+            cryptoState.SOL = data.solana.usd;
+            document.getElementById('solPrice').innerText = '$' + data.solana.usd.toLocaleString() + ' USD';
+            document.getElementById('solCop').innerText = '~ $' + Math.round(data.solana.cop).toLocaleString() + ' COP';
+            var chg = data.solana.usd_24h_change || 0;
+            document.getElementById('solChange').innerText = (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%';
+            document.getElementById('solChange').style.color = chg >= 0 ? '#4ade80' : '#f87171';
+          }
+          if(data.bitcoin && data.bitcoin.usd) {
+            cryptoState.BTC = data.bitcoin.usd;
+            document.getElementById('btcPrice').innerText = '$' + data.bitcoin.usd.toLocaleString() + ' USD';
+            document.getElementById('btcCop').innerText = '~ $' + Math.round(data.bitcoin.cop).toLocaleString() + ' COP';
+            var chg = data.bitcoin.usd_24h_change || 0;
+            document.getElementById('btcChange').innerText = (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%';
+            document.getElementById('btcChange').style.color = chg >= 0 ? '#4ade80' : '#f87171';
+          }
+          if(data.ethereum && data.ethereum.usd) {
+            cryptoState.ETH = data.ethereum.usd;
+            document.getElementById('ethPrice').innerText = '$' + data.ethereum.usd.toLocaleString() + ' USD';
+            document.getElementById('ethCop').innerText = '~ $' + Math.round(data.ethereum.cop).toLocaleString() + ' COP';
+            var chg = data.ethereum.usd_24h_change || 0;
+            document.getElementById('ethChange').innerText = (chg >= 0 ? '+' : '') + chg.toFixed(1) + '%';
+            document.getElementById('ethChange').style.color = chg >= 0 ? '#4ade80' : '#f87171';
+          }
+          runConversion();
+        })
+        .catch(function(e){
+          console.log('Using baseline crypto rates:', e);
+        });
+    }
+
+    function runConversion() {
+      var amt = parseFloat(document.getElementById('convertAmount').value) || 0;
+      var from = document.getElementById('convertFrom').value;
+      var to = document.getElementById('convertTo').value;
+
+      // Convert to USD base first
+      var inUSD = 0;
+      if (from === 'USD') inUSD = amt;
+      else if (from === 'SOL') inUSD = amt * cryptoState.SOL;
+      else if (from === 'BTC') inUSD = amt * cryptoState.BTC;
+      else if (from === 'ETH') inUSD = amt * cryptoState.ETH;
+      else if (from === 'COP') inUSD = amt / cryptoState.COP;
+      else if (from === 'EUR') inUSD = amt / cryptoState.EUR;
+
+      // Convert from USD to target
+      var finalVal = 0;
+      if (to === 'USD') finalVal = inUSD;
+      else if (to === 'SOL') finalVal = inUSD / cryptoState.SOL;
+      else if (to === 'BTC') finalVal = inUSD / cryptoState.BTC;
+      else if (to === 'ETH') finalVal = inUSD / cryptoState.ETH;
+      else if (to === 'COP') finalVal = inUSD * cryptoState.COP;
+      else if (to === 'EUR') finalVal = inUSD * cryptoState.EUR;
+
+      var formatted = '';
+      if (to === 'BTC') formatted = finalVal.toFixed(6) + ' BTC';
+      else if (to === 'SOL') formatted = finalVal.toFixed(4) + ' SOL';
+      else if (to === 'ETH') formatted = finalVal.toFixed(5) + ' ETH';
+      else if (to === 'COP') formatted = '$' + Math.round(finalVal).toLocaleString() + ' COP';
+      else if (to === 'EUR') formatted = '€' + finalVal.toFixed(2) + ' EUR';
+      else formatted = '$' + finalVal.toFixed(2) + ' USD';
+
+      document.getElementById('convertResult').innerText = formatted;
+    }
+
+    function calculateCompoundInterest() {
+      var P = parseFloat(document.getElementById('ciInitial').value) || 0;
+      var PMT = parseFloat(document.getElementById('ciMonthly').value) || 0;
+      var r = (parseFloat(document.getElementById('ciRate').value) || 0) / 100;
+      var t = parseFloat(document.getElementById('ciYears').value) || 1;
+
+      var months = t * 12;
+      var monthlyRate = r / 12;
+
+      var totalBalance = P;
+      var pointsContributed = [];
+      var pointsBalance = [];
+
+      var runningContributed = P;
+      pointsContributed.push(runningContributed);
+      pointsBalance.push(totalBalance);
+
+      for (var m = 1; m <= months; m++) {
+        totalBalance = (totalBalance + PMT) * (1 + monthlyRate);
+        runningContributed += PMT;
+        if (m % 12 === 0) {
+          pointsContributed.push(runningContributed);
+          pointsBalance.push(totalBalance);
+        }
+      }
+
+      var totalContr = runningContributed;
+      var totalInterest = totalBalance - totalContr;
+
+      document.getElementById('ciTotalContributed').innerText = '$' + Math.round(totalContr).toLocaleString();
+      document.getElementById('ciTotalInterest').innerText = '$' + Math.round(totalInterest).toLocaleString();
+      document.getElementById('ciFinalBalance').innerText = '$' + Math.round(totalBalance).toLocaleString();
+
+      drawCompoundChart(pointsContributed, pointsBalance, t);
+    }
+
+    function drawCompoundChart(contributedArr, balanceArr, years) {
+      var cv = document.getElementById('compoundChart');
+      if (!cv) return;
+      var ctx = cv.getContext('2d');
+      var w = cv.width;
+      var h = cv.height;
+
+      ctx.clearRect(0, 0, w, h);
+
+      var maxVal = Math.max.apply(null, balanceArr) * 1.1;
+      if (maxVal <= 0) maxVal = 100;
+
+      var padLeft = 40;
+      var padBottom = 25;
+      var padTop = 15;
+      var padRight = 15;
+
+      var plotW = w - padLeft - padRight;
+      var plotH = h - padBottom - padTop;
+
+      // Draw horizontal gridlines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      for (var i = 0; i <= 4; i++) {
+        var gy = padTop + (plotH / 4) * i;
+        ctx.beginPath();
+        ctx.moveTo(padLeft, gy);
+        ctx.lineTo(w - padRight, gy);
+        ctx.stroke();
+      }
+
+      var n = balanceArr.length;
+      var getX = function(idx) { return padLeft + (idx / (n - 1)) * plotW; };
+      var getY = function(val) { return padTop + plotH - (val / maxVal) * plotH; };
+
+      // Fill area under Balance Curve (Compound growth)
+      ctx.beginPath();
+      ctx.moveTo(getX(0), getY(balanceArr[0]));
+      for (var i = 1; i < n; i++) {
+        ctx.lineTo(getX(i), getY(balanceArr[i]));
+      }
+      ctx.lineTo(getX(n - 1), padTop + plotH);
+      ctx.lineTo(getX(0), padTop + plotH);
+      ctx.closePath();
+      var grad = ctx.createLinearGradient(0, padTop, 0, padTop + plotH);
+      grad.addColorStop(0, 'rgba(16, 185, 129, 0.35)');
+      grad.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+      ctx.fillStyle = grad;
+      ctx.fill();
+
+      // Stroke Contributed Line
+      ctx.beginPath();
+      ctx.moveTo(getX(0), getY(contributedArr[0]));
+      for (var i = 1; i < n; i++) { ctx.lineTo(getX(i), getY(contributedArr[i])); }
+      ctx.strokeStyle = '#94a3b8';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([4, 4]);
+      ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Stroke Balance Line
+      ctx.beginPath();
+      ctx.moveTo(getX(0), getY(balanceArr[0]));
+      for (var i = 1; i < n; i++) { ctx.lineTo(getX(i), getY(balanceArr[i])); }
+      ctx.strokeStyle = '#10b981';
+      ctx.lineWidth = 3;
+      ctx.stroke();
+
+      // Labels
+      ctx.fillStyle = '#64748b';
+      ctx.font = '10px Inter, sans-serif';
+      ctx.fillText('Año 0', padLeft - 10, h - 8);
+      ctx.fillText('Año ' + years, w - padRight - 35, h - 8);
+    }
+
+    // ==========================================
+    // TOOL 4: PROMPT STUDIO
+    // ==========================================
+    var libraryPrompts = [
+      {
+        title: "Refactorizador & Auditor de Código",
+        prompt: "<role>Actúa como Arquitecto de Software Senior y Especialista en Ciberseguridad.</role>\\n<task>Audita exhaustivamente el siguiente fragmento de código en busca de cuellos de botella de rendimiento, vulnerabilidades de inyección, fugas de memoria y violación de principios SOLID.</task>\\n<constraints>\\n1. Proporciona la solución refactorizada completa con tipado estricto.\\n2. Explica cada cambio crítico en viñetas concisas.\\n3. No uses sintaxis obsoleta.\\n</constraints>\\n<code_to_audit>\\n[PEGA AQUÍ TU CÓDIGO]\\n</code_to_audit>"
+      },
+      {
+        title: "Cold Email de 4 Oraciones (Ventas B2B)",
+        prompt: "<role>Actúa como Vicepresidente de Ventas B2B de clase mundial.</role>\\n<task>Escribe un correo electrónico en frío de no más de 4 oraciones dirigido al CEO o Director de Operaciones.</task>\\n<context>Ofrecemos automatización con IA que reduce el 70% de tareas repetitivas en prospección y atención por WhatsApp.</context>\\n<rules>\\n1. Oración 1: Cumplido específico sobre su empresa.\\n2. Oración 2: El dolor oculto o cuello de botella.\\n3. Oración 3: La solución con métrica cuantificable (ej: +2,500 leads/mes).\\n4. Oración 4: Call-to-action de baja fricción ('¿Valdría la pena ver un video de 2 minutos?').\\n5. Cero spam, cero lenguaje cliché corporativo.\\n</rules>"
+      },
+      {
+        title: "Diseñador de Workflows JSON n8n",
+        prompt: "<role>Actúa como Especialista en Automatizaciones e Integración de Sistemas en n8n.</role>\\n<task>Diseña la arquitectura completa de un workflow automatizado para procesar leads entrantes.</task>\\n<requirements>\\n1. Webhook Trigger para recepción de datos en JSON.\\n2. Nodo de Código Javascript para sanitización y validación de emails/teléfonos.\\n3. Integración con OpenAI / Claude para clasificación de intención del cliente.\\n4. Salida bifurcada: Clientes Calificados -> WhatsApp vía WADesk; Clientes Fríos -> Secuencia de Nurturing.\\n5. Manejo de errores con nodo Error Trigger y notificación por Telegram.\\n</requirements>"
+      }
+    ];
+
+    function generatePrompt() {
+      var domain = document.getElementById('promptDomain').value;
+      var model = document.getElementById('promptModel').value;
+      var task = document.getElementById('promptTask').value.trim();
+      var context = document.getElementById('promptContext').value.trim();
+      var constraints = document.getElementById('promptConstraints').value.trim();
+      var tone = document.getElementById('promptTone').value;
+
+      var roleMap = {
+        senior: "Principal Software Engineer & Systems Architect",
+        persuasive: "World-Class Direct-Response Copywriter & Sales Strategist",
+        executive: "Executive Management Consultant & Enterprise Automation Strategist",
+        pedagogical: "Distinguished Academic Mentor & Lead Technical Educator"
+      };
+
+      var prompt = "";
+      if (model === 'claude') {
+        prompt = "<system_prompt>\n" +
+          "  <role>" + roleMap[tone] + "</role>\n" +
+          "  <context>\n    " + context + "\n  </context>\n" +
+          "  <primary_objective>\n    " + task + "\n  </primary_objective>\n" +
+          "  <strict_constraints>\n    • " + constraints.replace(/,\s*/g, "\n    • ") + "\n  </strict_constraints>\n" +
+          "  <instructions>\n" +
+          "    1. Think step-by-step through the requirements before formulating the output.\n" +
+          "    2. Deliver production-ready, clean, maintainable solutions.\n" +
+          "    3. Format code in clean markdown blocks with type annotations where applicable.\n" +
+          "  </instructions>\n" +
+          "</system_prompt>\n\n" +
+          "Por favor, procede a ejecutar la misión asignada siguiendo exactamente estas especificaciones.";
+      } else {
+        prompt = "### ROLE\n" +
+          "You are a " + roleMap[tone] + ".\n\n" +
+          "### CONTEXT\n" +
+          context + "\n\n" +
+          "### GOAL / TASK\n" +
+          task + "\n\n" +
+          "### RULES & CONSTRAINTS\n" +
+          "- " + constraints.replace(/,\s*/g, "\n- ") + "\n\n" +
+          "### OUTPUT FORMAT\n" +
+          "- High-density, professional formatting.\n" +
+          "- Direct, actionable response without pleasantries or fluff.";
+      }
+
+      document.getElementById('promptOutput').value = prompt;
+    }
+
+    function copyGeneratedPrompt() {
+      var p = document.getElementById('promptOutput').value;
+      navigator.clipboard.writeText(p).then(function() {
+        showToast('Prompt estructurado copiado', '📋');
+      });
+    }
+
+    function loadLibraryPrompt(idx) {
+      if (libraryPrompts[idx]) {
+        navigator.clipboard.writeText(libraryPrompts[idx].prompt).then(function() {
+          showToast('Prompt "' + libraryPrompts[idx].title + '" copiado al portapapeles', '⚡');
+        });
+      }
+    }
+
+    // ==========================================
+    // TOOL 5: AES-256 VAULT
+    // ==========================================
+    function switchVaultTab(tab) {
+      if(tab === 'encrypt') {
+        document.getElementById('btnTabEncrypt').className = 'suite-btn emerald';
+        document.getElementById('btnTabDecrypt').className = 'suite-btn ghost';
+        document.getElementById('vaultEncryptArea').style.display = 'block';
+        document.getElementById('vaultDecryptArea').style.display = 'none';
+      } else {
+        document.getElementById('btnTabEncrypt').className = 'suite-btn ghost';
+        document.getElementById('btnTabDecrypt').className = 'suite-btn cyan';
+        document.getElementById('vaultEncryptArea').style.display = 'none';
+        document.getElementById('vaultDecryptArea').style.display = 'block';
+      }
+    }
+
+    async function deriveAesKey(passphrase, salt) {
+      var enc = new TextEncoder();
+      var keyMaterial = await window.crypto.subtle.importKey(
+        'raw', enc.encode(passphrase), 'PBKDF2', false, ['deriveKey']
+      );
+      return window.crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt: salt, iterations: 100000, hash: 'SHA-256' },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false,
+        ['encrypt', 'decrypt']
+      );
+    }
+
+    async function runEncryption() {
+      var plaintext = document.getElementById('vaultPlaintext').value;
+      var password = document.getElementById('vaultPassword').value;
+
+      if (!plaintext) { showToast('Ingresa el mensaje a cifrar', '⚠️'); return; }
+      if (!password) { showToast('Ingresa una contraseña para cifrar', '⚠️'); return; }
+
+      try {
+        var enc = new TextEncoder();
+        var salt = window.crypto.getRandomValues(new Uint8Array(16));
+        var iv = window.crypto.getRandomValues(new Uint8Array(12));
+        var key = await deriveAesKey(password, salt);
+
+        var ciphertextBuffer = await window.crypto.subtle.encrypt(
+          { name: 'AES-GCM', iv: iv },
+          key,
+          enc.encode(plaintext)
+        );
+
+        // Pack salt + iv + ciphertext into one buffer
+        var cipherBytes = new Uint8Array(ciphertextBuffer);
+        var combined = new Uint8Array(salt.length + iv.length + cipherBytes.length);
+        combined.set(salt, 0);
+        combined.set(iv, salt.length);
+        combined.set(cipherBytes, salt.length + iv.length);
+
+        // Convert to Base64
+        var binary = '';
+        for (var i = 0; i < combined.byteLength; i++) {
+          binary += String.fromCharCode(combined[i]);
+        }
+        var base64 = btoa(binary);
+
+        document.getElementById('vaultCiphertext').value = base64;
+        document.getElementById('encryptResultArea').style.display = 'block';
+        showToast('Mensaje cifrado con AES-256 GCM militar', '🔒');
+      } catch(err) {
+        console.error(err);
+        showToast('Error en el proceso de cifrado', '❌');
+      }
+    }
+
+    async function runDecryption() {
+      var base64 = document.getElementById('vaultDecryptInput').value.trim();
+      var password = document.getElementById('vaultDecryptPassword').value;
+
+      if (!base64) { showToast('Pega el código cifrado', '⚠️'); return; }
+      if (!password) { showToast('Ingresa la contraseña de descifrado', '⚠️'); return; }
+
+      try {
+        var binary = atob(base64);
+        var combined = new Uint8Array(binary.length);
+        for (var i = 0; i < binary.length; i++) {
+          combined[i] = binary.charCodeAt(i);
+        }
+
+        var salt = combined.slice(0, 16);
+        var iv = combined.slice(16, 28);
+        var ciphertext = combined.slice(28);
+
+        var key = await deriveAesKey(password, salt);
+        var decryptedBuffer = await window.crypto.subtle.decrypt(
+          { name: 'AES-GCM', iv: iv },
+          key,
+          ciphertext
+        );
+
+        var dec = new TextDecoder();
+        var decryptedText = dec.decode(decryptedBuffer);
+
+        document.getElementById('vaultDecryptedPlaintext').value = decryptedText;
+        document.getElementById('decryptResultArea').style.display = 'block';
+        showToast('Mensaje descifrado correctamente', '🔓');
+      } catch(err) {
+        console.warn('Decryption failed:', err);
+        showToast('Contraseña incorrecta o datos manipulados', '❌');
+        document.getElementById('decryptResultArea').style.display = 'none';
+      }
+    }
+
+    function copyVaultCiphertext() {
+      var c = document.getElementById('vaultCiphertext').value;
+      navigator.clipboard.writeText(c).then(function() {
+        showToast('Código cifrado copiado', '📋');
+      });
+    }
+
+    function sendCiphertextToWhatsApp() {
+      var c = document.getElementById('vaultCiphertext').value;
+      if (!c) return;
+      var msg = "🔐 Mensaje Cifrado con DuarteSuite AES-256:\\n\\n" + c + "\\n\\nDescífralo en: https://adrian1998duarte-lgtm.github.io/duartelabs-ai-automation-suite/tools.html";
+      window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+    }
+
+    // Password Generator
+    function updatePasswordLength(val) {
+      document.getElementById('pwdLengthVal').innerText = val + ' caracteres';
+      generateRandomPassword();
+    }
+
+    function generateRandomPassword() {
+      var len = parseInt(document.getElementById('pwdLengthSlider').value) || 20;
+      var hasUpper = document.getElementById('chkUpper').checked;
+      var hasLower = document.getElementById('chkLower').checked;
+      var hasNumbers = document.getElementById('chkNumbers').checked;
+      var hasSymbols = document.getElementById('chkSymbols').checked;
+
+      var chars = '';
+      if (hasUpper) chars += 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+      if (hasLower) chars += 'abcdefghijkmnopqrstuvwxyz';
+      if (hasNumbers) chars += '23456789';
+      if (hasSymbols) chars += '!@#$%^&*()_+~|}{[]:;?><=';
+
+      if (!chars) chars = 'abcdefghijkmnopqrstuvwxyz';
+
+      var randomBytes = new Uint32Array(len);
+      window.crypto.getRandomValues(randomBytes);
+
+      var pwd = '';
+      for (var i = 0; i < len; i++) {
+        pwd += chars[randomBytes[i] % chars.length];
+      }
+
+      document.getElementById('generatedPassword').innerText = pwd;
+
+      // Entropy calculation
+      var poolSize = chars.length;
+      var entropy = Math.round(len * (Math.log(poolSize) / Math.log(2)));
+
+      var bar = document.getElementById('entropyBar');
+      var txt = document.getElementById('entropyText');
+      var crack = document.getElementById('crackTimeText');
+
+      if (entropy < 40) {
+        bar.style.width = '30%'; bar.style.background = '#ef4444';
+        txt.innerText = 'Débil (' + entropy + ' bits)'; txt.style.color = '#ef4444';
+        crack.innerText = 'Tiempo de crackeo: Pocas horas o días';
+      } else if (entropy < 70) {
+        bar.style.width = '60%'; bar.style.background = '#f59e0b';
+        txt.innerText = 'Media (' + entropy + ' bits)'; txt.style.color = '#f59e0b';
+        crack.innerText = 'Tiempo de crackeo: ~500 años';
+      } else {
+        bar.style.width = '100%'; bar.style.background = '#10b981';
+        txt.innerText = 'Militar (' + entropy + ' bits)'; txt.style.color = '#10b981';
+        crack.innerText = 'Tiempo de crackeo: ~' + (len > 18 ? '300 billones' : '50 millones') + ' de años';
+      }
+    }
+
+    function copyPassword() {
+      var p = document.getElementById('generatedPassword').innerText;
+      navigator.clipboard.writeText(p).then(function() {
+        showToast('Contraseña segura copiada', '📋');
+      });
+    }
+
+    // ==========================================
+    // TOOL 6: IMAGE OPTIMIZER
+    // ==========================================
+    var rawOptimizerImg = null;
+    var rawFileSize = 0;
+    var optimizedBlob = null;
+
+    function loadOptimizerImage(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+      rawFileSize = file.size;
+      document.getElementById('optOriginalSize').innerText = formatBytes(rawFileSize);
+
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        var img = new Image();
+        img.onload = function() {
+          rawOptimizerImg = img;
+          document.getElementById('optEmptyState').style.display = 'none';
+          document.getElementById('optPreviewImg').style.display = 'block';
+          runImageOptimization();
+          showToast('Imagen cargada para optimización', '🖼️');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function updateOptimizerQuality(val) {
+      document.getElementById('optQualityVal').innerText = val + '%';
+      runImageOptimization();
+    }
+
+    function formatBytes(bytes) {
+      if (bytes === 0) return '0 KB';
+      var k = 1024;
+      var sizes = ['Bytes', 'KB', 'MB', 'GB'];
+      var i = Math.floor(Math.log(bytes) / Math.log(k));
+      return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    function runImageOptimization() {
+      if (!rawOptimizerImg) return;
+
+      var format = document.getElementById('optFormat').value;
+      var preset = document.getElementById('optPreset').value;
+      var quality = parseInt(document.getElementById('optQualitySlider').value) / 100;
+
+      var targetW = rawOptimizerImg.width;
+      var targetH = rawOptimizerImg.height;
+
+      if (preset === 'ig_post') { targetW = 1080; targetH = 1080; }
+      else if (preset === 'ig_story') { targetW = 1080; targetH = 1920; }
+      else if (preset === 'yt_thumb') { targetW = 1280; targetH = 720; }
+      else if (preset === 'web_hd' && targetW > 1920) {
+        var ratio = targetH / targetW;
+        targetW = 1920;
+        targetH = Math.round(targetW * ratio);
+      }
+
+      var canvas = document.createElement('canvas');
+      canvas.width = targetW;
+      canvas.height = targetH;
+      var ctx = canvas.getContext('2d');
+
+      // Draw background white if jpeg
+      if (format === 'image/jpeg') {
+        ctx.fillStyle = '#ffffff';
+        ctx.fillRect(0, 0, targetW, targetH);
+      }
+
+      // Draw image fitted
+      ctx.drawImage(rawOptimizerImg, 0, 0, targetW, targetH);
+
+      canvas.toBlob(function(blob) {
+        if (!blob) return;
+        optimizedBlob = blob;
+        var newSize = blob.size;
+        document.getElementById('optNewSize').innerText = formatBytes(newSize);
+
+        var savings = 0;
+        if (rawFileSize > 0) {
+          savings = Math.max(0, Math.round(((rawFileSize - newSize) / rawFileSize) * 100));
+        }
+        document.getElementById('optSavingsBadge').innerText = 'Ahorro: ' + savings + '%';
+
+        var previewUrl = URL.createObjectURL(blob);
+        document.getElementById('optPreviewImg').src = previewUrl;
+        document.getElementById('btnDownloadOpt').disabled = false;
+      }, format, quality);
+    }
+
+    function downloadOptimizedImage() {
+      if (!optimizedBlob) return;
+      var format = document.getElementById('optFormat').value;
+      var ext = format === 'image/webp' ? 'webp' : (format === 'image/jpeg' ? 'jpg' : 'png');
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(optimizedBlob);
+      a.download = 'duartelabs-opt-' + Date.now() + '.' + ext;
+      a.click();
+      showToast('Imagen optimizada descargada', '💾');
+    }
+
+    // ==========================================
+    // TOOL 7: API & WEBHOOK TESTER
+    // ==========================================
+    function updateCurlCommand() {
+      var method = document.getElementById('apiMethod').value;
+      var url = document.getElementById('apiUrl').value.trim();
+      var body = document.getElementById('apiBody').value.trim();
+
+      document.getElementById('apiBodyContainer').style.display = (method === 'POST' || method === 'PUT' || method === 'PATCH') ? 'block' : 'none';
+
+      var curl = 'curl -X ' + method + ' "' + url + '"';
+      if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+        curl += ' -H "Content-Type: application/json" -d \'' + body.replace(/'/g, "\\'") + '\'';
+      }
+      document.getElementById('curlOutput').innerText = curl;
+    }
+
+    function loadApiPreset(preset) {
+      if (preset === 'coingecko') {
+        document.getElementById('apiMethod').value = 'GET';
+        document.getElementById('apiUrl').value = 'https://api.coingecko.com/api/v3/ping';
+      } else if (preset === 'dummyjson') {
+        document.getElementById('apiMethod').value = 'GET';
+        document.getElementById('apiUrl').value = 'https://dummyjson.com/products/1';
+      } else if (preset === 'post_test') {
+        document.getElementById('apiMethod').value = 'POST';
+        document.getElementById('apiUrl').value = 'https://jsonplaceholder.typicode.com/posts';
+        document.getElementById('apiBody').value = '{\n  "title": "Nuevo Lead DuarteLabs",\n  "body": "Contacto automatizado vía WADesk CRM",\n  "userId": 1\n}';
+      }
+      updateCurlCommand();
+      runApiRequest();
+    }
+
+    function runApiRequest() {
+      var method = document.getElementById('apiMethod').value;
+      var url = document.getElementById('apiUrl').value.trim();
+      var body = document.getElementById('apiBody').value.trim();
+
+      if (!url) { showToast('Ingresa una URL válida', '⚠️'); return; }
+
+      var viewer = document.getElementById('apiResponseViewer');
+      var statusBadge = document.getElementById('apiStatusBadge');
+      var timeBadge = document.getElementById('apiTimeBadge');
+
+      viewer.value = 'Enviando petición HTTP ' + method + ' a ' + url + '...';
+      var startTime = performance.now();
+
+      var opts = {
+        method: method,
+        headers: {
+          'Accept': 'application/json'
+        }
+      };
+
+      if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+        opts.headers['Content-Type'] = 'application/json';
+        opts.body = body;
+      }
+
+      fetch(url, opts)
+        .then(function(res) {
+          var duration = Math.round(performance.now() - startTime);
+          statusBadge.style.display = 'inline-block';
+          statusBadge.innerText = res.status + ' ' + res.statusText;
+          statusBadge.style.background = res.ok ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)';
+          statusBadge.style.color = res.ok ? '#34d399' : '#f87171';
+
+          timeBadge.style.display = 'inline-block';
+          timeBadge.innerText = duration + ' ms';
+
+          return res.text();
+        })
+        .then(function(text) {
+          try {
+            var parsed = JSON.parse(text);
+            viewer.value = JSON.stringify(parsed, null, 2);
+          } catch(e) {
+            viewer.value = text;
+          }
+          showToast('Petición completada con éxito', '🚀');
+        })
+        .catch(function(err) {
+          var duration = Math.round(performance.now() - startTime);
+          timeBadge.style.display = 'inline-block';
+          timeBadge.innerText = duration + ' ms';
+
+          statusBadge.style.display = 'inline-block';
+          statusBadge.innerText = 'CORS / ERROR DE RED';
+          statusBadge.style.background = 'rgba(244, 63, 94, 0.2)';
+          statusBadge.style.color = '#fb7185';
+
+          viewer.value = "⚠️ Error al conectar con el servidor:\n" + err.message + "\n\nTip: La API remota debe tener habilitadas las cabeceras CORS (Cross-Origin Resource Sharing) para responder a navegadores web.";
+          showToast('Error en la petición (Verifica CORS)', '⚠️');
+        });
+    }
+
+    function copyApiResponse() {
+      var t = document.getElementById('apiResponseViewer').value;
+      navigator.clipboard.writeText(t).then(function() {
+        showToast('Respuesta JSON copiada', '📋');
+      });
+    }
+
+    function copyCurl() {
+      var c = document.getElementById('curlOutput').innerText;
+      navigator.clipboard.writeText(c).then(function() {
+        showToast('Comando cURL copiado al portapapeles', '📋');
+      });
+    }
+
+    // ==========================================
+    // INITIALIZATION ON PAGE LOAD
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', function() {
+      // 1. Init Mockup Canvas
+      renderMockup();
+
+      // 2. Init Crypto
+      fetchCryptoPrices();
+      setInterval(fetchCryptoPrices, 30000);
+      calculateCompoundInterest();
+
+      // 3. Init Prompt
+      generatePrompt();
+
+      // 4. Init Password
+      generateRandomPassword();
+
+      // 5. Init API cURL
+      updateCurlCommand();
+    });
+  </script>
+</body>
+</html>
