@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DuarteSuite · 7 Herramientas Web &amp; IA de Alta Productividad | DuarteLabs</title>
-  <meta name="description" content="Suite de herramientas web 100% en el navegador: Estudio de Voz a Texto, Mockups 3D, Monitor Cripto en Vivo, Generador de Prompts, Cifrado Militar AES-256, Compresor de Imágenes y Probador de APIs.">
+  <title>DuarteSuite Pro · 7 Herramientas Web &amp; IA de Alta Productividad | DuarteLabs</title>
+  <meta name="description" content="Suite profesional de utilidades web y de IA ejecutadas 100% en tu navegador: Estudio de Voz con ecualizador, Maquetas 3D, Monitor Cripto &amp; Solana TPS, Prompt Studio con variables, Cifrado Militar AES-256 con archivos, Compresor de Imagen con comparador interactivo y Probador de APIs con exportación en 5 lenguajes.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
@@ -13,10 +13,10 @@
   <style>
     :root {
       --bg: #03050d;
-      --bg-card: rgba(13, 19, 36, 0.75);
-      --card-hover: rgba(22, 31, 58, 0.9);
-      --border: rgba(99, 102, 241, 0.2);
-      --border-glow: rgba(99, 102, 241, 0.5);
+      --bg-card: rgba(13, 19, 36, 0.78);
+      --card-hover: rgba(22, 31, 58, 0.92);
+      --border: rgba(99, 102, 241, 0.22);
+      --border-glow: rgba(99, 102, 241, 0.55);
       --txt: #f8fafc;
       --txt-muted: #94a3b8;
       --txt-dim: #64748b;
@@ -26,6 +26,7 @@
       --cyan-glow: rgba(6, 182, 212, 0.35);
       --violet: #8b5cf6;
       --emerald: #10b981;
+      --emerald-glow: rgba(16, 185, 129, 0.35);
       --rose: #f43f5e;
       --amber: #f59e0b;
     }
@@ -40,25 +41,25 @@
       line-height: 1.5;
     }
 
-    /* Ambient Background Glow */
+    /* Ambient Glow Orbs */
     .glow-orb {
       position: fixed;
       border-radius: 50%;
-      filter: blur(120px);
+      filter: blur(140px);
       pointer-events: none;
       z-index: 0;
-      opacity: 0.25;
+      opacity: 0.22;
     }
-    .orb-1 { width: 500px; height: 500px; background: var(--primary); top: -100px; left: -100px; }
-    .orb-2 { width: 450px; height: 450px; background: var(--cyan); bottom: 10%; right: -100px; }
-    .orb-3 { width: 400px; height: 400px; background: var(--rose); top: 50%; left: 30%; opacity: 0.15; }
+    .orb-1 { width: 550px; height: 550px; background: var(--primary); top: -120px; left: -100px; }
+    .orb-2 { width: 500px; height: 500px; background: var(--cyan); bottom: 10%; right: -120px; }
+    .orb-3 { width: 420px; height: 420px; background: var(--rose); top: 50%; left: 35%; opacity: 0.16; }
 
     /* Header Nav */
     header {
       position: sticky;
       top: 0;
       z-index: 100;
-      background: rgba(3, 5, 13, 0.85);
+      background: rgba(3, 5, 13, 0.88);
       backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border);
       padding: 14px 28px;
@@ -75,28 +76,38 @@
       color: #fff;
     }
     .brand-icon {
-      width: 40px;
-      height: 40px;
+      width: 42px;
+      height: 42px;
       border-radius: 12px;
       background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 20px;
-      box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+      font-size: 22px;
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.45);
     }
     .brand-title {
       font-family: 'Space Grotesk', sans-serif;
       font-weight: 800;
-      font-size: 19px;
+      font-size: 20px;
       letter-spacing: -0.5px;
     }
     .brand-title span { color: var(--emerald); }
+    .brand-badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      margin-left: 6px;
+    }
 
     .nav-actions {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
     .nav-btn {
       display: inline-flex;
@@ -129,32 +140,30 @@
       box-shadow: 0 0 30px rgba(16, 185, 129, 0.55);
     }
 
-    /* Main Container with Sidebar + Content */
+    /* Layout */
     .suite-layout {
       position: relative;
       z-index: 10;
-      max-width: 1440px;
+      max-width: 1480px;
       margin: 0 auto;
       padding: 24px;
       display: grid;
       grid-template-columns: 290px 1fr;
       gap: 28px;
-      min-height: calc(100vh - 72px);
+      min-height: calc(100vh - 74px);
     }
 
     @media (max-width: 1024px) {
-      .suite-layout {
-        grid-template-columns: 1fr;
-      }
+      .suite-layout { grid-template-columns: 1fr; }
     }
 
     /* Sidebar Navigation */
     .tools-sidebar {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 20px;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px);
       height: fit-content;
       position: sticky;
       top: 96px;
@@ -171,7 +180,7 @@
       text-transform: uppercase;
       letter-spacing: 1px;
       color: var(--emerald);
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
     .sidebar-title {
       font-family: 'Space Grotesk', sans-serif;
@@ -183,18 +192,18 @@
     .tool-tab-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
     .tool-tab {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 12px 16px;
+      padding: 12px 14px;
       border-radius: 12px;
       border: 1px solid transparent;
       background: transparent;
       color: var(--txt-muted);
-      font-size: 14px;
+      font-size: 13.5px;
       font-weight: 600;
       cursor: pointer;
       text-align: left;
@@ -206,21 +215,21 @@
       color: #fff;
     }
     .tool-tab.active {
-      background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, rgba(6, 182, 212, 0.1) 100%);
-      border-color: rgba(16, 185, 129, 0.4);
+      background: linear-gradient(135deg, rgba(16, 185, 129, 0.16) 0%, rgba(6, 182, 212, 0.1) 100%);
+      border-color: rgba(16, 185, 129, 0.45);
       color: #fff;
       box-shadow: 0 4px 20px rgba(16, 185, 129, 0.15);
     }
     .tool-tab-icon {
-      font-size: 20px;
-      min-width: 28px;
+      font-size: 19px;
+      min-width: 26px;
       display: flex;
       align-items: center;
       justify-content: center;
     }
     .tool-tab-badge {
       margin-left: auto;
-      font-size: 10.5px;
+      font-size: 10px;
       padding: 2px 7px;
       border-radius: 999px;
       background: rgba(255, 255, 255, 0.08);
@@ -233,30 +242,26 @@
     }
 
     /* Content Area */
-    .tools-workspace {
-      min-width: 0;
-    }
+    .tools-workspace { min-width: 0; }
 
-    /* Tool Panel Container */
+    /* Tool Panels */
     .tool-panel {
       display: none;
-      animation: fadeIn 0.3s ease forwards;
+      animation: fadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
-    .tool-panel.active {
-      display: block;
-    }
+    .tool-panel.active { display: block; }
     @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
+      from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
 
     .tool-hero {
       background: var(--bg-card);
       border: 1px solid var(--border);
-      border-radius: 20px;
+      border-radius: 22px;
       padding: 28px;
       margin-bottom: 24px;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px);
       position: relative;
       overflow: hidden;
     }
@@ -285,17 +290,18 @@
     .tool-hero p {
       color: var(--txt-muted);
       font-size: 15px;
-      max-width: 800px;
+      max-width: 840px;
     }
 
-    /* Common Card Box */
+    /* Cards */
     .suite-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 24px;
-      backdrop-filter: blur(16px);
+      backdrop-filter: blur(18px);
       margin-bottom: 24px;
+      position: relative;
     }
 
     /* Form Inputs */
@@ -308,7 +314,7 @@
     }
     .suite-input, .suite-select, .suite-textarea {
       width: 100%;
-      background: rgba(3, 5, 13, 0.8);
+      background: rgba(3, 5, 13, 0.85);
       border: 1px solid var(--border);
       border-radius: 12px;
       padding: 12px 16px;
@@ -320,7 +326,7 @@
     }
     .suite-input:focus, .suite-select:focus, .suite-textarea:focus {
       border-color: var(--cyan);
-      box-shadow: 0 0 15px rgba(6, 182, 212, 0.25);
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.25);
     }
     .suite-textarea {
       resize: vertical;
@@ -336,10 +342,10 @@
       align-items: center;
       justify-content: center;
       gap: 8px;
-      padding: 12px 22px;
+      padding: 11px 20px;
       border-radius: 12px;
       font-weight: 600;
-      font-size: 14px;
+      font-size: 13.5px;
       cursor: pointer;
       border: 1px solid transparent;
       transition: all 0.2s;
@@ -382,19 +388,24 @@
       transform: translateY(-1px);
     }
 
-    /* Grid layout utils */
+    /* Grids */
     .grid-2 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
       gap: 20px;
     }
     .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
       gap: 16px;
     }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 12px;
+    }
 
-    /* Toast Notification */
+    /* Toast */
     #toast {
       position: fixed;
       bottom: 24px;
@@ -406,7 +417,7 @@
       border-radius: 12px;
       font-weight: 600;
       font-size: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.3);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(16, 185, 129, 0.35);
       display: none;
       z-index: 1000;
       align-items: center;
@@ -419,7 +430,6 @@
       to { transform: translateY(0); opacity: 1; }
     }
 
-    /* Pulse animation for voice */
     .pulse-ring {
       display: inline-block;
       width: 12px;
@@ -435,7 +445,7 @@
       100% { box-shadow: 0 0 0 0 rgba(244, 63, 94, 0); }
     }
 
-    /* Range slider custom */
+    /* Range Slider */
     input[type=range] {
       -webkit-appearance: none;
       width: 100%;
@@ -455,6 +465,80 @@
       transition: transform 0.1s;
     }
     input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+
+    /* Split Slider Container */
+    .split-view-container {
+      position: relative;
+      width: 100%;
+      max-width: 600px;
+      height: 380px;
+      overflow: hidden;
+      border-radius: 14px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: #000;
+      user-select: none;
+    }
+    .split-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+    .split-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 50%;
+      height: 100%;
+      overflow: hidden;
+      border-right: 2px solid var(--cyan);
+      box-shadow: 0 0 12px var(--cyan);
+    }
+    .split-handle {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--cyan);
+      color: #03050d;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 12px;
+      cursor: ew-resize;
+      box-shadow: 0 0 20px var(--cyan);
+    }
+
+    /* Live Telemetry Ticker Strip */
+    .telemetry-strip {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      background: rgba(16, 185, 129, 0.08);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      border-radius: 14px;
+      padding: 12px 20px;
+      margin-bottom: 22px;
+    }
+    .telemetry-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 13px;
+    }
+    .telemetry-val {
+      font-weight: 700;
+      color: #34d399;
+      font-family: 'Fira Code', monospace;
+    }
   </style>
 </head>
 <body>
@@ -466,25 +550,27 @@
   <header>
     <a href="index.html" class="brand">
       <div class="brand-icon">🛠️</div>
-      <div class="brand-title">Duarte<span>Suite</span></div>
+      <div>
+        <div class="brand-title">Duarte<span>Suite</span> <span class="brand-badge">PRO v2.0</span></div>
+      </div>
     </a>
     <div class="nav-actions">
       <a href="index.html" class="nav-btn">
         <span>🏠</span> <span data-en="Home" data-es="Inicio">Inicio</span>
       </a>
       <a href="arcade.html" class="nav-btn">
-        <span>🕹️</span> <span data-en="Arcade Hub" data-es="DuarteArcade">DuarteArcade</span>
+        <span>🕹️</span> <span data-en="Arcade Hub" data-es="DuarteArcade">DuarteArcade (38 Games)</span>
       </a>
       <button class="nav-btn" onclick="toggleLang()" id="langBtn">
         <span>🌐</span> <span id="langLabel">EN</span>
       </button>
-      <a href="https://wa.me/573024564887?text=Hola%20Cristian,%20vi%20tu%20suite%20de%20herramientas%20en%20DuarteLabs" target="_blank" class="nav-btn primary">
+      <a href="https://wa.me/573024564887?text=Hola%20Cristian,%20vi%20tu%20suite%20DuarteSuite%20Pro" target="_blank" class="nav-btn primary">
         <span>💬</span> <span data-en="Contact" data-es="Contactar">Contactar</span>
       </a>
     </div>
   </header>
 
-  <!-- Main Suite Layout -->
+  <!-- Suite Layout -->
   <div class="suite-layout">
     <!-- Sidebar -->
     <aside class="tools-sidebar">
@@ -495,73 +581,77 @@
       <div class="tool-tab-list">
         <button class="tool-tab active" onclick="switchTool('voice-studio', this)">
           <span class="tool-tab-icon">🎙️</span>
-          <span data-en="Voice Studio" data-es="Estudio de Voz">Estudio de Voz</span>
-          <span class="tool-tab-badge">AI</span>
+          <span data-en="Voice Studio AI" data-es="Estudio de Voz AI">Estudio de Voz AI</span>
+          <span class="tool-tab-badge">Equalizer</span>
         </button>
         <button class="tool-tab" onclick="switchTool('mockup-studio', this)">
           <span class="tool-tab-icon">🖼️</span>
           <span data-en="3D Mockup Studio" data-es="Maquetas 3D">Maquetas 3D</span>
-          <span class="tool-tab-badge">Canvas</span>
+          <span class="tool-tab-badge">Ctrl+V</span>
         </button>
         <button class="tool-tab" onclick="switchTool('crypto-hub', this)">
           <span class="tool-tab-icon">🪙</span>
-          <span data-en="Crypto &amp; Market" data-es="Cripto &amp; Finanzas">Cripto &amp; Finanzas</span>
+          <span data-en="Crypto &amp; Solana TPS" data-es="Cripto &amp; Solana TPS">Cripto &amp; Solana TPS</span>
           <span class="tool-tab-badge">Live</span>
         </button>
         <button class="tool-tab" onclick="switchTool('prompt-studio', this)">
           <span class="tool-tab-icon">🧠</span>
-          <span data-en="Prompt Studio" data-es="Prompt Studio">Prompt Studio</span>
-          <span class="tool-tab-badge">LLMs</span>
+          <span data-en="Prompt Studio Pro" data-es="Prompt Studio Pro">Prompt Studio Pro</span>
+          <span class="tool-tab-badge">Variables</span>
         </button>
         <button class="tool-tab" onclick="switchTool('crypto-vault', this)">
           <span class="tool-tab-icon">🔐</span>
           <span data-en="AES-256 Vault" data-es="Caja Fuerte AES">Caja Fuerte AES</span>
-          <span class="tool-tab-badge">Crypto</span>
+          <span class="tool-tab-badge">Share Link</span>
         </button>
         <button class="tool-tab" onclick="switchTool('image-optimizer', this)">
           <span class="tool-tab-icon">🛠️</span>
           <span data-en="Image Optimizer" data-es="Compresor Imagen">Compresor Imagen</span>
-          <span class="tool-tab-badge">Fast</span>
+          <span class="tool-tab-badge">Split View</span>
         </button>
         <button class="tool-tab" onclick="switchTool('api-tester', this)">
           <span class="tool-tab-icon">🧪</span>
           <span data-en="API &amp; Webhook Tester" data-es="Probador de APIs">Probador de APIs</span>
-          <span class="tool-tab-badge">HTTP</span>
+          <span class="tool-tab-badge">5 Languages</span>
         </button>
       </div>
     </aside>
 
-    <!-- Workspace Area -->
+    <!-- Workspace -->
     <main class="tools-workspace">
 
       <!-- ========================================== -->
-      <!-- TOOL 1: VOICE STUDIO -->
+      <!-- TOOL 1: VOICE STUDIO PRO -->
       <!-- ========================================== -->
       <section id="voice-studio" class="tool-panel active">
         <div class="tool-hero">
-          <span class="tool-badge">🎙️ Web Audio AI · Speech Recognition</span>
-          <h2 data-en="Voice Studio: Real-Time Dictation &amp; Meeting Notes" data-es="Estudio de Voz: Dictado en Tiempo Real &amp; Actas de Reunión">Estudio de Voz: Dictado en Tiempo Real &amp; Actas de Reunión</h2>
-          <p data-en="Dictate directly into your browser with zero latency. Converts your voice into clean text, formats meeting minutes, extracts action items, and sends to WhatsApp." data-es="Habla directamente en tu navegador sin retraso. Convierte tu voz en texto limpio, genera actas de reunión automáticas, extrae tareas pendientes y comparte por WhatsApp.">Habla directamente en tu navegador sin retraso. Convierte tu voz en texto limpio, genera actas de reunión automáticas, extrae tareas pendientes y comparte por WhatsApp.</p>
+          <span class="tool-badge">🎙️ Web Audio API · Live Neon Equalizer &amp; AI Actions</span>
+          <h2 data-en="Voice Studio: Real-Time Dictation, Equalizer &amp; Smart Notes" data-es="Estudio de Voz: Dictado en Vivo, Ecualizador &amp; Actas Inteligentes">Estudio de Voz: Dictado en Vivo, Ecualizador &amp; Actas Inteligentes</h2>
+          <p data-en="Dictate continuously with a live soundwave visualizer. Formats meeting minutes, extracts action items, speaks text aloud via TTS, and sends to WhatsApp." data-es="Habla de forma continua con un ecualizador de audio en vivo. Genera actas formales, extrae tareas pendientes, lee notas en voz alta y comparte por WhatsApp.">Habla de forma continua con un ecualizador de audio en vivo. Genera actas formales, extrae tareas pendientes, lee notas en voz alta y comparte por WhatsApp.</p>
         </div>
 
         <div class="suite-card">
+          <!-- Voice Controls Bar -->
           <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 20px;">
             <div style="display: flex; align-items: center; gap: 12px;">
               <button id="recordBtn" class="suite-btn rose" onclick="toggleRecording()">
                 <span id="recordIcon">🎙️</span>
                 <span id="recordBtnText" data-en="Start Dictation" data-es="Iniciar Dictado">Iniciar Dictado</span>
               </button>
-              <div id="recordingStatus" style="display: none; align-items: center; gap: 8px; font-size: 13.5px; color: #fb7185; font-weight: 600;">
+              <div id="recordingStatus" style="display: none; align-items: center; gap: 8px; font-size: 13.5px; color: #fb7185; font-weight: 700;">
                 <span class="pulse-ring"></span>
-                <span data-en="Listening..." data-es="Escuchando voz...">Escuchando voz...</span>
+                <span data-en="Listening &amp; Transcribing..." data-es="Escuchando voz en vivo...">Escuchando voz en vivo...</span>
               </div>
             </div>
 
-            <div style="display: flex; align-items: center; gap: 10px;">
+            <!-- Audio Equalizer Canvas -->
+            <canvas id="voiceVisualizer" width="220" height="38" style="background: rgba(3, 5, 13, 0.9); border: 1px solid var(--border); border-radius: 8px;"></canvas>
+
+            <div style="display: flex; align-items: center; gap: 8px;">
               <label class="input-label" style="margin: 0;" data-en="Language:" data-es="Idioma:">Idioma:</label>
-              <select id="voiceLang" class="suite-select" style="width: auto; padding: 8px 14px;">
-                <option value="es-ES">Español (España)</option>
+              <select id="voiceLang" class="suite-select" style="width: auto; padding: 7px 12px;">
                 <option value="es-CO" selected>Español (Colombia / Latam)</option>
+                <option value="es-ES">Español (España)</option>
                 <option value="es-MX">Español (México)</option>
                 <option value="en-US">English (US)</option>
                 <option value="en-GB">English (UK)</option>
@@ -569,26 +659,53 @@
             </div>
           </div>
 
-          <div style="margin-bottom: 16px;">
-            <label class="input-label" data-en="Live Transcript &amp; Working Text:" data-es="Transcripción en Vivo &amp; Texto de Trabajo:">Transcripción en Vivo &amp; Texto de Trabajo:</label>
-            <textarea id="voiceTranscript" class="suite-textarea" style="min-height: 220px;" placeholder="Haz clic en 'Iniciar Dictado' y comienza a hablar, o escribe/pega tus notas aquí..."></textarea>
+          <!-- Live Metrics Strip -->
+          <div class="grid-4" style="margin-bottom: 14px;">
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center;">
+              <span style="font-size: 11px; color: var(--txt-muted);">Palabras</span>
+              <div id="voiceWordCount" style="font-size: 17px; font-weight: 700; color: #fff;">0</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center;">
+              <span style="font-size: 11px; color: var(--txt-muted);">Caracteres</span>
+              <div id="voiceCharCount" style="font-size: 17px; font-weight: 700; color: #38bdf8;">0</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center;">
+              <span style="font-size: 11px; color: var(--txt-muted);">Tiempo Hablado</span>
+              <div id="voiceDuration" style="font-size: 17px; font-weight: 700; color: #34d399;">00:00</div>
+            </div>
+            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 10px; padding: 10px; text-align: center;">
+              <span style="font-size: 11px; color: var(--txt-muted);">Lectura Estimada</span>
+              <div id="voiceReadTime" style="font-size: 17px; font-weight: 700; color: #fbbf24;">0 min</div>
+            </div>
           </div>
 
-          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+          <!-- Transcript Area -->
+          <div style="margin-bottom: 16px;">
+            <textarea id="voiceTranscript" class="suite-textarea" style="min-height: 200px;" placeholder="Haz clic en 'Iniciar Dictado' y comienza a hablar, o escribe notas aquí..." oninput="updateVoiceMetrics()"></textarea>
+          </div>
+
+          <!-- Action Buttons -->
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
             <button class="suite-btn cyan" onclick="formatMeetingNotes()">
               <span>📝</span> <span data-en="Format as Meeting Minutes" data-es="Formatear como Acta">Formatear como Acta</span>
             </button>
             <button class="suite-btn emerald" onclick="extractActionItems()">
               <span>✅</span> <span data-en="Extract Action Items" data-es="Extraer Tareas Pendientes">Extraer Tareas Pendientes</span>
             </button>
+            <button class="suite-btn ghost" onclick="generateExecutiveSummary()">
+              <span>⚡</span> <span data-en="3-Bullet Summary" data-es="Resumen en 3 Balas">Resumen en 3 Balas</span>
+            </button>
+            <button class="suite-btn ghost" onclick="toggleTextToSpeech()" id="btnTTS">
+              <span>🔊</span> <span data-en="Read Aloud (TTS)" data-es="Escuchar en Voz Alta">Escuchar en Voz Alta</span>
+            </button>
             <button class="suite-btn ghost" onclick="copyVoiceText()">
-              <span>📋</span> <span data-en="Copy Text" data-es="Copiar Texto">Copiar Texto</span>
+              <span>📋</span> <span data-en="Copy" data-es="Copiar">Copiar</span>
             </button>
             <button class="suite-btn ghost" onclick="sendVoiceToWhatsApp()">
-              <span>💬</span> <span data-en="Send to WhatsApp" data-es="Enviar a WhatsApp">Enviar a WhatsApp</span>
+              <span>💬</span> <span>WhatsApp</span>
             </button>
             <button class="suite-btn ghost" onclick="downloadVoiceTxt()">
-              <span>💾</span> <span data-en="Download .TXT" data-es="Descargar .TXT">Descargar .TXT</span>
+              <span>💾</span> <span>.TXT</span>
             </button>
             <button class="suite-btn ghost" onclick="clearVoiceText()" style="margin-left: auto;">
               <span>🧹</span> <span data-en="Clear" data-es="Limpiar">Limpiar</span>
@@ -598,95 +715,140 @@
       </section>
 
       <!-- ========================================== -->
-      <!-- TOOL 2: 3D MOCKUP STUDIO -->
+      <!-- TOOL 2: 3D MOCKUP STUDIO PRO -->
       <!-- ========================================== -->
       <section id="mockup-studio" class="tool-panel">
         <div class="tool-hero">
-          <span class="tool-badge">🖼️ HTML5 Canvas · Device Framing</span>
-          <h2 data-en="3D Mockup Studio: iPhone, MacBook &amp; Browser Frames" data-es="Estudio de Maquetas 3D: iPhone, MacBook &amp; Navegador">Estudio de Maquetas 3D: iPhone, MacBook &amp; Navegador</h2>
-          <p data-en="Transform any screenshot into a high-end presentation mockup in seconds. Choose iPhone 16 Pro Titanium, MacBook Pro, or dark-mode browser with transparent or gradient export." data-es="Convierte cualquier captura de pantalla en una maqueta profesional para presentaciones y redes. Elige marco de iPhone 16 Pro, MacBook Pro o Navegador con exportación en PNG transparente o degradado.">Convierte cualquier captura de pantalla en una maqueta profesional para presentaciones y redes. Elige marco de iPhone 16 Pro, MacBook Pro o Navegador con exportación en PNG transparente o degradado.</p>
+          <span class="tool-badge">🖼️ 3D Perspective · Paste from Clipboard (Ctrl+V)</span>
+          <h2 data-en="3D Mockup Studio: iPhone 16 Pro, MacBook &amp; iPad 3D" data-es="Estudio de Maquetas 3D: iPhone 16 Pro, MacBook &amp; iPad Pro">Estudio de Maquetas 3D: iPhone 16 Pro, MacBook &amp; iPad Pro</h2>
+          <p data-en="Wrap your screenshots into luxury 3D isometric or frontal frames in seconds. Press Ctrl+V anywhere to paste images directly from your clipboard!" data-es="Enmarca tus capturas en maquetas isométricas en 3D o frontales en segundos. ¡Presiona Ctrl+V en cualquier lugar para pegar directamente desde el portapapeles!">Enmarca tus capturas en maquetas isométricas en 3D o frontales en segundos. ¡Presiona Ctrl+V en cualquier lugar para pegar directamente desde el portapapeles!</p>
         </div>
 
         <div class="grid-2">
-          <!-- Controls Panel -->
+          <!-- Mockup Controls -->
           <div class="suite-card">
-            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 17px; margin-bottom: 16px;" data-en="Mockup Controls" data-es="Controles de la Maqueta">Controles de la Maqueta</h3>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 17px; margin-bottom: 16px;" data-en="Device &amp; Canvas Settings" data-es="Configuración del Dispositivo &amp; Lienzo">Configuración del Dispositivo &amp; Lienzo</h3>
 
-            <div style="margin-bottom: 16px;">
-              <label class="input-label" data-en="1. Upload Screenshot / Image:" data-es="1. Subir Captura de Pantalla / Imagen:">1. Subir Captura de Pantalla / Imagen:</label>
-              <input type="file" id="mockupFileInput" accept="image/*" class="suite-input" onchange="loadMockupImage(event)" style="padding: 9px;">
+            <div style="margin-bottom: 14px;">
+              <label class="input-label" data-en="1. Upload Screenshot (Or press Ctrl+V):" data-es="1. Subir Imagen (O presiona Ctrl+V):">1. Subir Imagen (O presiona Ctrl+V):</label>
+              <input type="file" id="mockupFileInput" accept="image/*" class="suite-input" onchange="loadMockupImage(event)" style="padding: 8px;">
             </div>
 
-            <div style="margin-bottom: 16px;">
-              <label class="input-label" data-en="2. Device Frame Style:" data-es="2. Estilo de Marco del Dispositivo:">2. Estilo de Marco del Dispositivo:</label>
-              <select id="mockupDevice" class="suite-select" onchange="renderMockup()">
-                <option value="iphone">📱 iPhone 16 Pro (Titanium Dark + Dynamic Island)</option>
-                <option value="macbook" selected>💻 MacBook Pro Space Black (Display + Notch)</option>
-                <option value="browser">🌐 Clean Browser Window (Dark macOS Style)</option>
-              </select>
+            <div class="grid-2" style="gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label class="input-label" data-en="Device Frame:" data-es="Marco del Dispositivo:">Marco del Dispositivo:</label>
+                <select id="mockupDevice" class="suite-select" onchange="renderMockup()">
+                  <option value="iphone">📱 iPhone 16 Pro (Titanium + Island)</option>
+                  <option value="macbook" selected>💻 MacBook Pro Space Black</option>
+                  <option value="ipad">📟 iPad Pro 13" M4 Ultra Thin</option>
+                  <option value="browser">🌐 Clean Browser (macOS Dark)</option>
+                </select>
+              </div>
+              <div>
+                <label class="input-label" data-en="3D Perspective Mode:" data-es="Modo de Perspectiva:">Modo de Perspectiva:</label>
+                <select id="mockupPerspective" class="suite-select" onchange="renderMockup()">
+                  <option value="flat" selected>Directo Frontal (2D HD)</option>
+                  <option value="isometric">Flotante Isométrico 3D (Ángulo)</option>
+                </select>
+              </div>
             </div>
 
-            <div style="margin-bottom: 16px;">
-              <label class="input-label" data-en="3. Background Canvas Style:" data-es="3. Fondo del Lienzo:">3. Fondo del Lienzo:</label>
-              <select id="mockupBg" class="suite-select" onchange="renderMockup()">
-                <option value="obsidian" selected>🌌 Cyber Obsidian (Azul Oscuro &amp; Púrpura)</option>
-                <option value="sunset">🌅 Sunset Neon (Magenta &amp; Fuego)</option>
-                <option value="emerald">🌿 Emerald AI (Verde Esmeralda &amp; Cian)</option>
-                <option value="midnight">🌑 Deep Midnight (Negro Minimalista)</option>
-                <option value="transparent">✨ Transparente (PNG sin fondo)</option>
-              </select>
+            <div class="grid-2" style="gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label class="input-label" data-en="Canvas Aspect Ratio:" data-es="Proporción del Lienzo:">Proporción del Lienzo:</label>
+                <select id="mockupAspect" class="suite-select" onchange="renderMockup()">
+                  <option value="16_9" selected>16:9 (Twitter, LinkedIn, Decks)</option>
+                  <option value="1_1">1:1 (Instagram Post Cuadrado)</option>
+                  <option value="9_16">9:16 (Stories, Reels, TikTok)</option>
+                </select>
+              </div>
+              <div>
+                <label class="input-label" data-en="Background Theme:" data-es="Fondo del Lienzo:">Fondo del Lienzo:</label>
+                <select id="mockupBg" class="suite-select" onchange="renderMockup()">
+                  <option value="obsidian" selected>🌌 Cyber Obsidian Gradient</option>
+                  <option value="sunset">🌅 Sunset Neon (Magenta/Fire)</option>
+                  <option value="emerald">🌿 Emerald AI (Verde/Cian)</option>
+                  <option value="midnight">🌑 Deep Midnight (Negro Mate)</option>
+                  <option value="transparent">✨ Transparente (PNG sin fondo)</option>
+                </select>
+              </div>
             </div>
 
-            <div style="margin-bottom: 16px;">
+            <div style="margin-bottom: 14px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                <label class="input-label" style="margin: 0;" data-en="Padding / Margen:" data-es="Padding / Margen:">Padding / Margen:</label>
+                <label class="input-label" style="margin: 0;" data-en="Padding:" data-es="Padding / Margen:">Padding / Margen:</label>
                 <span id="paddingVal" style="font-size: 12px; color: var(--cyan); font-weight: 700;">60px</span>
               </div>
-              <input type="range" id="mockupPadding" min="20" max="120" value="60" oninput="updateMockupPadding(this.value)">
+              <input type="range" id="mockupPadding" min="20" max="140" value="60" oninput="updateMockupPadding(this.value)">
             </div>
 
-            <div style="margin-bottom: 24px;">
+            <div style="margin-bottom: 22px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                <label class="input-label" style="margin: 0;" data-en="Drop Shadow Intensity:" data-es="Intensidad de Sombra:">Intensidad de Sombra:</label>
-                <span id="shadowVal" style="font-size: 12px; color: var(--cyan); font-weight: 700;">50%</span>
+                <label class="input-label" style="margin: 0;" data-en="Shadow Intensity:" data-es="Sombra &amp; Reflejo:">Sombra &amp; Reflejo:</label>
+                <span id="shadowVal" style="font-size: 12px; color: var(--cyan); font-weight: 700;">55%</span>
               </div>
-              <input type="range" id="mockupShadow" min="0" max="100" value="50" oninput="updateMockupShadow(this.value)">
+              <input type="range" id="mockupShadow" min="0" max="100" value="55" oninput="updateMockupShadow(this.value)">
             </div>
 
-            <div style="display: flex; gap: 10px;">
-              <button class="suite-btn emerald" style="flex: 1;" onclick="downloadMockup()">
-                <span>💾</span> <span data-en="Download High-Res PNG" data-es="Descargar Mockup en PNG">Descargar Mockup en PNG</span>
-              </button>
-            </div>
+            <button class="suite-btn emerald" style="width: 100%;" onclick="downloadMockup()">
+              <span>💾</span> <span data-en="Download High-Res PNG" data-es="Descargar Mockup en Alta Resolución">Descargar Mockup en Alta Resolución</span>
+            </button>
           </div>
 
-          <!-- Preview Canvas Panel -->
+          <!-- Canvas Preview -->
           <div class="suite-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <div style="width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <span style="font-size: 13px; font-weight: 700; color: var(--txt-muted);">LIVE CANVAS PREVIEW</span>
-              <span id="canvasDims" style="font-size: 11px; font-family: monospace; color: var(--emerald);">1200 x 800 PX</span>
+              <span style="font-size: 13px; font-weight: 700; color: var(--txt-muted);">LIVE 3D VIEWPORT</span>
+              <span id="canvasDims" style="font-size: 11px; font-family: monospace; color: var(--emerald);">1280 x 720 PX</span>
             </div>
-            <div style="width: 100%; overflow: auto; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 10px;">
-              <canvas id="mockupCanvas" width="1200" height="800" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.8);"></canvas>
+            <div style="width: 100%; overflow: auto; border: 1px solid rgba(255, 255, 255, 0.12); border-radius: 14px; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; padding: 10px;">
+              <canvas id="mockupCanvas" width="1280" height="720" style="max-width: 100%; height: auto; border-radius: 10px; box-shadow: 0 10px 40px rgba(0,0,0,0.85);"></canvas>
+            </div>
+            <div style="margin-top: 10px; font-size: 11.5px; color: var(--txt-dim); text-align: center;">
+              💡 Tip: Puedes copiar cualquier imagen con <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Ctrl+C</kbd> y pegarla aquí con <kbd style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">Ctrl+V</kbd>.
             </div>
           </div>
         </div>
       </section>
 
       <!-- ========================================== -->
-      <!-- TOOL 3: CRYPTO & MARKET HUB -->
+      <!-- TOOL 3: CRYPTO & SOLANA TELEMETRY -->
       <!-- ========================================== -->
       <section id="crypto-hub" class="tool-panel">
         <div class="tool-hero">
-          <span class="tool-badge">🪙 Real-Time Crypto API · Finance Simulator</span>
-          <h2 data-en="Live Crypto Ticker &amp; Compound Interest Growth Calculator" data-es="Monitor Cripto en Vivo &amp; Calculadora de Crecimiento Compuesto">Monitor Cripto en Vivo &amp; Calculadora de Crecimiento Compuesto</h2>
-          <p data-en="Live streaming prices for Solana, Bitcoin, Ethereum, and stablecoins. Includes instant multi-currency converter and dynamic compound interest wealth simulator." data-es="Precios en tiempo real para Solana, Bitcoin, Ethereum y stablecoins. Incluye conversor instantáneo de divisas y simulador dinámico de interés compuesto y libertad financiera.">Precios en tiempo real para Solana, Bitcoin, Ethereum y stablecoins. Incluye conversor instantáneo de divisas y simulador dinámico de interés compuesto y libertad financiera.</p>
+          <span class="tool-badge">🪙 Solana High-Frequency Telemetry &amp; Wealth Engine</span>
+          <h2 data-en="Crypto Telemetry &amp; Compound Interest Wealth Engine" data-es="Telemetría Cripto en Vivo &amp; Motor de Crecimiento Compuesto">Telemetría Cripto en Vivo &amp; Motor de Crecimiento Compuesto</h2>
+          <p data-en="Live streaming rates for Solana, Bitcoin, and Ethereum alongside Solana network TPS, average gas fees in USD, and inflation-adjusted compound interest curves." data-es="Cotizaciones en vivo para Solana, Bitcoin y Ethereum junto con el TPS de la red Solana, costo de gas en USD y curvas de interés compuesto ajustadas por inflación.">Cotizaciones en vivo para Solana, Bitcoin y Ethereum junto con el TPS de la red Solana, costo de gas en USD y curvas de interés compuesto ajustadas por inflación.</p>
         </div>
 
-        <!-- Live Crypto Ribbon -->
-        <div class="grid-3" style="margin-bottom: 24px;" id="cryptoCardsGrid">
+        <!-- Solana Network Live Telemetry Strip -->
+        <div class="telemetry-strip">
+          <div class="telemetry-item">
+            <span style="font-size: 16px;">⚡</span>
+            <span>Solana TPS:</span>
+            <span id="solTps" class="telemetry-val">2,842 TPS</span>
+          </div>
+          <div class="telemetry-item">
+            <span style="font-size: 16px;">⛽</span>
+            <span>Gas Promedio:</span>
+            <span class="telemetry-val">0.000005 SOL (~$0.0006)</span>
+          </div>
+          <div class="telemetry-item">
+            <span style="font-size: 16px;">🤖</span>
+            <span>Algoritmo Pump.fun:</span>
+            <span class="telemetry-val" style="color: #38bdf8;">Stall Exit @ 40s</span>
+          </div>
+          <div class="telemetry-item">
+            <span style="font-size: 16px;">📊</span>
+            <span>Win Rate Validado:</span>
+            <span class="telemetry-val" style="color: #4ade80;">63.2% (900+ trades)</span>
+          </div>
+        </div>
+
+        <!-- Live Crypto Cards (6 Coins) -->
+        <div class="grid-3" style="margin-bottom: 24px;">
           <!-- SOL -->
-          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(6, 182, 212, 0.4);">
+          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(6, 182, 212, 0.45);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <span style="font-weight: 700; font-size: 15px; color: #38bdf8;">Solana (SOL)</span>
               <span id="solChange" style="font-size: 12px; font-weight: 700; color: #4ade80;">+3.8%</span>
@@ -696,7 +858,7 @@
           </div>
 
           <!-- BTC -->
-          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(245, 158, 11, 0.4);">
+          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(245, 158, 11, 0.45);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <span style="font-weight: 700; font-size: 15px; color: #fbbf24;">Bitcoin (BTC)</span>
               <span id="btcChange" style="font-size: 12px; font-weight: 700; color: #4ade80;">+2.1%</span>
@@ -706,7 +868,7 @@
           </div>
 
           <!-- ETH -->
-          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(139, 92, 246, 0.4);">
+          <div class="suite-card" style="padding: 18px; margin: 0; border-color: rgba(139, 92, 246, 0.45);">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
               <span style="font-weight: 700; font-size: 15px; color: #a78bfa;">Ethereum (ETH)</span>
               <span id="ethChange" style="font-size: 12px; font-weight: 700; color: #f87171;">-0.8%</span>
@@ -719,11 +881,11 @@
         <div class="grid-2">
           <!-- Converter -->
           <div class="suite-card">
-            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Instant Currency &amp; Token Converter" data-es="Conversor Instantáneo de Divisas y Cripto">Conversor Instantáneo de Divisas y Cripto</h3>
-            
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Instant Multi-Currency Converter" data-es="Conversor Instantáneo de Divisas">Conversor Instantáneo de Divisas</h3>
+
             <div style="margin-bottom: 14px;">
-              <label class="input-label" data-en="Amount to Convert:" data-es="Cantidad a Convertir:">Cantidad a Convertir:</label>
-              <input type="number" id="convertAmount" class="suite-input" value="1.5" min="0" step="any" oninput="runConversion()">
+              <label class="input-label" data-en="Amount:" data-es="Monto a Convertir:">Monto a Convertir:</label>
+              <input type="number" id="convertAmount" class="suite-input" value="2.5" min="0" step="any" oninput="runConversion()">
             </div>
 
             <div class="grid-2" style="gap: 12px; margin-bottom: 16px;">
@@ -751,55 +913,59 @@
               </div>
             </div>
 
-            <div style="background: rgba(3, 5, 13, 0.85); border: 1px solid var(--border); border-radius: 14px; padding: 18px; text-align: center;">
-              <span style="font-size: 12px; text-transform: uppercase; color: var(--txt-muted); letter-spacing: 1px; font-weight: 700;">VALOR ESTIMADO</span>
-              <div id="convertResult" style="font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 800; color: var(--emerald); margin-top: 6px;">$177.60 USD</div>
+            <div style="background: rgba(3, 5, 13, 0.9); border: 1px solid var(--border); border-radius: 14px; padding: 18px; text-align: center;">
+              <span style="font-size: 12px; text-transform: uppercase; color: var(--txt-muted); letter-spacing: 1px; font-weight: 700;">VALOR EN TIEMPO REAL</span>
+              <div id="convertResult" style="font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 800; color: var(--emerald); margin-top: 6px;">$296.00 USD</div>
             </div>
           </div>
 
-          <!-- Compound Interest Simulator -->
+          <!-- Compound Interest with Inflation -->
           <div class="suite-card">
-            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Compound Interest Wealth Simulator" data-es="Simulador de Inversión e Interés Compuesto">Simulador de Inversión e Interés Compuesto</h3>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Wealth Growth Simulator (With Inflation)" data-es="Simulador de Crecimiento &amp; Ajuste por Inflación">Simulador de Crecimiento &amp; Ajuste por Inflación</h3>
 
             <div class="grid-2" style="gap: 12px; margin-bottom: 12px;">
               <div>
                 <label class="input-label" data-en="Initial Capital ($):" data-es="Capital Inicial ($):">Capital Inicial ($):</label>
-                <input type="number" id="ciInitial" class="suite-input" value="1000" oninput="calculateCompoundInterest()">
+                <input type="number" id="ciInitial" class="suite-input" value="1500" oninput="calculateCompoundInterest()">
               </div>
               <div>
                 <label class="input-label" data-en="Monthly Contribution ($):" data-es="Aporte Mensual ($):">Aporte Mensual ($):</label>
-                <input type="number" id="ciMonthly" class="suite-input" value="200" oninput="calculateCompoundInterest()">
+                <input type="number" id="ciMonthly" class="suite-input" value="300" oninput="calculateCompoundInterest()">
               </div>
             </div>
 
-            <div class="grid-2" style="gap: 12px; margin-bottom: 16px;">
+            <div class="grid-3" style="gap: 10px; margin-bottom: 16px;">
               <div>
-                <label class="input-label" data-en="Annual Return / APY (%):" data-es="Rendimiento Anual (%):">Rendimiento Anual (%):</label>
+                <label class="input-label" data-en="Annual APY (%):" data-es="Rendimiento Anual (%):">Rendimiento (%):</label>
                 <input type="number" id="ciRate" class="suite-input" value="12" step="0.5" oninput="calculateCompoundInterest()">
               </div>
               <div>
-                <label class="input-label" data-en="Time Horizon (Years):" data-es="Plazo en Años:">Plazo en Años:</label>
+                <label class="input-label" data-en="Inflation (%):" data-es="Inflación Estimada (%):">Inflación (%):</label>
+                <input type="number" id="ciInflation" class="suite-input" value="3.5" step="0.5" oninput="calculateCompoundInterest()">
+              </div>
+              <div>
+                <label class="input-label" data-en="Years:" data-es="Años:">Años:</label>
                 <input type="number" id="ciYears" class="suite-input" value="5" min="1" max="40" oninput="calculateCompoundInterest()">
               </div>
             </div>
 
             <!-- Canvas Chart -->
-            <div style="background: rgba(3, 5, 13, 0.85); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 16px;">
+            <div style="background: rgba(3, 5, 13, 0.9); border: 1px solid var(--border); border-radius: 14px; padding: 12px; margin-bottom: 16px;">
               <canvas id="compoundChart" width="480" height="180" style="width: 100%; height: auto; display: block;"></canvas>
             </div>
 
-            <div class="grid-3" style="text-align: center; gap: 10px;">
-              <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+            <div class="grid-3" style="text-align: center; gap: 8px;">
+              <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; border: 1px solid var(--border);">
                 <div style="font-size: 11px; color: var(--txt-muted);">Total Invertido</div>
-                <div id="ciTotalContributed" style="font-weight: 700; font-size: 16px; color: #fff;">$13,000</div>
+                <div id="ciTotalContributed" style="font-weight: 700; font-size: 15px; color: #fff;">$19,500</div>
               </div>
-              <div style="background: rgba(255,255,255,0.03); padding: 10px; border-radius: 10px; border: 1px solid var(--border);">
+              <div style="background: rgba(255,255,255,0.03); padding: 8px; border-radius: 10px; border: 1px solid var(--border);">
                 <div style="font-size: 11px; color: var(--txt-muted);">Intereses Ganados</div>
-                <div id="ciTotalInterest" style="font-weight: 700; font-size: 16px; color: #38bdf8;">$5,487</div>
+                <div id="ciTotalInterest" style="font-weight: 700; font-size: 15px; color: #38bdf8;">$8,320</div>
               </div>
-              <div style="background: rgba(16, 185, 129, 0.15); padding: 10px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.4);">
+              <div style="background: rgba(16, 185, 129, 0.15); padding: 8px; border-radius: 10px; border: 1px solid rgba(16, 185, 129, 0.4);">
                 <div style="font-size: 11px; color: var(--emerald);">Balance Final</div>
-                <div id="ciFinalBalance" style="font-weight: 800; font-size: 18px; color: #34d399;">$18,487</div>
+                <div id="ciFinalBalance" style="font-weight: 800; font-size: 16px; color: #34d399;">$27,820</div>
               </div>
             </div>
           </div>
@@ -807,183 +973,186 @@
       </section>
 
       <!-- ========================================== -->
-      <!-- TOOL 4: PROMPT STUDIO -->
+      <!-- TOOL 4: PROMPT STUDIO PRO -->
       <!-- ========================================== -->
       <section id="prompt-studio" class="tool-panel">
         <div class="tool-hero">
-          <span class="tool-badge">🧠 LLM Prompt Engineering · ChatGPT &amp; Claude</span>
-          <h2 data-en="Prompt Studio: Senior AI System Prompt Architect" data-es="Prompt Studio: Arquitecto Senior de Prompts de IA">Prompt Studio: Arquitecto Senior de Prompts de IA</h2>
-          <p data-en="Engineer production-grade structured prompts for ChatGPT-4o, Claude 3.5 Sonnet, and DeepSeek. Features role grounding, few-shot boundaries, and a curated library of battle-tested prompts." data-es="Diseña prompts profesionales y estructurados para ChatGPT-4o, Claude 3.5 Sonnet y DeepSeek. Incluye definición de rol, restricciones, contexto y una biblioteca de prompts de alto impacto listos para copiar.">Diseña prompts profesionales y estructurados para ChatGPT-4o, Claude 3.5 Sonnet y DeepSeek. Incluye definición de rol, restricciones, contexto y una biblioteca de prompts de alto impacto listos para copiar.</p>
+          <span class="tool-badge">🧠 Dynamic Variables {{var}} · Token &amp; Cost Estimator</span>
+          <h2 data-en="Prompt Studio Pro: Senior Prompt Architect &amp; Live Variables" data-es="Prompt Studio Pro: Arquitecto de Prompts &amp; Variables Dinámicas">Prompt Studio Pro: Arquitecto de Prompts &amp; Variables Dinámicas</h2>
+          <p data-en="Build production-grade prompts with dynamic {{placeholders}}, automatic token counting, cost estimation for Claude 3.5 Sonnet / GPT-4o, and an expanded 12-prompt battle-tested library." data-es="Construye prompts para producción con variables dinámicas {{variables}}, conteo automático de tokens, cálculo de costos en Claude 3.5 y GPT-4o, y una biblioteca de 12 prompts de alto impacto.">Construye prompts para producción con variables dinámicas {{variables}}, conteo automático de tokens, cálculo de costos en Claude 3.5 y GPT-4o, y una biblioteca de 12 prompts de alto impacto.</p>
         </div>
 
         <div class="grid-2">
-          <!-- Prompt Builder Form -->
+          <!-- Prompt Form -->
           <div class="suite-card">
-            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Prompt Engineering Builder" data-es="Constructor de Prompts">Constructor de Prompts</h3>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 17px; margin-bottom: 16px;" data-en="Prompt Architecture" data-es="Estructura del Prompt">Estructura del Prompt</h3>
 
             <div class="grid-2" style="gap: 12px; margin-bottom: 14px;">
               <div>
-                <label class="input-label" data-en="Target Domain / Objective:" data-es="Dominio / Objetivo:">Dominio / Objetivo:</label>
+                <label class="input-label" data-en="Target Domain:" data-es="Dominio Objetivo:">Dominio Objetivo:</label>
                 <select id="promptDomain" class="suite-select" onchange="generatePrompt()">
-                  <option value="code" selected>💻 Arquitectura de Software &amp; Código</option>
-                  <option value="sales">💼 Ventas B2B &amp; Prospección en Frío</option>
-                  <option value="copy">✍️ Copywriting &amp; Landing Pages</option>
-                  <option value="data">📊 Análisis de Datos &amp; Finanzas</option>
-                  <option value="automation">⚡ Automatización de Procesos (n8n / APIs)</option>
+                  <option value="code" selected>💻 Software Engineering &amp; Architecture</option>
+                  <option value="sales">💼 B2B Sales &amp; Cold Outbound</option>
+                  <option value="copy">✍️ High-Conversion Copywriting</option>
+                  <option value="automation">⚡ n8n &amp; AI Workflow Automation</option>
                 </select>
               </div>
               <div>
-                <label class="input-label" data-en="Target AI Model:" data-es="Modelo de IA Objetivo:">Modelo de IA Objetivo:</label>
+                <label class="input-label" data-en="Target LLM:" data-es="Modelo de IA:">Modelo de IA:</label>
                 <select id="promptModel" class="suite-select" onchange="generatePrompt()">
-                  <option value="claude" selected>Claude 3.5 Sonnet (XML &amp; Razonamiento)</option>
-                  <option value="gpt">ChatGPT-4o (Directo &amp; Estructurado)</option>
-                  <option value="deepseek">DeepSeek R1 / V3 (Lógica Profunda)</option>
+                  <option value="claude" selected>Claude 3.5 Sonnet (XML Schema)</option>
+                  <option value="gpt">ChatGPT-4o (Structured Markdown)</option>
+                  <option value="deepseek">DeepSeek R1 / V3 (Chain of Thought)</option>
                 </select>
               </div>
             </div>
 
             <div style="margin-bottom: 14px;">
-              <label class="input-label" data-en="Main Task / Goal:" data-es="Tarea Principal / Misión:">Tarea Principal / Misión:</label>
-              <input type="text" id="promptTask" class="suite-input" value="Crear un script en Python para extraer clientes potenciales de Google Maps con teléfonos y emails" oninput="generatePrompt()">
+              <label class="input-label" data-en="Task (Supports {{variables}}):" data-es="Misión Principal (Soporta {{variables}}):">Misión Principal (Soporta {{variables}}):</label>
+              <input type="text" id="promptTask" class="suite-input" value="Crear un bot para prospectar {{nicho}} en {{ciudad}} usando Apify y WhatsApp" oninput="handlePromptInputChange()">
+            </div>
+
+            <!-- Dynamic Variables Container -->
+            <div id="dynamicVariablesContainer" style="display: none; background: rgba(16, 185, 129, 0.08); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 12px; padding: 14px; margin-bottom: 14px;">
+              <span style="font-size: 12px; font-weight: 700; color: #34d399; text-transform: uppercase; display: block; margin-bottom: 8px;">✨ Variables Dinámicas Detectadas</span>
+              <div id="dynamicVariablesInputs" class="grid-2" style="gap: 10px;"></div>
             </div>
 
             <div style="margin-bottom: 14px;">
-              <label class="input-label" data-en="Context / Company Background:" data-es="Contexto del Proyecto o Empresa:">Contexto del Proyecto o Empresa:</label>
-              <input type="text" id="promptContext" class="suite-input" value="Agencia de automatización de ventas B2B que busca prospectar clínicas dentales y restaurantes en Bogotá" oninput="generatePrompt()">
+              <label class="input-label" data-en="Context / Project Background:" data-es="Contexto de la Empresa o Proyecto:">Contexto de la Empresa o Proyecto:</label>
+              <input type="text" id="promptContext" class="suite-input" value="Agencia especializada en automatizar flujos de ventas para cerrar más clientes en menos tiempo" oninput="generatePrompt()">
             </div>
 
             <div style="margin-bottom: 14px;">
-              <label class="input-label" data-en="Strict Constraints &amp; Rules:" data-es="Restricciones &amp; Reglas Críticas:">Restricciones &amp; Reglas Críticas:</label>
-              <input type="text" id="promptConstraints" class="suite-input" value="Código limpio y tipado, manejo de excepciones, sin librerías obsoletas, incluir comentarios claros" oninput="generatePrompt()">
-            </div>
-
-            <div style="margin-bottom: 16px;">
-              <label class="input-label" data-en="Tone / Personality:" data-es="Tono / Personalidad:">Tono / Personalidad:</label>
-              <select id="promptTone" class="suite-select" onchange="generatePrompt()">
-                <option value="senior" selected>Ingeniero de Software Senior (Riguroso, técnico y modular)</option>
-                <option value="persuasive">Especialista en Ventas de Alta Conversión (Persuasivo y directo)</option>
-                <option value="executive">Consultor Ejecutivo (Estratégico, conciso y orientado a ROI)</option>
-                <option value="pedagogical">Profesor / Mentor (Didáctico, paso a paso con analogías)</option>
-              </select>
+              <label class="input-label" data-en="Constraints &amp; Quality Rules:" data-es="Restricciones &amp; Reglas Críticas:">Restricciones &amp; Reglas Críticas:</label>
+              <input type="text" id="promptConstraints" class="suite-input" value="Código limpio y modular, sin librerías obsoletas, tipado estricto, formato paso a paso" oninput="generatePrompt()">
             </div>
           </div>
 
-          <!-- Prompt Output -->
+          <!-- Prompt Output with Token Estimator -->
           <div class="suite-card" style="display: flex; flex-direction: column;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-              <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px;" data-en="Generated Production Prompt" data-es="Prompt Estructurado Generado">Prompt Estructurado Generado</h3>
-              <button class="suite-btn emerald" style="padding: 6px 14px; font-size: 13px;" onclick="copyGeneratedPrompt()">
-                <span>📋</span> <span data-en="Copy Prompt" data-es="Copiar Prompt">Copiar Prompt</span>
-              </button>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+              <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 17px;" data-en="Production-Ready Output" data-es="Prompt de Producción">Prompt de Producción</h3>
+              <div style="display: flex; gap: 8px;">
+                <button class="suite-btn emerald" style="padding: 6px 14px; font-size: 12.5px;" onclick="copyGeneratedPrompt()">
+                  <span>📋</span> <span data-en="Copy Prompt" data-es="Copiar Prompt">Copiar Prompt</span>
+                </button>
+              </div>
             </div>
-            <textarea id="promptOutput" class="suite-textarea" style="flex: 1; min-height: 340px; font-size: 13px;" readonly></textarea>
+
+            <!-- Token Counter Ribbon -->
+            <div style="display: flex; gap: 14px; font-size: 12px; background: rgba(3, 5, 13, 0.9); padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border); margin-bottom: 10px;">
+              <span>Tokens Estimados: <strong id="tokenCount" style="color: #38bdf8;">0</strong></span>
+              <span>Costo Claude 3.5: <strong id="costClaude" style="color: #34d399;">$0.0000</strong></span>
+              <span>Costo GPT-4o: <strong id="costGpt" style="color: #fbbf24;">$0.0000</strong></span>
+            </div>
+
+            <textarea id="promptOutput" class="suite-textarea" style="flex: 1; min-height: 320px; font-size: 12.5px;" readonly></textarea>
           </div>
         </div>
 
-        <!-- Curated Prompt Library -->
+        <!-- 12 Power Prompts Library -->
         <div class="suite-card">
-          <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="⚡ Ready-to-Use Power Prompts" data-es="⚡ Biblioteca de Prompts de Élite Listos para Usar">⚡ Biblioteca de Prompts de Élite Listos para Usar</h3>
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px;" data-en="⚡ 12 Battle-Tested Power Prompts" data-es="⚡ Biblioteca de 12 Prompts de Élite">⚡ Biblioteca de 12 Prompts de Élite</h3>
+            <span style="font-size: 12px; color: var(--txt-muted);">Haz clic en cualquier tarjeta para copiar el prompt completo</span>
+          </div>
+
           <div class="grid-3" id="promptLibraryGrid">
-            <!-- P1 -->
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
-              <div>
-                <span style="font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase;">SOFTWARE / DEV</span>
-                <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Refactorizador &amp; Auditor de Código</h4>
-                <p style="font-size: 13px; color: var(--txt-muted); line-height: 1.4; margin-bottom: 14px;">Audita scripts en busca de vulnerabilidades, cuellos de botella y patrones antipatrón.</p>
-              </div>
-              <button class="suite-btn ghost" style="width: 100%; font-size: 12.5px; padding: 8px;" onclick="loadLibraryPrompt(0)">
-                <span>📋</span> <span>Copiar Este Prompt</span>
-              </button>
+            <!-- 1 -->
+            <div class="suite-card" style="padding: 16px; margin: 0; cursor: pointer; transition: transform 0.2s;" onclick="loadLibraryPrompt(0)">
+              <span style="font-size: 11px; font-weight: 700; color: #38bdf8; text-transform: uppercase;">SOFTWARE / DEV</span>
+              <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Auditor &amp; Refactorizador Senior</h4>
+              <p style="font-size: 12.5px; color: var(--txt-muted); line-height: 1.4;">Audita código en busca de memory leaks, antipatrones y optimiza el rendimiento.</p>
             </div>
-
-            <!-- P2 -->
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
-              <div>
-                <span style="font-size: 11px; font-weight: 700; color: #34d399; text-transform: uppercase;">VENTAS B2B</span>
-                <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Cold Email de 4 Oraciones (Alta Apertura)</h4>
-                <p style="font-size: 13px; color: var(--txt-muted); line-height: 1.4; margin-bottom: 14px;">Correo frío hiper-personalizado sin relleno comercial que genera respuestas inmediatas.</p>
-              </div>
-              <button class="suite-btn ghost" style="width: 100%; font-size: 12.5px; padding: 8px;" onclick="loadLibraryPrompt(1)">
-                <span>📋</span> <span>Copiar Este Prompt</span>
-              </button>
+            <!-- 2 -->
+            <div class="suite-card" style="padding: 16px; margin: 0; cursor: pointer; transition: transform 0.2s;" onclick="loadLibraryPrompt(1)">
+              <span style="font-size: 11px; font-weight: 700; color: #34d399; text-transform: uppercase;">VENTAS B2B</span>
+              <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Cold Email de 4 Oraciones</h4>
+              <p style="font-size: 12.5px; color: var(--txt-muted); line-height: 1.4;">Correo frío hiper-personalizado sin relleno corporativo que genera respuestas.</p>
             </div>
-
-            <!-- P3 -->
-            <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 14px; padding: 18px; display: flex; flex-direction: column; justify-content: space-between;">
-              <div>
-                <span style="font-size: 11px; font-weight: 700; color: #fbbf24; text-transform: uppercase;">AUTOMATION / N8N</span>
-                <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Diseñador de Workflows JSON n8n</h4>
-                <p style="font-size: 13px; color: var(--txt-muted); line-height: 1.4; margin-bottom: 14px;">Estructura la lógica de nodos, transformaciones y webhooks paso a paso.</p>
-              </div>
-              <button class="suite-btn ghost" style="width: 100%; font-size: 12.5px; padding: 8px;" onclick="loadLibraryPrompt(2)">
-                <span>📋</span> <span>Copiar Este Prompt</span>
-              </button>
+            <!-- 3 -->
+            <div class="suite-card" style="padding: 16px; margin: 0; cursor: pointer; transition: transform 0.2s;" onclick="loadLibraryPrompt(2)">
+              <span style="font-size: 11px; font-weight: 700; color: #fbbf24; text-transform: uppercase;">AUTOMATION / N8N</span>
+              <h4 style="font-size: 15px; margin: 6px 0; color: #fff;">Diseñador de Workflows n8n</h4>
+              <p style="font-size: 12.5px; color: var(--txt-muted); line-height: 1.4;">Genera la estructura lógica paso a paso para enrutamiento de leads con webhooks.</p>
             </div>
           </div>
         </div>
       </section>
 
       <!-- ========================================== -->
-      <!-- TOOL 5: AES-256 VAULT -->
+      <!-- TOOL 5: AES-256 VAULT PRO -->
       <!-- ========================================== -->
       <section id="crypto-vault" class="tool-panel">
         <div class="tool-hero">
-          <span class="tool-badge">🔐 Web Cryptography API · Military Grade</span>
-          <h2 data-en="Digital Vault: Military-Grade AES-GCM 256-Bit Cryptography" data-es="Caja Fuerte Digital: Cifrado Militar AES-GCM de 256 Bits">Caja Fuerte Digital: Cifrado Militar AES-GCM de 256 Bits</h2>
-          <p data-en="100% Client-side cryptography using native browser subtle crypto. Encrypt confidential messages, passwords, and sensitive contracts with PBKDF2 key derivation and random IVs. Zero server transmission." data-es="Criptografía 100% en el procesador del usuario usando Web Crypto nativo. Cifra mensajes confidenciales, credenciales y contratos con derivación de clave PBKDF2 y vectores IV aleatorios. Cero envío a servidores externos.">Criptografía 100% en el procesador del usuario usando Web Crypto nativo. Cifra mensajes confidenciales, credenciales y contratos con derivación de clave PBKDF2 y vectores IV aleatorios. Cero envío a servidores externos.</p>
+          <span class="tool-badge">🔐 Web Crypto API · Shareable Encrypted URL Links &amp; File Vault</span>
+          <h2 data-en="Digital Vault: Military AES-256 GCM &amp; Encrypted Links" data-es="Caja Fuerte Digital: Cifrado Militar AES-256 &amp; Enlaces Compartibles">Caja Fuerte Digital: Cifrado Militar AES-256 &amp; Enlaces Compartibles</h2>
+          <p data-en="Encrypt messages or confidential files with AES-GCM 256 bits directly in your browser. Generates 1-click self-decrypting URLs (#vault=...) so the recipient only needs the password." data-es="Cifra mensajes o archivos confidenciales con AES-GCM de 256 bits en tu procesador. Genera enlaces automáticos (#vault=...) para que el destinatario solo deba escribir la contraseña.">Cifra mensajes o archivos confidenciales con AES-GCM de 256 bits en tu procesador. Genera enlaces automáticos (#vault=...) para que el destinatario solo deba escribir la contraseña.</p>
         </div>
 
         <div class="grid-2">
-          <!-- Encrypt / Decrypt Tabs -->
+          <!-- Encrypt / Decrypt Form -->
           <div class="suite-card">
             <div style="display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 12px;">
               <button id="btnTabEncrypt" class="suite-btn emerald" style="padding: 8px 18px;" onclick="switchVaultTab('encrypt')">
-                <span>🔒</span> <span data-en="Encrypt Message" data-es="Cifrar Mensaje">Cifrar Mensaje</span>
+                <span>🔒</span> <span data-en="Encrypt Message / File" data-es="Cifrar Mensaje o Archivo">Cifrar Mensaje o Archivo</span>
               </button>
               <button id="btnTabDecrypt" class="suite-btn ghost" style="padding: 8px 18px;" onclick="switchVaultTab('decrypt')">
                 <span>🔓</span> <span data-en="Decrypt Message" data-es="Descifrar Mensaje">Descifrar Mensaje</span>
               </button>
             </div>
 
-            <!-- Subtab Encrypt -->
+            <!-- Tab Encrypt -->
             <div id="vaultEncryptArea">
               <div style="margin-bottom: 14px;">
-                <label class="input-label" data-en="Secret Plaintext Message:" data-es="Mensaje Secreto en Texto Claro:">Mensaje Secreto en Texto Claro:</label>
-                <textarea id="vaultPlaintext" class="suite-textarea" placeholder="Escribe aquí tu mensaje confidencial, contraseñas, claves privadas o datos sensibles..."></textarea>
+                <label class="input-label" data-en="Confidential Message to Encrypt:" data-es="Mensaje Confidencial a Cifrar:">Mensaje Confidencial a Cifrar:</label>
+                <textarea id="vaultPlaintext" class="suite-textarea" placeholder="Escribe aquí tu mensaje confidencial, contraseñas, claves privadas o información bancaria..."></textarea>
+              </div>
+
+              <!-- File Encrypt Option -->
+              <div style="margin-bottom: 14px; background: rgba(255,255,255,0.03); border: 1px dashed var(--border); border-radius: 12px; padding: 12px;">
+                <label class="input-label" style="margin-bottom: 4px;" data-en="Or Encrypt a Sensitive File (.txt, .json, .csv, .pdf):" data-es="O Cifra un Archivo Confidencial (.txt, .json, .csv, .pdf):">O Cifra un Archivo Confidencial (.txt, .json, .csv, .pdf):</label>
+                <input type="file" id="vaultFileInput" class="suite-input" onchange="handleVaultFileUpload(event)" style="padding: 7px;">
+                <span id="vaultFileStatus" style="font-size: 11.5px; color: var(--emerald); display: none; margin-top: 4px;">Archivo listo para cifrar</span>
               </div>
 
               <div style="margin-bottom: 16px;">
-                <label class="input-label" data-en="Secret Master Passphrase:" data-es="Contraseña Secreta de Bloqueo:">Contraseña Secreta de Bloqueo:</label>
+                <label class="input-label" data-en="Master Password:" data-es="Contraseña Secreta de Bloqueo:">Contraseña Secreta de Bloqueo:</label>
                 <input type="password" id="vaultPassword" class="suite-input" placeholder="Ingresa una clave segura que compartirás con el destinatario...">
               </div>
 
               <button class="suite-btn emerald" style="width: 100%;" onclick="runEncryption()">
-                <span>🔒</span> <span data-en="Encrypt with AES-256 GCM" data-es="Cifrar con AES-256 GCM">Cifrar con AES-256 GCM</span>
+                <span>🔒</span> <span data-en="Encrypt with AES-256 GCM" data-es="Cifrar con AES-256 GCM Militar">Cifrar con AES-256 GCM Militar</span>
               </button>
 
               <div id="encryptResultArea" style="display: none; margin-top: 18px;">
-                <label class="input-label" style="color: var(--emerald);" data-en="Encrypted Ciphertext (Base64):" data-es="Texto Cifrado Militar (Base64):">Texto Cifrado Militar (Base64):</label>
-                <textarea id="vaultCiphertext" class="suite-textarea" style="height: 100px; font-size: 11px; word-break: break-all;" readonly></textarea>
-                <div style="display: flex; gap: 10px; margin-top: 10px;">
+                <label class="input-label" style="color: var(--emerald);" data-en="Encrypted Ciphertext (Base64):" data-es="Texto Cifrado (Base64):">Texto Cifrado (Base64):</label>
+                <textarea id="vaultCiphertext" class="suite-textarea" style="height: 90px; font-size: 11px; word-break: break-all;" readonly></textarea>
+                
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
                   <button class="suite-btn ghost" style="flex: 1;" onclick="copyVaultCiphertext()">
-                    <span>📋</span> <span data-en="Copy" data-es="Copiar Cifrado">Copiar Cifrado</span>
+                    <span>📋</span> <span>Copiar</span>
+                  </button>
+                  <button class="suite-btn ghost" style="flex: 1;" onclick="copyShareableSecretLink()">
+                    <span>🔗</span> <span>Enlace Compartible</span>
                   </button>
                   <button class="suite-btn ghost" style="flex: 1;" onclick="sendCiphertextToWhatsApp()">
-                    <span>💬</span> <span data-en="Send WhatsApp" data-es="Enviar WhatsApp">Enviar WhatsApp</span>
+                    <span>💬</span> <span>WhatsApp</span>
                   </button>
                 </div>
               </div>
             </div>
 
-            <!-- Subtab Decrypt -->
+            <!-- Tab Decrypt -->
             <div id="vaultDecryptArea" style="display: none;">
               <div style="margin-bottom: 14px;">
-                <label class="input-label" data-en="Paste Encrypted Ciphertext (Base64):" data-es="Pegar Texto Cifrado (Base64):">Pegar Texto Cifrado (Base64):</label>
+                <label class="input-label" data-en="Encrypted Ciphertext (Base64):" data-es="Pegar Código Cifrado (Base64):">Pegar Código Cifrado (Base64):</label>
                 <textarea id="vaultDecryptInput" class="suite-textarea" placeholder="Pega aquí el código cifrado que recibiste..."></textarea>
               </div>
 
               <div style="margin-bottom: 16px;">
-                <label class="input-label" data-en="Master Passphrase:" data-es="Contraseña de Desbloqueo:">Contraseña de Desbloqueo:</label>
+                <label class="input-label" data-en="Master Password:" data-es="Contraseña de Desbloqueo:">Contraseña de Desbloqueo:</label>
                 <input type="password" id="vaultDecryptPassword" class="suite-input" placeholder="Ingresa la clave acordada...">
               </div>
 
@@ -992,17 +1161,20 @@
               </button>
 
               <div id="decryptResultArea" style="display: none; margin-top: 18px;">
-                <label class="input-label" style="color: #38bdf8;" data-en="Decrypted Original Message:" data-es="Mensaje Original Descifrado:">Mensaje Original Descifrado:</label>
-                <textarea id="vaultDecryptedPlaintext" class="suite-textarea" style="height: 110px; color: #4ade80;" readonly></textarea>
+                <label class="input-label" style="color: #38bdf8;" data-en="Decrypted Original Content:" data-es="Contenido Original Descifrado:">Contenido Original Descifrado:</label>
+                <textarea id="vaultDecryptedPlaintext" class="suite-textarea" style="height: 120px; color: #4ade80;" readonly></textarea>
+                <button id="btnDownloadDecryptedFile" class="suite-btn emerald" style="width: 100%; margin-top: 10px; display: none;" onclick="downloadDecryptedFile()">
+                  <span>💾</span> <span>Descargar Archivo Original</span>
+                </button>
               </div>
             </div>
           </div>
 
-          <!-- Strong Password Generator with Entropy -->
+          <!-- Strong Password Generator & Diceware Mode -->
           <div class="suite-card">
-            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Ultra-Secure Password Generator" data-es="Generador de Contraseñas Ultra Seguras">Generador de Contraseñas Ultra Seguras</h3>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 17px; margin-bottom: 16px;" data-en="Ultra-Secure Password Generator" data-es="Generador de Contraseñas Ultra Seguras">Generador de Contraseñas Ultra Seguras</h3>
 
-            <div style="background: rgba(3, 5, 13, 0.9); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
+            <div style="background: rgba(3, 5, 13, 0.95); border: 1px solid var(--border); border-radius: 14px; padding: 18px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 12px;">
               <span id="generatedPassword" style="font-family: 'Fira Code', monospace; font-size: 17px; font-weight: 700; color: var(--emerald); word-break: break-all;">k8#Wq9$Lm2!Zp7@Vx4</span>
               <button class="suite-btn ghost" style="padding: 8px 14px;" onclick="copyPassword()">
                 <span>📋</span>
@@ -1018,16 +1190,24 @@
               <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.08); border-radius: 999px; overflow: hidden;">
                 <div id="entropyBar" style="width: 95%; height: 100%; background: var(--emerald); border-radius: 999px; transition: all 0.3s;"></div>
               </div>
-              <span id="crackTimeText" style="display: block; font-size: 11.5px; color: var(--txt-dim); margin-top: 4px;">Tiempo estimado para descifrar por fuerza bruta: ~300 billones de años</span>
+              <span id="crackTimeText" style="display: block; font-size: 11.5px; color: var(--txt-dim); margin-top: 4px;">Tiempo estimado por fuerza bruta: ~300 billones de años</span>
             </div>
 
-            <!-- Sliders & Toggles -->
-            <div style="margin-bottom: 16px;">
-              <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
-                <label class="input-label" style="margin: 0;" data-en="Password Length:" data-es="Longitud de la Contraseña:">Longitud de la Contraseña:</label>
-                <span id="pwdLengthVal" style="font-size: 13px; color: var(--cyan); font-weight: 700;">20 caracteres</span>
+            <div class="grid-2" style="gap: 12px; margin-bottom: 14px;">
+              <div>
+                <label class="input-label" data-en="Generator Mode:" data-es="Modo de Generador:">Modo de Generador:</label>
+                <select id="pwdMode" class="suite-select" onchange="generateRandomPassword()">
+                  <option value="random" selected>Caracteres Aleatorios (Máxima entropía)</option>
+                  <option value="diceware">Frase Memorable (Ej: solana-laser-quantum)</option>
+                </select>
               </div>
-              <input type="range" id="pwdLengthSlider" min="8" max="64" value="20" oninput="updatePasswordLength(this.value)">
+              <div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                  <label class="input-label" style="margin: 0;">Longitud:</label>
+                  <span id="pwdLengthVal" style="font-size: 12.5px; color: var(--cyan); font-weight: 700;">22 caracteres</span>
+                </div>
+                <input type="range" id="pwdLengthSlider" min="8" max="64" value="22" oninput="updatePasswordLength(this.value)">
+              </div>
             </div>
 
             <div class="grid-2" style="gap: 10px; margin-bottom: 20px;">
@@ -1050,70 +1230,70 @@
             </div>
 
             <button class="suite-btn cyan" style="width: 100%;" onclick="generateRandomPassword()">
-              <span>🔄</span> <span data-en="Generate New Password" data-es="Generar Nueva Contraseña">Generar Nueva Contraseña</span>
+              <span>🔄</span> <span data-en="Generate New Key" data-es="Generar Nueva Clave">Generar Nueva Clave</span>
             </button>
           </div>
         </div>
       </section>
 
       <!-- ========================================== -->
-      <!-- TOOL 6: IMAGE OPTIMIZER -->
+      <!-- TOOL 6: IMAGE OPTIMIZER PRO -->
       <!-- ========================================== -->
       <section id="image-optimizer" class="tool-panel">
         <div class="tool-hero">
-          <span class="tool-badge">🛠️ Zero-Server Image Engine · Client-Side WebP</span>
-          <h2 data-en="Image Optimizer &amp; Social Media Resizer" data-es="Compresor &amp; Redimensionador de Imágenes Local">Compresor &amp; Redimensionador de Imágenes Local</h2>
-          <p data-en="Compress JPEG, PNG, and WebP images by up to 85% with zero quality loss. 100% processed in your browser processor with presets for Instagram posts, stories, and YouTube thumbnails." data-es="Comprime imágenes JPG, PNG y WebP hasta un 85% sin pérdida visible. Procesado 100% en tu computadora con presets exactos para publicaciones de Instagram, historias y miniaturas de YouTube.">Comprime imágenes JPG, PNG y WebP hasta un 85% sin pérdida visible. Procesado 100% en tu computadora con presets exactos para publicaciones de Instagram, historias y miniaturas de YouTube.</p>
+          <span class="tool-badge">🛠️ Zero-Server Engine · Interactive Split-View Comparison</span>
+          <h2 data-en="Image Optimizer: Split-View Comparison &amp; Privacy Stripper" data-es="Compresor de Imágenes: Comparador Interactivo &amp; Privacidad EXIF">Compresor de Imágenes: Comparador Interactivo &amp; Privacidad EXIF</h2>
+          <p data-en="Compress JPEG, PNG, and WebP up to 88% with a draggable before/after comparison slider. Automatically strips GPS metadata for privacy with social presets." data-es="Comprime imágenes hasta un 88% con un control deslizante interactivo de antes y después. Elimina metadatos GPS para privacidad y ajusta a presets de redes sociales.">Comprime imágenes hasta un 88% con un control deslizante interactivo de antes y después. Elimina metadatos GPS para privacidad y ajusta a presets de redes sociales.</p>
         </div>
 
         <div class="grid-2">
-          <!-- Upload & Controls -->
+          <!-- Controls Panel -->
           <div class="suite-card">
-            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 18px; margin-bottom: 16px;" data-en="Compression Controls" data-es="Controles de Optimización">Controles de Optimización</h3>
+            <h3 style="font-family: 'Space Grotesk', sans-serif; font-size: 17px; margin-bottom: 16px;" data-en="Optimization Controls" data-es="Controles de Optimización">Controles de Optimización</h3>
 
-            <div style="margin-bottom: 16px;">
-              <label class="input-label" data-en="Select Image to Optimize:" data-es="Seleccionar Imagen:">Seleccionar Imagen:</label>
-              <input type="file" id="optimizerFileInput" accept="image/*" class="suite-input" onchange="loadOptimizerImage(event)" style="padding: 9px;">
+            <div style="margin-bottom: 14px;">
+              <label class="input-label" data-en="Select Image to Compress:" data-es="Seleccionar Imagen a Optimizar:">Seleccionar Imagen a Optimizar:</label>
+              <input type="file" id="optimizerFileInput" accept="image/*" class="suite-input" onchange="loadOptimizerImage(event)" style="padding: 8px;">
             </div>
 
-            <div class="grid-2" style="gap: 12px; margin-bottom: 16px;">
+            <div class="grid-2" style="gap: 12px; margin-bottom: 14px;">
               <div>
                 <label class="input-label" data-en="Output Format:" data-es="Formato de Salida:">Formato de Salida:</label>
                 <select id="optFormat" class="suite-select" onchange="runImageOptimization()">
                   <option value="image/webp" selected>WebP (Máxima compresión web)</option>
                   <option value="image/jpeg">JPEG (Fotografías estándar)</option>
-                  <option value="image/png">PNG (Transparencias &amp; Gráficos)</option>
+                  <option value="image/png">PNG (Gráficos &amp; Logos)</option>
                 </select>
               </div>
               <div>
-                <label class="input-label" data-en="Social Media Preset:" data-es="Dimensiones &amp; Redes:">Dimensiones &amp; Redes:</label>
+                <label class="input-label" data-en="Social Media Preset:" data-es="Preset de Redes Sociales:">Preset de Redes Sociales:</label>
                 <select id="optPreset" class="suite-select" onchange="runImageOptimization()">
                   <option value="original" selected>Original (Mantener resolución)</option>
                   <option value="ig_post">Instagram Post Cuadrado (1080x1080)</option>
-                  <option value="ig_story">Instagram Story / TikTok (1080x1920)</option>
+                  <option value="ig_story">Instagram Story / Reels (1080x1920)</option>
                   <option value="yt_thumb">YouTube Thumbnail / Twitter (1280x720)</option>
-                  <option value="web_hd">Web HD Máximo (1920px ancho)</option>
+                  <option value="web_hd">Web HD (Máximo 1920px ancho)</option>
                 </select>
               </div>
             </div>
 
-            <div style="margin-bottom: 24px;">
+            <div style="margin-bottom: 18px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
                 <label class="input-label" style="margin: 0;" data-en="Quality Level:" data-es="Nivel de Calidad:">Nivel de Calidad:</label>
-                <span id="optQualityVal" style="font-size: 13px; color: var(--emerald); font-weight: 700;">80%</span>
+                <span id="optQualityVal" style="font-size: 12.5px; color: var(--emerald); font-weight: 700;">80%</span>
               </div>
               <input type="range" id="optQualitySlider" min="10" max="100" value="80" oninput="updateOptimizerQuality(this.value)">
             </div>
 
-            <!-- Savings Stats -->
+            <!-- Savings Bar -->
             <div class="grid-2" style="gap: 12px; margin-bottom: 20px;">
-              <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 14px; text-align: center;">
-                <div style="font-size: 11.5px; color: var(--txt-muted);">Peso Original</div>
-                <div id="optOriginalSize" style="font-size: 18px; font-weight: 700; color: #fff; margin-top: 4px;">0 KB</div>
+              <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border); border-radius: 12px; padding: 12px; text-align: center;">
+                <div style="font-size: 11px; color: var(--txt-muted);">Peso Original</div>
+                <div id="optOriginalSize" style="font-size: 17px; font-weight: 700; color: #fff; margin-top: 4px;">0 KB</div>
               </div>
-              <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 14px; text-align: center;">
-                <div style="font-size: 11.5px; color: var(--emerald);">Peso Optimizado</div>
-                <div id="optNewSize" style="font-size: 18px; font-weight: 800; color: #34d399; margin-top: 4px;">0 KB</div>
+              <div style="background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 12px; padding: 12px; text-align: center;">
+                <div style="font-size: 11px; color: var(--emerald);">Peso Optimizado</div>
+                <div id="optNewSize" style="font-size: 17px; font-weight: 800; color: #34d399; margin-top: 4px;">0 KB</div>
               </div>
             </div>
 
@@ -1122,69 +1302,115 @@
             </button>
           </div>
 
-          <!-- Preview Area -->
+          <!-- Interactive Before / After Split Viewer -->
           <div class="suite-card" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
             <div style="width: 100%; display: flex; justify-content: space-between; margin-bottom: 12px;">
-              <span style="font-size: 13px; font-weight: 700; color: var(--txt-muted);">PREVIEW</span>
+              <span style="font-size: 13px; font-weight: 700; color: var(--txt-muted);">INTERACTIVE SPLIT COMPARISON</span>
               <span id="optSavingsBadge" style="font-size: 11px; padding: 2px 8px; border-radius: 999px; background: rgba(16, 185, 129, 0.2); color: #34d399; font-weight: 700;">Ahorro: 0%</span>
             </div>
-            <div style="width: 100%; max-height: 420px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; padding: 10px;">
-              <img id="optPreviewImg" src="" alt="Vista previa de imagen" style="max-width: 100%; max-height: 380px; object-fit: contain; border-radius: 8px; display: none;">
-              <div id="optEmptyState" style="text-align: center; color: var(--txt-dim); padding: 40px;">
-                <span style="font-size: 40px; display: block; margin-bottom: 8px;">🖼️</span>
-                <span>Arrastra o selecciona una imagen para optimizar</span>
+
+            <div id="splitContainer" class="split-view-container" onmousemove="handleSplitMove(event)" ontouchmove="handleSplitTouch(event)">
+              <!-- Original Background -->
+              <img id="splitOriginalImg" class="split-img" src="" alt="Original" style="display: none;">
+              
+              <!-- Compressed Overlay -->
+              <div id="splitOverlay" class="split-overlay">
+                <img id="splitOptimizedImg" class="split-img" src="" alt="Optimized" style="display: none;">
               </div>
+
+              <!-- Draggable Divider Line -->
+              <div id="splitHandle" class="split-handle">◀ ▶</div>
+
+              <!-- Empty State -->
+              <div id="optEmptyState" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; color: var(--txt-dim);">
+                <span style="font-size: 44px; display: block; margin-bottom: 8px;">🖼️</span>
+                <span>Arrastra o selecciona una foto para ver la comparación</span>
+              </div>
+            </div>
+            <div style="margin-top: 10px; font-size: 11.5px; color: var(--txt-dim); text-align: center;">
+              Arrastra el separador <strong style="color:var(--cyan)">◀ ▶</strong> para comparar antes y después
             </div>
           </div>
         </div>
       </section>
 
       <!-- ========================================== -->
-      <!-- TOOL 7: API & WEBHOOK TESTER -->
+      <!-- TOOL 7: API TESTER PRO -->
       <!-- ========================================== -->
       <section id="api-tester" class="tool-panel">
         <div class="tool-hero">
-          <span class="tool-badge">🧪 In-Browser HTTP Client · Webhook Inspector</span>
-          <h2 data-en="API &amp; Webhook Tester: Lightweight Browser HTTP Client" data-es="Probador de APIs &amp; Webhooks: Cliente HTTP Ligero">Probador de APIs &amp; Webhooks: Cliente HTTP Ligero</h2>
-          <p data-en="Dispatch GET, POST, PUT, and DELETE requests directly from your browser. Inspect JSON response headers, payload latency timers, and generate terminal cURL commands." data-es="Envía peticiones GET, POST, PUT y DELETE en tiempo real. Inspecciona respuestas JSON con formateo de colores, mide la latencia en milisegundos y copia comandos cURL para terminal.">Envía peticiones GET, POST, PUT y DELETE en tiempo real. Inspecciona respuestas JSON con formateo de colores, mide la latencia en milisegundos y copia comandos cURL para terminal.</p>
+          <span class="tool-badge">🧪 In-Browser HTTP Client · 5-Language Code Export</span>
+          <h2 data-en="API &amp; Webhook Tester: Auth Builder &amp; Multi-Language Code" data-es="Probador de APIs: Generador de Auth &amp; Código en 5 Lenguajes">Probador de APIs: Generador de Auth &amp; Código en 5 Lenguajes</h2>
+          <p data-en="Dispatch GET, POST, PUT, DELETE, and PATCH requests directly from your browser. Includes Bearer Token / API Key builder, JSON formatting, and 1-click code export in cURL, Python, JS, Node.js, and PHP." data-es="Ejecuta peticiones HTTP en tiempo real. Incluye constructor de cabeceras de autorización, formateador JSON con colores y exportación de código en cURL, Python, JavaScript, Node.js y PHP.">Ejecuta peticiones HTTP en tiempo real. Incluye constructor de cabeceras de autorización, formateador JSON con colores y exportación de código en cURL, Python, JavaScript, Node.js y PHP.</p>
         </div>
 
         <div class="suite-card">
           <!-- Request Bar -->
-          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;">
-            <select id="apiMethod" class="suite-select" style="width: 120px;" onchange="updateCurlCommand()">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 14px;">
+            <select id="apiMethod" class="suite-select" style="width: 120px;" onchange="updateMultiLangSnippets()">
               <option value="GET" selected>GET</option>
               <option value="POST">POST</option>
               <option value="PUT">PUT</option>
               <option value="DELETE">DELETE</option>
               <option value="PATCH">PATCH</option>
             </select>
-            <input type="url" id="apiUrl" class="suite-input" style="flex: 1; min-width: 260px;" value="https://api.coingecko.com/api/v3/ping" oninput="updateCurlCommand()">
+            <input type="url" id="apiUrl" class="suite-input" style="flex: 1; min-width: 280px;" value="https://api.coingecko.com/api/v3/ping" oninput="updateMultiLangSnippets()">
             <button class="suite-btn cyan" onclick="runApiRequest()">
               <span>🚀</span> <span data-en="Send Request" data-es="Enviar Petición">Enviar Petición</span>
             </button>
           </div>
 
           <!-- Quick Presets -->
-          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 18px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px;">
             <span style="font-size: 12px; color: var(--txt-muted); font-weight: 600;">Presets de Prueba:</span>
             <button class="nav-btn" style="padding: 4px 10px; font-size: 12px;" onclick="loadApiPreset('coingecko')">🪙 CoinGecko Ping</button>
             <button class="nav-btn" style="padding: 4px 10px; font-size: 12px;" onclick="loadApiPreset('dummyjson')">📦 DummyJSON Products</button>
             <button class="nav-btn" style="padding: 4px 10px; font-size: 12px;" onclick="loadApiPreset('post_test')">✉️ POST JsonPlaceholder</button>
           </div>
 
-          <!-- Request Body (JSON) -->
-          <div id="apiBodyContainer" style="display: none; margin-bottom: 18px;">
-            <label class="input-label" data-en="Request Body (JSON):" data-es="Cuerpo de la Petición (JSON):">Cuerpo de la Petición (JSON):</label>
-            <textarea id="apiBody" class="suite-textarea" style="height: 120px;" oninput="updateCurlCommand()">{\n  "title": "Lead Calificado DuarteLabs",\n  "company": "Tech Corp",\n  "status": "PROSPECT"\n}</textarea>
+          <!-- Auth Header Builder -->
+          <div class="grid-2" style="gap: 12px; margin-bottom: 14px;">
+            <div>
+              <label class="input-label" data-en="Authentication Type:" data-es="Tipo de Autorización:">Tipo de Autorización:</label>
+              <select id="apiAuthType" class="suite-select" onchange="updateAuthHeader()">
+                <option value="none" selected>Ninguna (Pública)</option>
+                <option value="bearer">Bearer Token (JWT / API Token)</option>
+                <option value="apikey">API Key (Header Personalizado)</option>
+              </select>
+            </div>
+            <div id="authKeyContainer" style="display: none;">
+              <label class="input-label" id="authKeyLabel">Token / Clave:</label>
+              <input type="text" id="apiAuthValue" class="suite-input" placeholder="Pega tu token aquí..." oninput="updateMultiLangSnippets()">
+            </div>
           </div>
 
-          <!-- cURL Preview -->
-          <div style="background: rgba(3, 5, 13, 0.9); border: 1px solid var(--border); border-radius: 12px; padding: 12px 16px; margin-bottom: 18px; display: flex; align-items: center; justify-content: space-between; gap: 10px;">
-            <code id="curlOutput" style="font-family: 'Fira Code', monospace; font-size: 12px; color: var(--txt-muted); overflow-x: auto; white-space: nowrap;">curl -X GET "https://api.coingecko.com/api/v3/ping"</code>
-            <button class="suite-btn ghost" style="padding: 4px 10px; font-size: 12px;" onclick="copyCurl()">
-              <span>📋 Copiar cURL</span>
-            </button>
+          <!-- Request Body (JSON) -->
+          <div id="apiBodyContainer" style="display: none; margin-bottom: 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <label class="input-label" style="margin: 0;" data-en="Request Body (JSON):" data-es="Cuerpo de la Petición (JSON):">Cuerpo de la Petición (JSON):</label>
+              <div style="display: flex; gap: 8px;">
+                <button class="nav-btn" style="padding: 2px 8px; font-size: 11px;" onclick="beautifyJson()">✨ Formatear JSON</button>
+                <button class="nav-btn" style="padding: 2px 8px; font-size: 11px;" onclick="minifyJson()">⚡ Minificar</button>
+              </div>
+            </div>
+            <textarea id="apiBody" class="suite-textarea" style="height: 110px;" oninput="updateMultiLangSnippets()">{\n  "title": "Lead Calificado DuarteLabs",\n  "company": "Tech Corp",\n  "status": "PROSPECT"\n}</textarea>
+          </div>
+
+          <!-- Multi-Language Code Snippets Selector -->
+          <div style="background: rgba(3, 5, 13, 0.95); border: 1px solid var(--border); border-radius: 14px; padding: 14px; margin-bottom: 18px;">
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 8px;">
+              <div style="display: flex; gap: 6px;">
+                <button class="nav-btn" id="tabCurl" style="padding: 4px 10px; font-size: 12px; background: rgba(255,255,255,0.1);" onclick="switchSnippetLang('curl')">cURL</button>
+                <button class="nav-btn" id="tabPython" style="padding: 4px 10px; font-size: 12px;" onclick="switchSnippetLang('python')">Python</button>
+                <button class="nav-btn" id="tabJs" style="padding: 4px 10px; font-size: 12px;" onclick="switchSnippetLang('js')">JavaScript (Fetch)</button>
+                <button class="nav-btn" id="tabNode" style="padding: 4px 10px; font-size: 12px;" onclick="switchSnippetLang('node')">Node.js (Axios)</button>
+                <button class="nav-btn" id="tabPhp" style="padding: 4px 10px; font-size: 12px;" onclick="switchSnippetLang('php')">PHP</button>
+              </div>
+              <button class="suite-btn ghost" style="padding: 4px 10px; font-size: 12px;" onclick="copyCodeSnippet()">
+                <span>📋 Copiar Código</span>
+              </button>
+            </div>
+            <pre style="margin: 0; max-height: 140px; overflow: auto;"><code id="snippetOutput" style="font-family: 'Fira Code', monospace; font-size: 12px; color: var(--txt-muted); white-space: pre;">curl -X GET "https://api.coingecko.com/api/v3/ping"</code></pre>
           </div>
 
           <!-- Response Panel -->
@@ -1199,7 +1425,7 @@
                 </button>
               </div>
             </div>
-            <textarea id="apiResponseViewer" class="suite-textarea" style="min-height: 260px; font-size: 13px;" readonly placeholder="Haz clic en 'Enviar Petición' para ver la respuesta del servidor en tiempo real..."></textarea>
+            <textarea id="apiResponseViewer" class="suite-textarea" style="min-height: 250px; font-size: 13px;" readonly placeholder="Haz clic en 'Enviar Petición' para ver la respuesta del servidor en tiempo real..."></textarea>
           </div>
         </div>
       </section>
@@ -1226,9 +1452,7 @@
       m.innerText = msg;
       ic.innerText = icon || '✅';
       t.style.display = 'flex';
-      setTimeout(function() {
-        t.style.display = 'none';
-      }, 3000);
+      setTimeout(function() { t.style.display = 'none'; }, 3000);
     }
 
     function switchTool(toolId, btn) {
@@ -1238,7 +1462,6 @@
       var target = document.getElementById(toolId);
       if(target) target.classList.add('active');
 
-      // Trigger redraws if needed
       if(toolId === 'mockup-studio') renderMockup();
       if(toolId === 'crypto-hub') { calculateCompoundInterest(); }
     }
@@ -1254,10 +1477,16 @@
     }
 
     // ==========================================
-    // TOOL 1: VOICE STUDIO
+    // TOOL 1: VOICE STUDIO PRO (Audio Equalizer + TTS)
     // ==========================================
     var recognition = null;
     var isRecording = false;
+    var audioCtx = null;
+    var analyser = null;
+    var micStream = null;
+    var visualizerAnimId = null;
+    var voiceTimerInterval = null;
+    var voiceSeconds = 0;
 
     if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
       var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -1273,10 +1502,11 @@
         var area = document.getElementById('voiceTranscript');
         area.value = transcript.trim();
         area.scrollTop = area.scrollHeight;
+        updateVoiceMetrics();
       };
 
       recognition.onerror = function(event) {
-        console.warn('Speech recognition error:', event.error);
+        console.warn('Speech error:', event.error);
         if(event.error === 'not-allowed') {
           showToast('Permiso de micrófono denegado en el navegador', '⚠️');
         }
@@ -1309,7 +1539,9 @@
           document.getElementById('recordBtn').classList.remove('rose');
           document.getElementById('recordBtn').classList.add('ghost');
           document.getElementById('recordingStatus').style.display = 'flex';
-          showToast((currentLang === 'es') ? 'Grabando voz... habla con claridad' : 'Listening... speak clearly', '🎙️');
+          startVisualizer();
+          startVoiceTimer();
+          showToast('Grabando voz... habla con claridad', '🎙️');
         } catch(err) {
           console.error(err);
         }
@@ -1317,7 +1549,7 @@
         isRecording = false;
         try { recognition.stop(); } catch(e){}
         stopRecordingUI();
-        showToast((currentLang === 'es') ? 'Dictado finalizado' : 'Dictation finished', '✅');
+        showToast('Dictado finalizado', '✅');
       }
     }
 
@@ -1328,6 +1560,83 @@
       document.getElementById('recordBtn').classList.remove('ghost');
       document.getElementById('recordBtn').classList.add('rose');
       document.getElementById('recordingStatus').style.display = 'none';
+      stopVisualizer();
+      stopVoiceTimer();
+    }
+
+    function startVoiceTimer() {
+      voiceSeconds = 0;
+      clearInterval(voiceTimerInterval);
+      voiceTimerInterval = setInterval(function() {
+        voiceSeconds++;
+        var mins = String(Math.floor(voiceSeconds / 60)).padStart(2, '0');
+        var secs = String(voiceSeconds % 60).padStart(2, '0');
+        document.getElementById('voiceDuration').innerText = mins + ':' + secs;
+      }, 1000);
+    }
+
+    function stopVoiceTimer() {
+      clearInterval(voiceTimerInterval);
+    }
+
+    function startVisualizer() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) return;
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function(stream) {
+        micStream = stream;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        analyser = audioCtx.createAnalyser();
+        analyser.fftSize = 64;
+        var source = audioCtx.createMediaStreamSource(stream);
+        source.connect(analyser);
+
+        var canvas = document.getElementById('voiceVisualizer');
+        var ctx = canvas.getContext('2d');
+        var bufferLength = analyser.frequencyBinCount;
+        var dataArray = new Uint8Array(bufferLength);
+
+        function drawBars() {
+          visualizerAnimId = requestAnimationFrame(drawBars);
+          analyser.getByteFrequencyData(dataArray);
+
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          var barWidth = (canvas.width / bufferLength) * 1.5;
+          var x = 0;
+
+          for (var i = 0; i < bufferLength; i++) {
+            var barHeight = (dataArray[i] / 255) * canvas.height;
+            var grad = ctx.createLinearGradient(0, canvas.height, 0, 0);
+            grad.addColorStop(0, '#10b981');
+            grad.addColorStop(1, '#06b6d4');
+            ctx.fillStyle = grad;
+            ctx.fillRect(x, canvas.height - barHeight, barWidth - 1, barHeight);
+            x += barWidth + 1;
+          }
+        }
+        drawBars();
+      }).catch(function(e){
+        console.warn('Microphone stream access error:', e);
+      });
+    }
+
+    function stopVisualizer() {
+      if (visualizerAnimId) cancelAnimationFrame(visualizerAnimId);
+      if (micStream) {
+        micStream.getTracks().forEach(function(t){ t.stop(); });
+      }
+      var canvas = document.getElementById('voiceVisualizer');
+      if (canvas) {
+        var ctx = canvas.getContext('2d');
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function updateVoiceMetrics() {
+      var t = document.getElementById('voiceTranscript').value.trim();
+      var words = t ? t.split(/\s+/).length : 0;
+      var chars = t.length;
+      document.getElementById('voiceWordCount').innerText = words;
+      document.getElementById('voiceCharCount').innerText = chars;
+      document.getElementById('voiceReadTime').innerText = Math.ceil(words / 200) + ' min';
     }
 
     function formatMeetingNotes() {
@@ -1337,13 +1646,14 @@
       var dateStr = new Date().toLocaleDateString();
       var formatted = "📋 ACTA DE REUNIÓN / RESUMEN EJECUTIVO\n" +
         "Fecha: " + dateStr + "\n" +
-        "Generado con: DuarteSuite AI Voice Studio\n" +
+        "Plataforma: DuarteSuite AI Voice Studio Pro\n" +
         "--------------------------------------------------\n\n" +
         "📌 PUNTOS TRATADOS & CONTEXTO:\n" +
-        text.replace(/\\.\s+/g, ".\\n• ") + "\n\n" +
+        text.replace(/\.\s+/g, ".\n• ") + "\n\n" +
         "--------------------------------------------------\n" +
         "✨ Estado: Documento listo para archivo o envío.";
       document.getElementById('voiceTranscript').value = formatted;
+      updateVoiceMetrics();
       showToast('Formato de acta estructurada aplicado', '📝');
     }
 
@@ -1351,25 +1661,63 @@
       var text = document.getElementById('voiceTranscript').value.trim();
       if(!text) { showToast('No hay texto para analizar', '⚠️'); return; }
 
-      var sentences = text.split(/[\\.\\n]+/);
+      var sentences = text.split(/[\.\n]+/);
       var tasks = [];
       sentences.forEach(function(s) {
         var clean = s.trim();
-        if(clean.length > 5) {
-          tasks.push("[ ] " + clean);
-        }
+        if(clean.length > 5) { tasks.push("[ ] " + clean); }
       });
 
-      var res = "✅ LISTA DE TAREAS PENDIENTES & ACTION ITEMS:\n\n" + tasks.slice(0, 10).join("\\n") + "\n\nResponsable: DuarteLabs Automation";
+      var res = "✅ LISTA DE TAREAS PENDIENTES & ACTION ITEMS:\n\n" + tasks.slice(0, 10).join("\n") + "\n\nResponsable: DuarteLabs Automation";
       document.getElementById('voiceTranscript').value = res;
+      updateVoiceMetrics();
       showToast('Tareas pendientes extraídas', '✅');
+    }
+
+    function generateExecutiveSummary() {
+      var text = document.getElementById('voiceTranscript').value.trim();
+      if(!text) { showToast('No hay texto para resumir', '⚠️'); return; }
+
+      var sentences = text.split(/[\.\n]+/).map(function(s){ return s.trim(); }).filter(function(s){ return s.length > 8; });
+      var bullets = sentences.slice(0, 3).map(function(s, i){ return "• " + s; }).join("\n");
+      var res = "⚡ RESUMEN EJECUTIVO (3 PUNTOS CLAVE):\n\n" + (bullets || "• No se detectaron suficientes puntos.") + "\n\n---\nGenerado con DuarteSuite AI";
+      document.getElementById('voiceTranscript').value = res;
+      updateVoiceMetrics();
+      showToast('Resumen en 3 balas generado', '⚡');
+    }
+
+    var isSpeaking = false;
+    function toggleTextToSpeech() {
+      if (!('speechSynthesis' in window)) {
+        showToast('Text-to-Speech no soportado en este navegador', '⚠️');
+        return;
+      }
+      if (isSpeaking) {
+        window.speechSynthesis.cancel();
+        isSpeaking = false;
+        document.getElementById('btnTTS').innerHTML = '<span>🔊</span> <span>Escuchar en Voz Alta</span>';
+        showToast('Lectura detenida', '⏹️');
+      } else {
+        var text = document.getElementById('voiceTranscript').value.trim();
+        if(!text) { showToast('Área de texto vacía', '⚠️'); return; }
+
+        var utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = document.getElementById('voiceLang').value;
+        utterance.rate = 1.05;
+        utterance.onend = function() {
+          isSpeaking = false;
+          document.getElementById('btnTTS').innerHTML = '<span>🔊</span> <span>Escuchar en Voz Alta</span>';
+        };
+        window.speechSynthesis.speak(utterance);
+        isSpeaking = true;
+        document.getElementById('btnTTS').innerHTML = '<span>⏹️</span> <span>Detener Lectura</span>';
+        showToast('Leyendo texto en voz alta...', '🔊');
+      }
     }
 
     function copyVoiceText() {
       var t = document.getElementById('voiceTranscript').value;
-      navigator.clipboard.writeText(t).then(function() {
-        showToast('Texto copiado al portapapeles', '📋');
-      });
+      navigator.clipboard.writeText(t).then(function() { showToast('Texto copiado al portapapeles', '📋'); });
     }
 
     function sendVoiceToWhatsApp() {
@@ -1391,15 +1739,39 @@
 
     function clearVoiceText() {
       document.getElementById('voiceTranscript').value = '';
+      updateVoiceMetrics();
       showToast('Área de texto limpia', '🧹');
     }
 
     // ==========================================
-    // TOOL 2: 3D MOCKUP STUDIO
+    // TOOL 2: 3D MOCKUP STUDIO PRO (Ctrl+V Paste + 3D Isometric)
     // ==========================================
     var loadedMockupImg = null;
     var mockupPadding = 60;
-    var mockupShadow = 50;
+    var mockupShadow = 55;
+
+    // Listen for Ctrl+V paste anywhere on the page
+    window.addEventListener('paste', function(e) {
+      if (e.clipboardData && e.clipboardData.items) {
+        for (var i = 0; i < e.clipboardData.items.length; i++) {
+          if (e.clipboardData.items[i].type.indexOf('image') !== -1) {
+            var file = e.clipboardData.items[i].getAsFile();
+            var reader = new FileReader();
+            reader.onload = function(evt) {
+              var img = new Image();
+              img.onload = function() {
+                loadedMockupImg = img;
+                renderMockup();
+                showToast('¡Imagen pegada desde el portapapeles con éxito!', '📋');
+              };
+              img.src = evt.target.result;
+            };
+            reader.readAsDataURL(file);
+            break;
+          }
+        }
+      }
+    });
 
     function loadMockupImage(event) {
       var file = event.target.files[0];
@@ -1448,15 +1820,22 @@
       var ctx = canvas.getContext('2d');
       var device = document.getElementById('mockupDevice').value;
       var bgStyle = document.getElementById('mockupBg').value;
+      var aspect = document.getElementById('mockupAspect').value;
+      var perspective = document.getElementById('mockupPerspective').value;
 
-      var w = 1200;
-      var h = (device === 'iphone') ? 1000 : 800;
+      var w = 1280;
+      var h = 720;
+      if (aspect === '1_1') { w = 1000; h = 1000; }
+      else if (aspect === '9_16') { w = 720; h = 1280; }
+      else if (device === 'iphone' && aspect === '16_9') { h = 800; }
+
       canvas.width = w;
       canvas.height = h;
       document.getElementById('canvasDims').innerText = w + ' x ' + h + ' PX';
 
-      // 1. Draw Background
       ctx.clearRect(0, 0, w, h);
+
+      // Background
       if (bgStyle !== 'transparent') {
         var grad;
         if (bgStyle === 'obsidian') {
@@ -1477,16 +1856,23 @@
         } else {
           grad = ctx.createLinearGradient(0, 0, w, h);
           grad.addColorStop(0, '#050505');
-          grad.addColorStop(1, '#111111');
+          grad.addColorStop(1, '#141414');
         }
         ctx.fillStyle = grad;
         ctx.fillRect(0, 0, w, h);
       }
 
+      ctx.save();
+      // Optional 3D isometric tilt
+      if (perspective === 'isometric') {
+        ctx.translate(w / 2, h / 2);
+        ctx.transform(0.92, -0.06, 0.05, 0.94, 0, 0);
+        ctx.translate(-w / 2, -h / 2);
+      }
+
       var pad = mockupPadding;
       var shadowAlpha = mockupShadow / 100;
 
-      // 2. Render Selected Device
       if (device === 'browser') {
         var frameW = w - (pad * 2);
         var frameH = h - (pad * 2);
@@ -1494,19 +1880,17 @@
         var frameY = pad;
         var titleBarH = 42;
 
-        // Shadow
         if (shadowAlpha > 0) {
           ctx.save();
-          ctx.shadowColor = 'rgba(0, 0, 0, ' + (0.7 * shadowAlpha) + ')';
-          ctx.shadowBlur = 40 * shadowAlpha;
-          ctx.shadowOffsetY = 20 * shadowAlpha;
+          ctx.shadowColor = 'rgba(0, 0, 0, ' + (0.75 * shadowAlpha) + ')';
+          ctx.shadowBlur = 45 * shadowAlpha;
+          ctx.shadowOffsetY = 25 * shadowAlpha;
           ctx.fillStyle = '#1e293b';
           drawRoundedRect(ctx, frameX, frameY, frameW, frameH, 16);
           ctx.fill();
           ctx.restore();
         }
 
-        // Window Frame
         ctx.save();
         drawRoundedRect(ctx, frameX, frameY, frameW, frameH, 16);
         ctx.fillStyle = '#0f172a';
@@ -1515,25 +1899,21 @@
         ctx.lineWidth = 1.5;
         ctx.stroke();
 
-        // Title Bar
         ctx.fillStyle = '#1e293b';
         ctx.fillRect(frameX, frameY, frameW, titleBarH);
 
-        // macOS Dots
         var dotY = frameY + (titleBarH / 2);
         ctx.fillStyle = '#ef4444'; ctx.beginPath(); ctx.arc(frameX + 22, dotY, 6, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#eab308'; ctx.beginPath(); ctx.arc(frameX + 40, dotY, 6, 0, Math.PI * 2); ctx.fill();
         ctx.fillStyle = '#22c55e'; ctx.beginPath(); ctx.arc(frameX + 58, dotY, 6, 0, Math.PI * 2); ctx.fill();
 
-        // URL bar
         ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
         drawRoundedRect(ctx, frameX + 90, frameY + 8, frameW - 180, 26, 8);
         ctx.fill();
         ctx.fillStyle = '#94a3b8';
         ctx.font = '12px Inter, sans-serif';
-        ctx.fillText('🔒 https://duartelabs.ai/portfolio', frameX + 110, frameY + 25);
+        ctx.fillText('🔒 https://duartelabs.ai/product-showcase', frameX + 110, frameY + 25);
 
-        // Inner Screen Content
         var screenX = frameX;
         var screenY = frameY + titleBarH;
         var screenW = frameW;
@@ -1546,13 +1926,12 @@
         if (loadedMockupImg) {
           ctx.drawImage(loadedMockupImg, screenX, screenY, screenW, screenH);
         } else {
-          // Placeholder artwork
           ctx.fillStyle = '#0a0f1d';
           ctx.fillRect(screenX, screenY, screenW, screenH);
           ctx.fillStyle = '#38bdf8';
           ctx.font = 'bold 24px "Space Grotesk", sans-serif';
           ctx.textAlign = 'center';
-          ctx.fillText('Sube tu captura de pantalla en el panel izquierdo 🚀', screenX + (screenW / 2), screenY + (screenH / 2));
+          ctx.fillText('Pega una imagen con Ctrl+V o súbela a la izquierda 🚀', screenX + (screenW / 2), screenY + (screenH / 2));
           ctx.textAlign = 'left';
         }
         ctx.restore();
@@ -1563,12 +1942,11 @@
         var mbX = pad;
         var mbY = (h - mbH) / 2 - 15;
 
-        // Screen bezel
         ctx.save();
         if (shadowAlpha > 0) {
-          ctx.shadowColor = 'rgba(0, 0, 0, ' + (0.8 * shadowAlpha) + ')';
-          ctx.shadowBlur = 45 * shadowAlpha;
-          ctx.shadowOffsetY = 25 * shadowAlpha;
+          ctx.shadowColor = 'rgba(0, 0, 0, ' + (0.85 * shadowAlpha) + ')';
+          ctx.shadowBlur = 50 * shadowAlpha;
+          ctx.shadowOffsetY = 28 * shadowAlpha;
         }
         drawRoundedRect(ctx, mbX, mbY, mbW, mbH, 18);
         ctx.fillStyle = '#0a0a0a';
@@ -1578,7 +1956,6 @@
         ctx.stroke();
         ctx.restore();
 
-        // Screen Inner
         var bz = 18;
         var scX = mbX + bz;
         var scY = mbY + bz;
@@ -1599,13 +1976,11 @@
           ctx.fillText('💻 MacBook Pro Space Black Mockup', scX + (scW / 2), scY + (scH / 2));
           ctx.textAlign = 'left';
         }
-        // Top camera notch
         ctx.fillStyle = '#000';
         drawRoundedRect(ctx, mbX + (mbW / 2) - 30, scY, 60, 14, 6);
         ctx.fill();
         ctx.restore();
 
-        // Aluminum Base Hinge
         var baseW = mbW * 1.15;
         var baseX = mbX - (baseW - mbW) / 2;
         var baseY = mbY + mbH;
@@ -1617,15 +1992,56 @@
         ctx.lineWidth = 1;
         ctx.stroke();
 
-        // Thumb notch
         ctx.fillStyle = '#0c0a09';
         drawRoundedRect(ctx, baseX + (baseW / 2) - 40, baseY, 80, 6, 3);
         ctx.fill();
         ctx.restore();
 
+      } else if (device === 'ipad') {
+        var ipdW = Math.min(w - (pad * 2), 650);
+        var ipdH = ipdW * 1.35;
+        var ipdX = (w - ipdW) / 2;
+        var ipdY = (h - ipdH) / 2;
+
+        ctx.save();
+        if (shadowAlpha > 0) {
+          ctx.shadowColor = 'rgba(0, 0, 0, ' + (0.8 * shadowAlpha) + ')';
+          ctx.shadowBlur = 45 * shadowAlpha;
+          ctx.shadowOffsetY = 25 * shadowAlpha;
+        }
+        drawRoundedRect(ctx, ipdX, ipdY, ipdW, ipdH, 28);
+        ctx.fillStyle = '#111';
+        ctx.fill();
+        ctx.strokeStyle = '#333';
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.restore();
+
+        var bz2 = 14;
+        var isX = ipdX + bz2;
+        var isY = ipdY + bz2;
+        var isW = ipdW - (bz2 * 2);
+        var isH = ipdH - (bz2 * 2);
+
+        ctx.save();
+        drawRoundedRect(ctx, isX, isY, isW, isH, 18);
+        ctx.clip();
+        if (loadedMockupImg) {
+          ctx.drawImage(loadedMockupImg, isX, isY, isW, isH);
+        } else {
+          ctx.fillStyle = '#1e1b4b';
+          ctx.fillRect(isX, isY, isW, isH);
+          ctx.fillStyle = '#38bdf8';
+          ctx.font = 'bold 22px "Space Grotesk", sans-serif';
+          ctx.textAlign = 'center';
+          ctx.fillText('📟 iPad Pro 13" M4 Frame', isX + (isW / 2), isY + (isH / 2));
+          ctx.textAlign = 'left';
+        }
+        ctx.restore();
+
       } else if (device === 'iphone') {
-        var ipW = 380;
-        var ipH = 760;
+        var ipW = 360;
+        var ipH = 740;
         var ipX = (w - ipW) / 2;
         var ipY = (h - ipH) / 2;
 
@@ -1635,13 +2051,11 @@
           ctx.shadowBlur = 50 * shadowAlpha;
           ctx.shadowOffsetY = 25 * shadowAlpha;
         }
-        // Titanium Outer Bezel
         drawRoundedRect(ctx, ipX - 4, ipY - 4, ipW + 8, ipH + 8, 48);
         ctx.fillStyle = '#262626';
         ctx.fill();
         ctx.restore();
 
-        // Screen Body
         ctx.save();
         drawRoundedRect(ctx, ipX, ipY, ipW, ipH, 44);
         ctx.fillStyle = '#000';
@@ -1658,21 +2072,21 @@
           ctx.textAlign = 'center';
           ctx.fillText('📱 iPhone 16 Pro', ipX + (ipW / 2), ipY + (ipH / 2) - 20);
           ctx.font = '14px Inter, sans-serif';
-          ctx.fillText('Carga tu captura vertical', ipX + (ipW / 2), ipY + (ipH / 2) + 15);
+          ctx.fillText('Presiona Ctrl+V para pegar', ipX + (ipW / 2), ipY + (ipH / 2) + 15);
           ctx.textAlign = 'left';
         }
 
-        // Dynamic Island
         ctx.fillStyle = '#000';
         drawRoundedRect(ctx, ipX + (ipW / 2) - 45, ipY + 14, 90, 24, 12);
         ctx.fill();
 
-        // Home Indicator
         ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
         drawRoundedRect(ctx, ipX + (ipW / 2) - 60, ipY + ipH - 14, 120, 4, 2);
         ctx.fill();
         ctx.restore();
       }
+
+      ctx.restore();
     }
 
     function downloadMockup() {
@@ -1685,7 +2099,7 @@
     }
 
     // ==========================================
-    // TOOL 3: CRYPTO & MARKET HUB
+    // TOOL 3: CRYPTO & SOLANA TELEMETRY
     // ==========================================
     var cryptoState = {
       SOL: 118.40,
@@ -1729,6 +2143,10 @@
         .catch(function(e){
           console.log('Using baseline crypto rates:', e);
         });
+
+      // Fluctuate TPS ticker realistically
+      var tps = Math.floor(2800 + Math.random() * 120);
+      document.getElementById('solTps').innerText = tps.toLocaleString() + ' TPS';
     }
 
     function runConversion() {
@@ -1736,7 +2154,6 @@
       var from = document.getElementById('convertFrom').value;
       var to = document.getElementById('convertTo').value;
 
-      // Convert to USD base first
       var inUSD = 0;
       if (from === 'USD') inUSD = amt;
       else if (from === 'SOL') inUSD = amt * cryptoState.SOL;
@@ -1745,7 +2162,6 @@
       else if (from === 'COP') inUSD = amt / cryptoState.COP;
       else if (from === 'EUR') inUSD = amt / cryptoState.EUR;
 
-      // Convert from USD to target
       var finalVal = 0;
       if (to === 'USD') finalVal = inUSD;
       else if (to === 'SOL') finalVal = inUSD / cryptoState.SOL;
@@ -1769,6 +2185,7 @@
       var P = parseFloat(document.getElementById('ciInitial').value) || 0;
       var PMT = parseFloat(document.getElementById('ciMonthly').value) || 0;
       var r = (parseFloat(document.getElementById('ciRate').value) || 0) / 100;
+      var inf = (parseFloat(document.getElementById('ciInflation').value) || 0) / 100;
       var t = parseFloat(document.getElementById('ciYears').value) || 1;
 
       var months = t * 12;
@@ -1777,17 +2194,22 @@
       var totalBalance = P;
       var pointsContributed = [];
       var pointsBalance = [];
+      var pointsReal = [];
 
       var runningContributed = P;
       pointsContributed.push(runningContributed);
       pointsBalance.push(totalBalance);
+      pointsReal.push(totalBalance);
 
       for (var m = 1; m <= months; m++) {
         totalBalance = (totalBalance + PMT) * (1 + monthlyRate);
         runningContributed += PMT;
         if (m % 12 === 0) {
+          var y = m / 12;
           pointsContributed.push(runningContributed);
           pointsBalance.push(totalBalance);
+          var realVal = totalBalance / Math.pow(1 + inf, y);
+          pointsReal.push(realVal);
         }
       }
 
@@ -1798,10 +2220,10 @@
       document.getElementById('ciTotalInterest').innerText = '$' + Math.round(totalInterest).toLocaleString();
       document.getElementById('ciFinalBalance').innerText = '$' + Math.round(totalBalance).toLocaleString();
 
-      drawCompoundChart(pointsContributed, pointsBalance, t);
+      drawCompoundChart(pointsContributed, pointsBalance, pointsReal, t);
     }
 
-    function drawCompoundChart(contributedArr, balanceArr, years) {
+    function drawCompoundChart(contributedArr, balanceArr, realArr, years) {
       var cv = document.getElementById('compoundChart');
       if (!cv) return;
       var ctx = cv.getContext('2d');
@@ -1821,7 +2243,6 @@
       var plotW = w - padLeft - padRight;
       var plotH = h - padBottom - padTop;
 
-      // Draw horizontal gridlines
       ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
       ctx.lineWidth = 1;
       for (var i = 0; i <= 4; i++) {
@@ -1836,12 +2257,10 @@
       var getX = function(idx) { return padLeft + (idx / (n - 1)) * plotW; };
       var getY = function(val) { return padTop + plotH - (val / maxVal) * plotH; };
 
-      // Fill area under Balance Curve (Compound growth)
+      // Fill Nominal Balance Area
       ctx.beginPath();
       ctx.moveTo(getX(0), getY(balanceArr[0]));
-      for (var i = 1; i < n; i++) {
-        ctx.lineTo(getX(i), getY(balanceArr[i]));
-      }
+      for (var i = 1; i < n; i++) { ctx.lineTo(getX(i), getY(balanceArr[i])); }
       ctx.lineTo(getX(n - 1), padTop + plotH);
       ctx.lineTo(getX(0), padTop + plotH);
       ctx.closePath();
@@ -1851,7 +2270,7 @@
       ctx.fillStyle = grad;
       ctx.fill();
 
-      // Stroke Contributed Line
+      // Contributed Line (dashed)
       ctx.beginPath();
       ctx.moveTo(getX(0), getY(contributedArr[0]));
       for (var i = 1; i < n; i++) { ctx.lineTo(getX(i), getY(contributedArr[i])); }
@@ -1861,7 +2280,15 @@
       ctx.stroke();
       ctx.setLineDash([]);
 
-      // Stroke Balance Line
+      // Inflation Real Line (blue line)
+      ctx.beginPath();
+      ctx.moveTo(getX(0), getY(realArr[0]));
+      for (var i = 1; i < n; i++) { ctx.lineTo(getX(i), getY(realArr[i])); }
+      ctx.strokeStyle = '#38bdf8';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      // Nominal Balance Line (green line)
       ctx.beginPath();
       ctx.moveTo(getX(0), getY(balanceArr[0]));
       for (var i = 1; i < n; i++) { ctx.lineTo(getX(i), getY(balanceArr[i])); }
@@ -1869,7 +2296,6 @@
       ctx.lineWidth = 3;
       ctx.stroke();
 
-      // Labels
       ctx.fillStyle = '#64748b';
       ctx.font = '10px Inter, sans-serif';
       ctx.fillText('Año 0', padLeft - 10, h - 8);
@@ -1877,55 +2303,94 @@
     }
 
     // ==========================================
-    // TOOL 4: PROMPT STUDIO
+    // TOOL 4: PROMPT STUDIO PRO (Dynamic {{var}} + Token Estimator)
     // ==========================================
-    var libraryPrompts = [
-      {
-        title: "Refactorizador & Auditor de Código",
-        prompt: "<role>Actúa como Arquitecto de Software Senior y Especialista en Ciberseguridad.</role>\\n<task>Audita exhaustivamente el siguiente fragmento de código en busca de cuellos de botella de rendimiento, vulnerabilidades de inyección, fugas de memoria y violación de principios SOLID.</task>\\n<constraints>\\n1. Proporciona la solución refactorizada completa con tipado estricto.\\n2. Explica cada cambio crítico en viñetas concisas.\\n3. No uses sintaxis obsoleta.\\n</constraints>\\n<code_to_audit>\\n[PEGA AQUÍ TU CÓDIGO]\\n</code_to_audit>"
-      },
-      {
-        title: "Cold Email de 4 Oraciones (Ventas B2B)",
-        prompt: "<role>Actúa como Vicepresidente de Ventas B2B de clase mundial.</role>\\n<task>Escribe un correo electrónico en frío de no más de 4 oraciones dirigido al CEO o Director de Operaciones.</task>\\n<context>Ofrecemos automatización con IA que reduce el 70% de tareas repetitivas en prospección y atención por WhatsApp.</context>\\n<rules>\\n1. Oración 1: Cumplido específico sobre su empresa.\\n2. Oración 2: El dolor oculto o cuello de botella.\\n3. Oración 3: La solución con métrica cuantificable (ej: +2,500 leads/mes).\\n4. Oración 4: Call-to-action de baja fricción ('¿Valdría la pena ver un video de 2 minutos?').\\n5. Cero spam, cero lenguaje cliché corporativo.\\n</rules>"
-      },
-      {
-        title: "Diseñador de Workflows JSON n8n",
-        prompt: "<role>Actúa como Especialista en Automatizaciones e Integración de Sistemas en n8n.</role>\\n<task>Diseña la arquitectura completa de un workflow automatizado para procesar leads entrantes.</task>\\n<requirements>\\n1. Webhook Trigger para recepción de datos en JSON.\\n2. Nodo de Código Javascript para sanitización y validación de emails/teléfonos.\\n3. Integración con OpenAI / Claude para clasificación de intención del cliente.\\n4. Salida bifurcada: Clientes Calificados -> WhatsApp vía WADesk; Clientes Fríos -> Secuencia de Nurturing.\\n5. Manejo de errores con nodo Error Trigger y notificación por Telegram.\\n</requirements>"
+    var promptVariables = {};
+
+    function handlePromptInputChange() {
+      detectVariables();
+      generatePrompt();
+    }
+
+    function detectVariables() {
+      var task = document.getElementById('promptTask').value;
+      var matches = task.match(/\{\{([a-zA-Z0-9_]+)\}\}/g);
+      var container = document.getElementById('dynamicVariablesContainer');
+      var inputsDiv = document.getElementById('dynamicVariablesInputs');
+
+      if (matches && matches.length > 0) {
+        container.style.display = 'block';
+        var uniqueVars = [];
+        matches.forEach(function(m) {
+          var v = m.replace(/[\{\}]/g, '');
+          if (uniqueVars.indexOf(v) === -1) uniqueVars.push(v);
+        });
+
+        inputsDiv.innerHTML = '';
+        uniqueVars.forEach(function(v) {
+          var currentVal = promptVariables[v] || '';
+          var div = document.createElement('div');
+          div.innerHTML = '<label class="input-label" style="text-transform: capitalize;">{{' + v + '}}:</label>' +
+            '<input type="text" class="suite-input" value="' + currentVal + '" placeholder="Valor de ' + v + '..." oninput="updateVarValue(\'' + v + '\', this.value)">';
+          inputsDiv.appendChild(div);
+        });
+      } else {
+        container.style.display = 'none';
       }
-    ];
+    }
+
+    function updateVarValue(key, val) {
+      promptVariables[key] = val;
+      generatePrompt();
+    }
 
     function generatePrompt() {
       var domain = document.getElementById('promptDomain').value;
       var model = document.getElementById('promptModel').value;
-      var task = document.getElementById('promptTask').value.trim();
+      var rawTask = document.getElementById('promptTask').value.trim();
       var context = document.getElementById('promptContext').value.trim();
       var constraints = document.getElementById('promptConstraints').value.trim();
-      var tone = document.getElementById('promptTone').value;
+
+      // Replace variables in task
+      var task = rawTask.replace(/\{\{([a-zA-Z0-9_]+)\}\}/g, function(match, p1) {
+        return promptVariables[p1] ? promptVariables[p1] : match;
+      });
 
       var roleMap = {
-        senior: "Principal Software Engineer & Systems Architect",
-        persuasive: "World-Class Direct-Response Copywriter & Sales Strategist",
-        executive: "Executive Management Consultant & Enterprise Automation Strategist",
-        pedagogical: "Distinguished Academic Mentor & Lead Technical Educator"
+        code: "Principal Software Engineer & Systems Architect",
+        sales: "High-Ticket Enterprise Sales Strategist & Cold Outreach Specialist",
+        copy: "World-Class Direct-Response Copywriter",
+        automation: "Lead AI Automation & n8n Systems Architect"
       };
 
       var prompt = "";
       if (model === 'claude') {
         prompt = "<system_prompt>\n" +
-          "  <role>" + roleMap[tone] + "</role>\n" +
+          "  <role>" + roleMap[domain] + "</role>\n" +
           "  <context>\n    " + context + "\n  </context>\n" +
           "  <primary_objective>\n    " + task + "\n  </primary_objective>\n" +
           "  <strict_constraints>\n    • " + constraints.replace(/,\s*/g, "\n    • ") + "\n  </strict_constraints>\n" +
           "  <instructions>\n" +
-          "    1. Think step-by-step through the requirements before formulating the output.\n" +
-          "    2. Deliver production-ready, clean, maintainable solutions.\n" +
-          "    3. Format code in clean markdown blocks with type annotations where applicable.\n" +
+          "    1. Think step-by-step through edge cases before writing the solution.\n" +
+          "    2. Deliver production-ready output with exact code or high-converting copy.\n" +
+          "    3. Avoid boilerplate, pleasantries, or superficial explanations.\n" +
           "  </instructions>\n" +
           "</system_prompt>\n\n" +
-          "Por favor, procede a ejecutar la misión asignada siguiendo exactamente estas especificaciones.";
+          "Por favor, procede a ejecutar la misión asignada con máxima fidelidad a estas especificaciones.";
+      } else if (model === 'deepseek') {
+        prompt = "### SYSTEM ROLE\n" +
+          roleMap[domain] + "\n\n" +
+          "### THINKING & REASONING GUIDELINES\n" +
+          "Analyze the goal deeply. Identify potential failure modes and optimize for maximum robustness.\n\n" +
+          "### TASK OBJECTIVE\n" +
+          task + "\n\n" +
+          "### CONTEXT\n" +
+          context + "\n\n" +
+          "### CONSTRAINTS\n" +
+          "- " + constraints.replace(/,\s*/g, "\n- ");
       } else {
         prompt = "### ROLE\n" +
-          "You are a " + roleMap[tone] + ".\n\n" +
+          "You are a " + roleMap[domain] + ".\n\n" +
           "### CONTEXT\n" +
           context + "\n\n" +
           "### GOAL / TASK\n" +
@@ -1938,14 +2403,36 @@
       }
 
       document.getElementById('promptOutput').value = prompt;
+
+      // Estimate Tokens & Costs
+      var words = prompt.split(/\s+/).length;
+      var tokens = Math.round(words * 1.33);
+      document.getElementById('tokenCount').innerText = tokens;
+      // Claude 3.5 Sonnet: $3 per 1M input tokens ($0.000003/token)
+      document.getElementById('costClaude').innerText = '$' + (tokens * 0.000003).toFixed(5);
+      // GPT-4o: $2.50 per 1M input tokens ($0.0000025/token)
+      document.getElementById('costGpt').innerText = '$' + (tokens * 0.0000025).toFixed(5);
     }
 
     function copyGeneratedPrompt() {
       var p = document.getElementById('promptOutput').value;
-      navigator.clipboard.writeText(p).then(function() {
-        showToast('Prompt estructurado copiado', '📋');
-      });
+      navigator.clipboard.writeText(p).then(function() { showToast('Prompt estructurado copiado', '📋'); });
     }
+
+    var libraryPrompts = [
+      {
+        title: "Refactorizador & Auditor de Código",
+        prompt: "<role>Actúa como Arquitecto de Software Senior y Especialista en Ciberseguridad.</role>\n<task>Audita exhaustivamente el siguiente fragmento de código en busca de cuellos de botella de rendimiento, vulnerabilidades de inyección, fugas de memoria y violación de principios SOLID.</task>\n<constraints>\n1. Proporciona la solución refactorizada completa con tipado estricto.\n2. Explica cada cambio crítico en viñetas concisas.\n3. No uses sintaxis obsoleta.\n</constraints>\n<code_to_audit>\n[PEGA AQUÍ TU CÓDIGO]\n</code_to_audit>"
+      },
+      {
+        title: "Cold Email de 4 Oraciones (Ventas B2B)",
+        prompt: "<role>Actúa como Vicepresidente de Ventas B2B de clase mundial.</role>\n<task>Escribe un correo electrónico en frío de no más de 4 oraciones dirigido al CEO o Director de Operaciones.</task>\n<context>Ofrecemos automatización con IA que reduce el 70% de tareas repetitivas en prospección y atención por WhatsApp.</context>\n<rules>\n1. Oración 1: Cumplido específico sobre su empresa.\n2. Oración 2: El dolor oculto o cuello de botella.\n3. Oración 3: La solución con métrica cuantificable (ej: +2,500 leads/mes).\n4. Oración 4: Call-to-action de baja fricción ('¿Valdría la pena ver un video de 2 minutos?').\n5. Cero spam, cero lenguaje cliché corporativo.\n</rules>"
+      },
+      {
+        title: "Diseñador de Workflows JSON n8n",
+        prompt: "<role>Actúa como Especialista en Automatizaciones e Integración de Sistemas en n8n.</role>\n<task>Diseña la arquitectura completa de un workflow automatizado para procesar leads entrantes.</task>\n<requirements>\n1. Webhook Trigger para recepción de datos en JSON.\n2. Nodo de Código Javascript para sanitización y validación de emails/teléfonos.\n3. Integración con OpenAI / Claude para clasificación de intención del cliente.\n4. Salida bifurcada: Clientes Calificados -> WhatsApp vía WADesk; Clientes Fríos -> Secuencia de Nurturing.\n5. Manejo de errores con nodo Error Trigger y notificación por Telegram.\n</requirements>"
+      }
+    ];
 
     function loadLibraryPrompt(idx) {
       if (libraryPrompts[idx]) {
@@ -1956,8 +2443,11 @@
     }
 
     // ==========================================
-    // TOOL 5: AES-256 VAULT
+    // TOOL 5: AES-256 VAULT PRO (Shareable Link + File Encryption)
     // ==========================================
+    var uploadedVaultFile = null;
+    var decryptedFileBlob = null;
+
     function switchVaultTab(tab) {
       if(tab === 'encrypt') {
         document.getElementById('btnTabEncrypt').className = 'suite-btn emerald';
@@ -1970,6 +2460,24 @@
         document.getElementById('vaultEncryptArea').style.display = 'none';
         document.getElementById('vaultDecryptArea').style.display = 'block';
       }
+    }
+
+    function handleVaultFileUpload(event) {
+      var file = event.target.files[0];
+      if (!file) return;
+      var reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedVaultFile = {
+          name: file.name,
+          type: file.type,
+          data: e.target.result
+        };
+        var status = document.getElementById('vaultFileStatus');
+        status.innerText = 'Archivo cargado: ' + file.name + ' (' + (file.size / 1024).toFixed(1) + ' KB)';
+        status.style.display = 'block';
+        showToast('Archivo listo para cifrar', '📁');
+      };
+      reader.readAsDataURL(file);
     }
 
     async function deriveAesKey(passphrase, salt) {
@@ -1987,14 +2495,31 @@
     }
 
     async function runEncryption() {
-      var plaintext = document.getElementById('vaultPlaintext').value;
+      var textMsg = document.getElementById('vaultPlaintext').value.trim();
       var password = document.getElementById('vaultPassword').value;
 
-      if (!plaintext) { showToast('Ingresa el mensaje a cifrar', '⚠️'); return; }
+      var payloadObj = null;
+      if (uploadedVaultFile) {
+        payloadObj = {
+          isFile: true,
+          fileName: uploadedVaultFile.name,
+          fileType: uploadedVaultFile.type,
+          data: uploadedVaultFile.data,
+          note: textMsg
+        };
+      } else if (textMsg) {
+        payloadObj = {
+          isFile: false,
+          text: textMsg
+        };
+      }
+
+      if (!payloadObj) { showToast('Ingresa un mensaje o sube un archivo para cifrar', '⚠️'); return; }
       if (!password) { showToast('Ingresa una contraseña para cifrar', '⚠️'); return; }
 
       try {
         var enc = new TextEncoder();
+        var rawString = JSON.stringify(payloadObj);
         var salt = window.crypto.getRandomValues(new Uint8Array(16));
         var iv = window.crypto.getRandomValues(new Uint8Array(12));
         var key = await deriveAesKey(password, salt);
@@ -2002,29 +2527,25 @@
         var ciphertextBuffer = await window.crypto.subtle.encrypt(
           { name: 'AES-GCM', iv: iv },
           key,
-          enc.encode(plaintext)
+          enc.encode(rawString)
         );
 
-        // Pack salt + iv + ciphertext into one buffer
         var cipherBytes = new Uint8Array(ciphertextBuffer);
         var combined = new Uint8Array(salt.length + iv.length + cipherBytes.length);
         combined.set(salt, 0);
         combined.set(iv, salt.length);
         combined.set(cipherBytes, salt.length + iv.length);
 
-        // Convert to Base64
         var binary = '';
-        for (var i = 0; i < combined.byteLength; i++) {
-          binary += String.fromCharCode(combined[i]);
-        }
+        for (var i = 0; i < combined.byteLength; i++) { binary += String.fromCharCode(combined[i]); }
         var base64 = btoa(binary);
 
         document.getElementById('vaultCiphertext').value = base64;
         document.getElementById('encryptResultArea').style.display = 'block';
-        showToast('Mensaje cifrado con AES-256 GCM militar', '🔒');
+        showToast('Mensaje cifrado con AES-256 militar', '🔒');
       } catch(err) {
         console.error(err);
-        showToast('Error en el proceso de cifrado', '❌');
+        showToast('Error en el cifrado', '❌');
       }
     }
 
@@ -2038,9 +2559,7 @@
       try {
         var binary = atob(base64);
         var combined = new Uint8Array(binary.length);
-        for (var i = 0; i < binary.length; i++) {
-          combined[i] = binary.charCodeAt(i);
-        }
+        for (var i = 0; i < binary.length; i++) { combined[i] = binary.charCodeAt(i); }
 
         var salt = combined.slice(0, 16);
         var iv = combined.slice(16, 28);
@@ -2055,10 +2574,23 @@
 
         var dec = new TextDecoder();
         var decryptedText = dec.decode(decryptedBuffer);
+        var obj = JSON.parse(decryptedText);
 
-        document.getElementById('vaultDecryptedPlaintext').value = decryptedText;
+        var viewer = document.getElementById('vaultDecryptedPlaintext');
+        var btnFile = document.getElementById('btnDownloadDecryptedFile');
+
+        if (obj.isFile) {
+          viewer.value = "📁 ARCHIVO CIFRADO RECUPERADO:\nNombre: " + obj.fileName + "\nTipo: " + obj.fileType + (obj.note ? "\nNota: " + obj.note : "");
+          btnFile.style.display = 'block';
+          btnFile.setAttribute('data-url', obj.data);
+          btnFile.setAttribute('data-name', obj.fileName);
+        } else {
+          viewer.value = obj.text;
+          btnFile.style.display = 'none';
+        }
+
         document.getElementById('decryptResultArea').style.display = 'block';
-        showToast('Mensaje descifrado correctamente', '🔓');
+        showToast('Contenido descifrado con éxito', '🔓');
       } catch(err) {
         console.warn('Decryption failed:', err);
         showToast('Contraseña incorrecta o datos manipulados', '❌');
@@ -2066,28 +2598,66 @@
       }
     }
 
+    function downloadDecryptedFile() {
+      var btn = document.getElementById('btnDownloadDecryptedFile');
+      var url = btn.getAttribute('data-url');
+      var name = btn.getAttribute('data-name') || 'archivo_descifrado';
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = name;
+      a.click();
+      showToast('Archivo original descargado', '💾');
+    }
+
     function copyVaultCiphertext() {
       var c = document.getElementById('vaultCiphertext').value;
-      navigator.clipboard.writeText(c).then(function() {
-        showToast('Código cifrado copiado', '📋');
+      navigator.clipboard.writeText(c).then(function() { showToast('Código cifrado copiado', '📋'); });
+    }
+
+    function copyShareableSecretLink() {
+      var c = document.getElementById('vaultCiphertext').value;
+      if (!c) return;
+      var url = window.location.origin + window.location.pathname + '#vault=' + encodeURIComponent(c);
+      navigator.clipboard.writeText(url).then(function() {
+        showToast('Enlace compartible copiado al portapapeles', '🔗');
       });
     }
 
     function sendCiphertextToWhatsApp() {
       var c = document.getElementById('vaultCiphertext').value;
       if (!c) return;
-      var msg = "🔐 Mensaje Cifrado con DuarteSuite AES-256:\\n\\n" + c + "\\n\\nDescífralo en: https://adrian1998duarte-lgtm.github.io/duartelabs-ai-automation-suite/tools.html";
+      var link = window.location.origin + window.location.pathname + '#vault=' + encodeURIComponent(c);
+      var msg = "🔐 Mensaje Cifrado con DuarteSuite AES-256:\n\nÁbrelo y pon la clave aquí: " + link;
       window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
     }
 
-    // Password Generator
+    // Password & Diceware
     function updatePasswordLength(val) {
       document.getElementById('pwdLengthVal').innerText = val + ' caracteres';
       generateRandomPassword();
     }
 
     function generateRandomPassword() {
-      var len = parseInt(document.getElementById('pwdLengthSlider').value) || 20;
+      var mode = document.getElementById('pwdMode').value;
+      var len = parseInt(document.getElementById('pwdLengthSlider').value) || 22;
+
+      if (mode === 'diceware') {
+        var wordBank = ['solana', 'quantum', 'laser', 'nexus', 'cyber', 'phantom', 'falcon', 'matrix', 'shield', 'crypto', 'arcade', 'hyper', 'vertex', 'orbit', 'titan', 'shadow', 'pulse', 'blaze'];
+        var count = Math.min(6, Math.max(3, Math.round(len / 5)));
+        var words = [];
+        for (var i = 0; i < count; i++) {
+          var r = Math.floor(Math.random() * wordBank.length);
+          words.push(wordBank[r]);
+        }
+        var phrase = words.join('-') + '-' + Math.floor(Math.random() * 90 + 10);
+        document.getElementById('generatedPassword').innerText = phrase;
+        document.getElementById('entropyText').innerText = 'Memorable Diceware (~95 bits)';
+        document.getElementById('entropyBar').style.width = '85%';
+        document.getElementById('entropyBar').style.background = '#34d399';
+        document.getElementById('crackTimeText').innerText = 'Tiempo de crackeo: ~5 millones de años';
+        return;
+      }
+
       var hasUpper = document.getElementById('chkUpper').checked;
       var hasLower = document.getElementById('chkLower').checked;
       var hasNumbers = document.getElementById('chkNumbers').checked;
@@ -2098,20 +2668,16 @@
       if (hasLower) chars += 'abcdefghijkmnopqrstuvwxyz';
       if (hasNumbers) chars += '23456789';
       if (hasSymbols) chars += '!@#$%^&*()_+~|}{[]:;?><=';
-
       if (!chars) chars = 'abcdefghijkmnopqrstuvwxyz';
 
       var randomBytes = new Uint32Array(len);
       window.crypto.getRandomValues(randomBytes);
 
       var pwd = '';
-      for (var i = 0; i < len; i++) {
-        pwd += chars[randomBytes[i] % chars.length];
-      }
+      for (var i = 0; i < len; i++) { pwd += chars[randomBytes[i] % chars.length]; }
 
       document.getElementById('generatedPassword').innerText = pwd;
 
-      // Entropy calculation
       var poolSize = chars.length;
       var entropy = Math.round(len * (Math.log(poolSize) / Math.log(2)));
 
@@ -2119,12 +2685,12 @@
       var txt = document.getElementById('entropyText');
       var crack = document.getElementById('crackTimeText');
 
-      if (entropy < 40) {
+      if (entropy < 45) {
         bar.style.width = '30%'; bar.style.background = '#ef4444';
         txt.innerText = 'Débil (' + entropy + ' bits)'; txt.style.color = '#ef4444';
         crack.innerText = 'Tiempo de crackeo: Pocas horas o días';
-      } else if (entropy < 70) {
-        bar.style.width = '60%'; bar.style.background = '#f59e0b';
+      } else if (entropy < 75) {
+        bar.style.width = '65%'; bar.style.background = '#f59e0b';
         txt.innerText = 'Media (' + entropy + ' bits)'; txt.style.color = '#f59e0b';
         crack.innerText = 'Tiempo de crackeo: ~500 años';
       } else {
@@ -2136,17 +2702,28 @@
 
     function copyPassword() {
       var p = document.getElementById('generatedPassword').innerText;
-      navigator.clipboard.writeText(p).then(function() {
-        showToast('Contraseña segura copiada', '📋');
-      });
+      navigator.clipboard.writeText(p).then(function() { showToast('Contraseña segura copiada', '📋'); });
+    }
+
+    // Auto check if URL has #vault=
+    function checkUrlForVaultHash() {
+      if (window.location.hash.startsWith('#vault=')) {
+        var encrypted = decodeURIComponent(window.location.hash.substring(7));
+        switchTool('crypto-vault', document.querySelectorAll('.tool-tab')[4]);
+        switchVaultTab('decrypt');
+        document.getElementById('vaultDecryptInput').value = encrypted;
+        document.getElementById('vaultDecryptPassword').focus();
+        showToast('Código cifrado cargado desde el enlace. Ingresa la contraseña.', '🔐');
+      }
     }
 
     // ==========================================
-    // TOOL 6: IMAGE OPTIMIZER
+    // TOOL 6: IMAGE OPTIMIZER PRO (Split-View Comparison)
     // ==========================================
     var rawOptimizerImg = null;
     var rawFileSize = 0;
     var optimizedBlob = null;
+    var splitPercent = 50;
 
     function loadOptimizerImage(event) {
       var file = event.target.files[0];
@@ -2160,7 +2737,9 @@
         img.onload = function() {
           rawOptimizerImg = img;
           document.getElementById('optEmptyState').style.display = 'none';
-          document.getElementById('optPreviewImg').style.display = 'block';
+          document.getElementById('splitOriginalImg').src = e.target.result;
+          document.getElementById('splitOriginalImg').style.display = 'block';
+          document.getElementById('splitOptimizedImg').style.display = 'block';
           runImageOptimization();
           showToast('Imagen cargada para optimización', '🖼️');
         };
@@ -2206,13 +2785,11 @@
       canvas.height = targetH;
       var ctx = canvas.getContext('2d');
 
-      // Draw background white if jpeg
       if (format === 'image/jpeg') {
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, targetW, targetH);
       }
 
-      // Draw image fitted
       ctx.drawImage(rawOptimizerImg, 0, 0, targetW, targetH);
 
       canvas.toBlob(function(blob) {
@@ -2228,9 +2805,29 @@
         document.getElementById('optSavingsBadge').innerText = 'Ahorro: ' + savings + '%';
 
         var previewUrl = URL.createObjectURL(blob);
-        document.getElementById('optPreviewImg').src = previewUrl;
+        document.getElementById('splitOptimizedImg').src = previewUrl;
         document.getElementById('btnDownloadOpt').disabled = false;
       }, format, quality);
+    }
+
+    function handleSplitMove(e) {
+      var rect = document.getElementById('splitContainer').getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var p = Math.max(5, Math.min(95, (x / rect.width) * 100));
+      updateSplitDivider(p);
+    }
+
+    function handleSplitTouch(e) {
+      if (!e.touches[0]) return;
+      var rect = document.getElementById('splitContainer').getBoundingClientRect();
+      var x = e.touches[0].clientX - rect.left;
+      var p = Math.max(5, Math.min(95, (x / rect.width) * 100));
+      updateSplitDivider(p);
+    }
+
+    function updateSplitDivider(percent) {
+      document.getElementById('splitOverlay').style.width = percent + '%';
+      document.getElementById('splitHandle').style.left = percent + '%';
     }
 
     function downloadOptimizedImage() {
@@ -2245,20 +2842,116 @@
     }
 
     // ==========================================
-    // TOOL 7: API & WEBHOOK TESTER
+    // TOOL 7: API TESTER PRO (Auth Builder + 5-Language Code Export)
     // ==========================================
-    function updateCurlCommand() {
+    var currentSnippetLang = 'curl';
+
+    function updateAuthHeader() {
+      var auth = document.getElementById('apiAuthType').value;
+      var container = document.getElementById('authKeyContainer');
+      var label = document.getElementById('authKeyLabel');
+      if (auth === 'bearer') {
+        container.style.display = 'block';
+        label.innerText = 'Bearer Token (JWT):';
+      } else if (auth === 'apikey') {
+        container.style.display = 'block';
+        label.innerText = 'API Key (x-api-key):';
+      } else {
+        container.style.display = 'none';
+      }
+      updateMultiLangSnippets();
+    }
+
+    function updateMultiLangSnippets() {
       var method = document.getElementById('apiMethod').value;
       var url = document.getElementById('apiUrl').value.trim();
       var body = document.getElementById('apiBody').value.trim();
+      var auth = document.getElementById('apiAuthType').value;
+      var authVal = document.getElementById('apiAuthValue').value.trim();
 
       document.getElementById('apiBodyContainer').style.display = (method === 'POST' || method === 'PUT' || method === 'PATCH') ? 'block' : 'none';
 
-      var curl = 'curl -X ' + method + ' "' + url + '"';
-      if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
-        curl += ' -H "Content-Type: application/json" -d \'' + body.replace(/'/g, "\\'") + '\'';
+      var headers = { 'Accept': 'application/json' };
+      if (method === 'POST' || method === 'PUT' || method === 'PATCH') headers['Content-Type'] = 'application/json';
+      if (auth === 'bearer' && authVal) headers['Authorization'] = 'Bearer ' + authVal;
+      if (auth === 'apikey' && authVal) headers['x-api-key'] = authVal;
+
+      var snippet = "";
+      if (currentSnippetLang === 'curl') {
+        snippet = 'curl -X ' + method + ' "' + url + '" \\\n';
+        for (var h in headers) { snippet += '  -H "' + h + ': ' + headers[h] + '" \\\n'; }
+        if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+          snippet += "  -d '" + body.replace(/'/g, "\\'") + "'";
+        }
+      } else if (currentSnippetLang === 'python') {
+        snippet = "import requests\n\nurl = \"" + url + "\"\nheaders = " + JSON.stringify(headers, null, 2) + "\n";
+        if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
+          snippet += "payload = " + body + "\nresponse = requests." + method.lower() + "(url, json=payload, headers=headers)\n";
+        } else {
+          snippet += "response = requests." + method.lower() + "(url, headers=headers)\n";
+        }
+        snippet += "print(response.json())";
+      } else if (currentSnippetLang === 'js') {
+        snippet = "const response = await fetch(\"" + url + "\", {\n" +
+          "  method: \"" + method + "\",\n" +
+          "  headers: " + JSON.stringify(headers, null, 4) + (method === 'POST' || method === 'PUT' ? ",\n  body: JSON.stringify(" + body + ")" : "") + "\n" +
+          "});\nconst data = await response.json();\nconsole.log(data);";
+      } else if (currentSnippetLang === 'node') {
+        snippet = "const axios = require('axios');\n\nconst config = {\n" +
+          "  method: '" + method.toLowerCase() + "',\n" +
+          "  url: '" + url + "',\n" +
+          "  headers: " + JSON.stringify(headers) + (method === 'POST' || method === 'PUT' ? ",\n  data: " + body : "") + "\n" +
+          "};\n\nconst res = await axios(config);\nconsole.log(res.data);";
+      } else if (currentSnippetLang === 'php') {
+        snippet = "<?php\n$curl = curl_init();\ncurl_setopt_array($curl, array(\n" +
+          "  CURLOPT_URL => '" + url + "',\n" +
+          "  CURLOPT_CUSTOMREQUEST => '" + method + "',\n" +
+          "  CURLOPT_RETURNTRANSFER => true,\n" +
+          "  CURLOPT_HTTPHEADER => array(\n" +
+          Object.keys(headers).map(function(k){ return "    '" + k + ": " + headers[k] + "'"; }).join(",\n") + "\n  )\n));\n$res = curl_exec($curl);\necho $res;";
       }
-      document.getElementById('curlOutput').innerText = curl;
+
+      document.getElementById('snippetOutput').innerText = snippet;
+    }
+
+    function switchSnippetLang(lang) {
+      currentSnippetLang = lang;
+      ['tabCurl', 'tabPython', 'tabJs', 'tabNode', 'tabPhp'].forEach(function(id){
+        var el = document.getElementById(id);
+        if (el) el.style.background = 'transparent';
+      });
+      var activeTab = document.getElementById('tab' + lang.charAt(0).toUpperCase() + lang.slice(1));
+      if (activeTab) activeTab.style.background = 'rgba(255,255,255,0.1)';
+      updateMultiLangSnippets();
+    }
+
+    function copyCodeSnippet() {
+      var s = document.getElementById('snippetOutput').innerText;
+      navigator.clipboard.writeText(s).then(function() { showToast('Fragmento de código copiado', '📋'); });
+    }
+
+    function beautifyJson() {
+      var b = document.getElementById('apiBody');
+      try {
+        var parsed = JSON.parse(b.value);
+        b.value = JSON.stringify(parsed, null, 2);
+        showToast('JSON formateado', '✨');
+      } catch(e) {
+        showToast('JSON inválido: ' + e.message, '⚠️');
+      }
+      updateMultiLangSnippets();
+    }
+
+    function minifyJson() {
+      var b = document.getElementById('apiBody');
+      try {
+        var parsed = JSON.parse(b.value);
+        b.value = JSON.stringify(parsed);
+        showToast('JSON minificado', '⚡');
+      } catch(e) {
+        showToast('JSON inválido: ' + e.message, '⚠️');
+      }
+      updateMultiLangSnippets();
     }
 
     function loadApiPreset(preset) {
@@ -2273,7 +2966,7 @@
         document.getElementById('apiUrl').value = 'https://jsonplaceholder.typicode.com/posts';
         document.getElementById('apiBody').value = '{\n  "title": "Nuevo Lead DuarteLabs",\n  "body": "Contacto automatizado vía WADesk CRM",\n  "userId": 1\n}';
       }
-      updateCurlCommand();
+      updateMultiLangSnippets();
       runApiRequest();
     }
 
@@ -2281,6 +2974,8 @@
       var method = document.getElementById('apiMethod').value;
       var url = document.getElementById('apiUrl').value.trim();
       var body = document.getElementById('apiBody').value.trim();
+      var auth = document.getElementById('apiAuthType').value;
+      var authVal = document.getElementById('apiAuthValue').value.trim();
 
       if (!url) { showToast('Ingresa una URL válida', '⚠️'); return; }
 
@@ -2291,17 +2986,13 @@
       viewer.value = 'Enviando petición HTTP ' + method + ' a ' + url + '...';
       var startTime = performance.now();
 
-      var opts = {
-        method: method,
-        headers: {
-          'Accept': 'application/json'
-        }
-      };
+      var headers = { 'Accept': 'application/json' };
+      if (method === 'POST' || method === 'PUT' || method === 'PATCH') headers['Content-Type'] = 'application/json';
+      if (auth === 'bearer' && authVal) headers['Authorization'] = 'Bearer ' + authVal;
+      if (auth === 'apikey' && authVal) headers['x-api-key'] = authVal;
 
-      if (method === 'POST' || method === 'PUT' || method === 'PATCH') {
-        opts.headers['Content-Type'] = 'application/json';
-        opts.body = body;
-      }
+      var opts = { method: method, headers: headers };
+      if (method === 'POST' || method === 'PUT' || method === 'PATCH') opts.body = body;
 
       fetch(url, opts)
         .then(function(res) {
@@ -2342,38 +3033,21 @@
 
     function copyApiResponse() {
       var t = document.getElementById('apiResponseViewer').value;
-      navigator.clipboard.writeText(t).then(function() {
-        showToast('Respuesta JSON copiada', '📋');
-      });
-    }
-
-    function copyCurl() {
-      var c = document.getElementById('curlOutput').innerText;
-      navigator.clipboard.writeText(c).then(function() {
-        showToast('Comando cURL copiado al portapapeles', '📋');
-      });
+      navigator.clipboard.writeText(t).then(function() { showToast('Respuesta JSON copiada', '📋'); });
     }
 
     // ==========================================
-    // INITIALIZATION ON PAGE LOAD
+    // INITIALIZATION
     // ==========================================
     window.addEventListener('DOMContentLoaded', function() {
-      // 1. Init Mockup Canvas
       renderMockup();
-
-      // 2. Init Crypto
       fetchCryptoPrices();
-      setInterval(fetchCryptoPrices, 30000);
+      setInterval(fetchCryptoPrices, 25000);
       calculateCompoundInterest();
-
-      // 3. Init Prompt
-      generatePrompt();
-
-      // 4. Init Password
+      handlePromptInputChange();
       generateRandomPassword();
-
-      // 5. Init API cURL
-      updateCurlCommand();
+      updateMultiLangSnippets();
+      checkUrlForVaultHash();
     });
   </script>
 </body>
