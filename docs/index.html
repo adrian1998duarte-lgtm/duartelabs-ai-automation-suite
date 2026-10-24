@@ -805,9 +805,11 @@ footer a:hover { color: var(--cyan); }
     </a>
     <div class="header-actions">
       <nav class="nav-links">
+        <a href="arcade.html" style="color: #38bdf8; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">🕹️ <span>Arcade</span> <span class="badge-hot" style="background: linear-gradient(135deg, rgba(244, 63, 94, 0.25) 0%, rgba(139, 92, 246, 0.25) 100%); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);">NDS &amp; PSP</span></a>
         <a href="#wadesk">WADesk <span class="badge-hot">Chrome CRM</span></a>
         <a href="#calculator" data-en="ROI Calculator" data-es="Calculadora ROI">ROI Calculator</a>
-        <a href="#actors" data-en="Apify Actors" data-es="Actors de Apify">Apify Actors</a>
+        <a href="#actors" data-en="Micro-Apps" data-es="Microapps">Micro-Apps</a>
+        <a href="#arcade-banner" data-en="Retro Arcade" data-es="Arcade Retro">Retro Arcade</a>
         <a href="#code" data-en="Developers" data-es="Desarrolladores">Developers</a>
         <a href="#comparison" data-en="Compare" data-es="Comparativa">Compare</a>
         <a href="#faq" data-en="FAQ" data-es="Preguntas">FAQ</a>
@@ -969,11 +971,12 @@ footer a:hover { color: var(--cyan); }
   </div>
 
   <div class="filter-bar">
-    <button class="filter-btn active" onclick="filterApps('all', this)">All Apps (6)</button>
+    <button class="filter-btn active" onclick="filterApps('all', this)">All Apps (7)</button>
     <button class="filter-btn" onclick="filterApps('sales', this)">Sales &amp; B2B Leads</button>
     <button class="filter-btn" onclick="filterApps('ecom', this)">E-Commerce</button>
     <button class="filter-btn" onclick="filterApps('ai', this)">AI &amp; RAG Datasets</button>
     <button class="filter-btn" onclick="filterApps('seo', this)">Technical SEO</button>
+    <button class="filter-btn" onclick="filterApps('arcade', this)" style="border-color: rgba(244, 63, 94, 0.4); color: #f43f5e;">🕹️ Retro Gaming</button>
   </div>
 
   <div class="grid" id="appsGrid">
@@ -1076,6 +1079,23 @@ footer a:hover { color: var(--cyan); }
       <div class="card-bottom">
         <span class="price-tag" data-en="$0.0012 / page" data-es="$0.0012 / página">$0.0012 / page</span>
         <span class="card-action" data-en="Apify Store →" data-es="Ver en Apify →">Apify Store →</span>
+      </div>
+    </a>
+
+    <!-- App 7: DuarteArcade Web Gaming Portal -->
+    <a class="card" data-cat="arcade" href="arcade.html" style="border-color: rgba(244, 63, 94, 0.35); background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(30, 27, 75, 0.5) 100%);">
+      <div>
+        <div class="card-top">
+          <img class="card-icon" src="assets/icon_arcade.jpg" alt="DuarteArcade Web Retro Emulator">
+          <div>
+            <h3 style="color: #fff;">DuarteArcade · Nintendo DS &amp; Retro Hub</h3>
+          </div>
+        </div>
+        <p data-en="Play Nintendo DS, PSP, PS1 &amp; GBA games directly in your browser. WebAssembly 60 FPS, dual-screen touchscreen simulation, and gamepad support." data-es="Juega títulos de Nintendo DS, PSP, PS1 y GBA directo en el navegador con WebAssembly a 60 FPS, pantalla táctil dual y mandos.">Play Nintendo DS, PSP, PS1 &amp; GBA games directly in your browser. WebAssembly 60 FPS, dual-screen touchscreen simulation, and gamepad support.</p>
+      </div>
+      <div class="card-bottom">
+        <span class="price-tag" style="background: rgba(244, 63, 94, 0.15); color: #f43f5e; border-color: rgba(244, 63, 94, 0.3);" data-en="Free · In-Browser" data-es="Gratis · En Navegador">Free · In-Browser</span>
+        <span class="card-action" style="color: #f43f5e;" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
       </div>
     </a>
   </div>
@@ -1214,6 +1234,46 @@ footer a:hover { color: var(--cyan); }
     </div>
   </div>
 
+  <!-- DUARTEARCADE SHOWCASE BANNER -->
+  <section id="arcade-banner" style="margin: 70px 0 50px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.85) 0%, rgba(30, 27, 75, 0.75) 50%, rgba(13, 19, 36, 0.85) 100%); border: 1px solid rgba(244, 63, 94, 0.35); border-radius: 24px; padding: 48px; position: relative; overflow: hidden; box-shadow: 0 0 50px rgba(244, 63, 94, 0.15);">
+    <div style="position: absolute; top: -60px; right: -60px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(244, 63, 94, 0.25) 0%, transparent 70%); filter: blur(40px); pointer-events: none;"></div>
+    <div style="position: absolute; bottom: -60px; left: -60px; width: 260px; height: 260px; border-radius: 50%; background: radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, transparent 70%); filter: blur(40px); pointer-events: none;"></div>
+    
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 32px; position: relative; z-index: 2;">
+      <div style="max-width: 640px;">
+        <div style="display: inline-flex; align-items: center; gap: 8px; padding: 6px 14px; border-radius: 999px; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.35); color: #f43f5e; font-size: 12.5px; font-weight: 700; margin-bottom: 18px; text-transform: uppercase; letter-spacing: 0.8px;">
+          🎮 DuarteArcade · Web Retro Gaming Hub
+        </div>
+        <h2 style="font-size: clamp(26px, 3.5vw, 40px); margin: 0 0 16px; font-family: 'Space Grotesk', sans-serif; font-weight: 800; line-height: 1.15; color: #fff;" data-en="Play Nintendo DS, PSP, PS1 &amp; GBA in Your Browser" data-es="Juega Nintendo DS, PSP, PS1 y GBA en tu Navegador">Play Nintendo DS, PSP, PS1 &amp; GBA in Your Browser</h2>
+        <p style="color: var(--txt-muted); font-size: 16.5px; line-height: 1.6; margin: 0 0 24px;" data-en="Experience ultra-fast 60 FPS WebAssembly emulation right inside your browser. Full Nintendo DS dual-screen touch simulation, PlayStation controller mapping, instant save states, and zero installations needed." data-es="Disfruta de emulación WebAssembly a 60 FPS directo en el navegador. Soporte completo de pantalla dual táctil para Nintendo DS, mapeo de mandos PlayStation/Xbox, partidas guardadas al instante y sin instalar nada.">Experience ultra-fast 60 FPS WebAssembly emulation right inside your browser. Full Nintendo DS dual-screen touch simulation, PlayStation controller mapping, instant save states, and zero installations needed.</p>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 28px;">
+          <span style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #f8fafc;">📱 Nintendo DS (Dual-Screen + Stylus Touch)</span>
+          <span style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #f8fafc;">🕹️ PlayStation Portable (PSP) &amp; PS1</span>
+          <span style="background: rgba(255, 255, 255, 0.06); border: 1px solid rgba(255, 255, 255, 0.12); padding: 5px 12px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #f8fafc;">🔥 Game Boy Advance (GBA) &amp; N64</span>
+        </div>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <a href="arcade.html" class="btn-electric" style="background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); box-shadow: 0 0 30px rgba(244, 63, 94, 0.4);" data-en="Launch DuarteArcade 🕹️" data-es="Entrar a DuarteArcade 🕹️">Launch DuarteArcade 🕹️</a>
+          <a href="arcade.html" class="btn-glass" data-en="Open Fullscreen Emulator &rarr;" data-es="Abrir Emulador Completo &rarr;">Open Fullscreen Emulator &rarr;</a>
+        </div>
+      </div>
+      <div style="flex: 1; min-width: 280px; max-width: 420px; background: rgba(3, 5, 13, 0.8); border: 1px solid rgba(244, 63, 94, 0.25); border-radius: 18px; padding: 22px; box-shadow: 0 20px 40px rgba(0,0,0,0.5);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 10px;">
+          <span style="font-weight: 700; font-size: 14px; color: #f43f5e; display: flex; align-items: center; gap: 8px;">
+            <span style="width: 8px; height: 8px; border-radius: 50%; background: #f43f5e; box-shadow: 0 0 10px #f43f5e; display: inline-block;"></span>
+            QUICK ROM LOADER
+          </span>
+          <span style="font-size: 11px; color: var(--txt-dim); font-family: 'JetBrains Mono', monospace;">WEBASSEMBLY 60 FPS</span>
+        </div>
+        <div style="background: rgba(13, 19, 36, 0.6); border: 2px dashed rgba(244, 63, 94, 0.35); border-radius: 12px; padding: 30px 18px; text-align: center; margin-bottom: 14px;">
+          <img src="assets/icon_arcade.jpg" alt="DuarteArcade" style="width: 72px; height: 72px; border-radius: 16px; margin-bottom: 10px; border: 1px solid rgba(244, 63, 94, 0.4); box-shadow: 0 0 20px rgba(244, 63, 94, 0.3);">
+          <div style="font-weight: 700; font-size: 14.5px; color: #fff; margin-bottom: 4px;" data-en="Drag &amp; Drop Any ROM File" data-es="Arrastra cualquier archivo ROM">Drag &amp; Drop Any ROM File</div>
+          <div style="font-size: 12px; color: var(--txt-muted);">.nds, .iso, .gba, .z64, .smc, .zip</div>
+        </div>
+        <a href="arcade.html" style="display: block; width: 100%; text-align: center; background: rgba(244, 63, 94, 0.15); border: 1px solid rgba(244, 63, 94, 0.4); color: #fff; padding: 10px; border-radius: 10px; font-weight: 700; font-size: 13px; transition: all 0.2s;" onmouseover="this.style.background='rgba(244,63,94,0.3)'" onmouseout="this.style.background='rgba(244,63,94,0.15)'" data-en="Open Fullscreen Arcade &rarr;" data-es="Abrir Arcade en Pantalla Completa &rarr;">Open Fullscreen Arcade &rarr;</a>
+      </div>
+    </div>
+  </section>
+
   <!-- BOTTOM CTA BANNER -->
   <section class="cta-banner">
     <h2 data-en="Start Automating Your B2B Growth Machine" data-es="Comienza a Automatizar tu Máquina de Crecimiento B2B">Start Automating Your B2B Growth Machine</h2>
@@ -1226,7 +1286,8 @@ footer a:hover { color: var(--cyan); }
 
   <footer>
     <div>© 2026 DuarteLabs · Cristian Duarte. All rights reserved.</div>
-    <div style="display:flex;gap:22px">
+    <div style="display:flex;gap:22px;flex-wrap:wrap">
+      <a href="arcade.html" style="color:#f43f5e;font-weight:700">🕹️ DuarteArcade (NDS &amp; PSP)</a>
       <a href="https://chromewebstore.google.com/detail/jpghjmjcoblepcmipfhopoiogpmaihmp" target="_blank" rel="noopener noreferrer">WADesk Chrome</a>
       <a href="https://apify.com/duartelabs" target="_blank" rel="noopener noreferrer">Apify Store</a>
       <a href="https://github.com/adrian1998duarte-lgtm/duartelabs-ai-automation-suite" target="_blank" rel="noopener noreferrer">GitHub Suite</a>
