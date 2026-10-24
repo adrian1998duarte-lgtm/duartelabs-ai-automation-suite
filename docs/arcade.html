@@ -1109,7 +1109,7 @@ footer a:hover { color: var(--cyan); }
       </div>
 
       <!-- PS2: Play!.js Web Engine -->
-      <div class="game-card" data-cat="ps2" onclick="launchWebGame('https://playjs.purei.org/', 'PlayStation 2: Play!.js Web Virtual Machine (Zero BIOS)')" style="border-color: rgba(59, 130, 246, 0.5); background: linear-gradient(135deg, rgba(20, 30, 60, 0.8) 0%, rgba(15, 20, 40, 0.95) 100%);">
+      <div class="game-card" data-cat="ps2" onclick="launchPS2Engine()" style="border-color: rgba(59, 130, 246, 0.5); background: linear-gradient(135deg, rgba(20, 30, 60, 0.8) 0%, rgba(15, 20, 40, 0.95) 100%);">
         <div>
           <span class="game-card-icon">📀</span>
           <h4 style="color: #60a5fa;">PlayStation 2: Play!.js Web Engine</h4>
@@ -1276,6 +1276,37 @@ function launchWebGame(url, title){
   }, 400);
 }
 
+function launchPS2Engine(){
+  document.getElementById('dropzone').style.display = 'none';
+  var container = document.getElementById('gameContainer');
+  container.style.display = 'block';
+  
+  var rGrid = document.getElementById('retroControlsGrid');
+  var fGrid = document.getElementById('fpsControlsGrid');
+  if(rGrid) rGrid.style.display = 'none';
+  if(fGrid) fGrid.style.display = 'none';
+  
+  var vp = document.getElementById('viewport');
+  if(vp) { vp.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+  
+  document.getElementById('currentConsoleDisplay').innerText = 'Active Engine: PlayStation 2 (Play!.js Web Virtual Machine)';
+
+  container.innerHTML = '<div style="display:flex; flex-direction:column; align-items:center; justify-content:center; width:100%; height:100%; text-align:center; padding:30px; box-sizing:border-box; background:radial-gradient(circle at center, rgba(30,58,138,0.35) 0%, rgba(3,7,18,0.98) 100%);">' +
+    '<div style="width:76px; height:76px; border-radius:20px; background:rgba(59,130,246,0.18); border:1px solid rgba(59,130,246,0.45); display:flex; align-items:center; justify-content:center; font-size:38px; margin-bottom:16px; box-shadow:0 0 35px rgba(59,130,246,0.35);">📀</div>' +
+    '<h3 style="color:#60a5fa; font-size:24px; margin:0 0 10px; font-family:\'Space Grotesk\', sans-serif;">PlayStation 2: Play!.js Web VM</h3>' +
+    '<p style="max-width:560px; color:var(--txt-muted); font-size:15px; line-height:1.6; margin:0 0 24px;">' +
+      'La arquitectura de PS2 (Emotion Engine) exige hilos dedicados y aceleración WebGPU de hardware. Por seguridad del navegador (políticas COOP/COEP), el motor corre en una pestaña independiente a 60 FPS sin descargas manuales ni archivos BIOS.' +
+    '</p>' +
+    '<div style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center;">' +
+      '<a href="https://playjs.purei.org/" target="_blank" class="file-upload-btn" style="background:linear-gradient(135deg, #2563eb 0%, #06b6d4 100%); text-decoration:none; font-size:15px; padding:13px 28px; box-shadow:0 0 30px rgba(37,99,235,0.4);">' +
+        '<span>🚀</span> <span>Iniciar Máquina Virtual PS2 en Pantalla Completa &rarr;</span>' +
+      '</a>' +
+    '</div>' +
+  '</div>';
+
+  try { window.open('https://playjs.purei.org/', '_blank'); } catch(e){}
+}
+
 function launchEmulator(core, gameUrl, gameTitle){
   document.getElementById('dropzone').style.display = 'none';
   var container = document.getElementById('gameContainer');
@@ -1329,24 +1360,6 @@ function launchEmulator(core, gameUrl, gameTitle){
     'window.EJS_color = "#6366f1";' +
     'window.EJS_backgroundColor = "#000000";' +
     'window.EJS_threads = ' + hasThreads + ';' +
-    'window.EJS_defaultControls = {' +
-    '  0: {' +
-    '    0: { "value": "x", "value2": "BUTTON_2" },' +
-    '    1: { "value": "s", "value2": "BUTTON_4" },' +
-    '    2: { "value": "v", "value2": "SELECT" },' +
-    '    3: { "value": "enter", "value2": "START" },' +
-    '    4: { "value": "up arrow", "value2": "DPAD_UP" },' +
-    '    5: { "value": "down arrow", "value2": "DPAD_DOWN" },' +
-    '    6: { "value": "left arrow", "value2": "DPAD_LEFT" },' +
-    '    7: { "value": "right arrow", "value2": "DPAD_RIGHT" },' +
-    '    8: { "value": "z", "value2": "BUTTON_1" },' +
-    '    9: { "value": "a", "value2": "BUTTON_3" },' +
-    '    10: { "value": "q", "value2": "LEFT_TOP_SHOULDER" },' +
-    '    11: { "value": "e", "value2": "RIGHT_TOP_SHOULDER" },' +
-    '    12: { "value": "tab", "value2": "LEFT_BOTTOM_SHOULDER" },' +
-    '    13: { "value": "r", "value2": "RIGHT_BOTTOM_SHOULDER" }' +
-    '  }' +
-    '};' +
     'window.focus();' +
     'window.addEventListener("load", function(){' +
     '  setTimeout(function(){ window.focus(); var c = document.querySelector("canvas"); if(c) c.focus(); }, 400);' +
