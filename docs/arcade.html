@@ -668,280 +668,404 @@ footer a:hover { color: var(--cyan); }
       <p data-en="Click any game below to start playing immediately in your browser. PS1 3D, NDS Touch, GBA, Mario & Counter-Strike — 100% self-hosted, no downloads needed!" data-es="Haz clic en cualquier juego para empezar a jugar de inmediato en tu navegador. PS1 3D, Nintendo DS táctil, GBA, Mario y Counter-Strike 100% alojados, sin descargas.">Click any game below to start playing immediately in your browser. PS1 3D, NDS Touch, GBA, Mario & Counter-Strike — 100% self-hosted, no downloads needed!</p>
     </div>
 
-    <!-- Category Filter Bar -->
+        <!-- Category Filter Bar -->
     <div class="console-bar" style="margin-bottom: 28px;">
       <button class="console-btn active" onclick="filterCatalog('all', this)">
-        <span>🌟</span> <span data-en="All Games (22)" data-es="Todos (22)">All Games (22)</span>
+        <span>🌟</span> <span data-en="All Games (38)" data-es="Todos (38)">All Games (38)</span>
+      </button>
+      <button class="console-btn" onclick="filterCatalog('pokemon', this)" style="border-color: rgba(16, 185, 129, 0.5); color: #34d399;">
+        <span>⚡</span> Pokémon (3)
       </button>
       <button class="console-btn" onclick="filterCatalog('mario', this)" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24;">
-        <span>🍄</span> Mario Bros (4)
+        <span>🍄</span> Mario Bros (8)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('zelda', this)" style="border-color: rgba(234, 179, 8, 0.5); color: #facc15;">
+        <span>🗡️</span> Zelda (3)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('action', this)" style="border-color: rgba(244, 63, 94, 0.5); color: #fb7185;">
+        <span>💥</span> Acción &amp; Lucha (8)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('gba', this)" style="border-color: rgba(139, 92, 246, 0.5); color: #a78bfa;">
+        <span>⚔️</span> Game Boy Advance (17)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('gbc', this)" style="border-color: rgba(6, 182, 212, 0.5); color: #38bdf8;">
+        <span>💎</span> Game Boy Color (3)
       </button>
       <button class="console-btn" onclick="filterCatalog('fps', this)" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24;">
         <span>🎯</span> Counter-Strike
       </button>
-      <button class="console-btn" onclick="filterCatalog('contra', this)" style="border-color: rgba(6, 182, 212, 0.5); color: #38bdf8;">
-        <span>🔫</span> Contra (2)
-      </button>
-      <button class="console-btn" onclick="filterCatalog('bomber', this)" style="border-color: rgba(236, 72, 153, 0.5); color: #f472b6;">
-        <span>💣</span> Bomberman (2)
-      </button>
-      <button class="console-btn" onclick="filterCatalog('nds', this)">
-        <span>📱</span> Nintendo DS (2)
-      </button>
-      <button class="console-btn" onclick="filterCatalog('gba', this)">
-        <span>⚔️</span> Game Boy Advance (5)
-      </button>
       <button class="console-btn" onclick="filterCatalog('snes', this)">
         <span>🚀</span> Super Nintendo (3)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('nes', this)">
+        <span>🕹️</span> NES Clásicos (6)
       </button>
       <button class="console-btn" onclick="filterCatalog('psx', this)">
         <span>🎮</span> PlayStation 1 (2)
       </button>
-      <button class="console-btn" onclick="filterCatalog('nes', this)">
-        <span>🕹️</span> NES Arcade (2)
+      <button class="console-btn" onclick="filterCatalog('nds', this)">
+        <span>📱</span> Nintendo DS (2)
       </button>
     </div>
 
     <div class="games-grid" id="gamesGrid">
-      <!-- M1: Super Mario Bros -->
-      <div class="game-card" data-cat="mario" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros.nes', 'NES: Super Mario Bros (Original 1985)')" style="border-color: rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%);">
-        <div>
-          <span class="game-card-icon">🍄</span>
-          <h4 style="color: #fbbf24;">Super Mario Bros (1985)</h4>
-          <p data-en="The immortal masterpiece that defined video gaming! Jump on Goombas, smash bricks, collect Fire Flowers, and rescue Princess Peach." data-es="¡La obra maestra inmortal de Nintendo! Salta sobre Goombas, rompe ladrillos, consigue flores de fuego y rescata a la Princesa Peach.">The immortal masterpiece that defined video gaming! Jump on Goombas, smash bricks, collect Fire Flowers, and rescue Princess Peach.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">NES Original · 60 FPS</span>
-          <span style="color:#fbbf24;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- M2: Super Mario Bros 3 -->
-      <div class="game-card" data-cat="mario" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros_3.nes', 'NES: Super Mario Bros 3')" style="border-color: rgba(244, 63, 94, 0.4); background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%);">
-        <div>
-          <span class="game-card-icon">🦝</span>
-          <h4 style="color: #f43f5e;">Super Mario Bros 3</h4>
-          <p data-en="Universally acclaimed as the greatest 2D platformer of all time! Tanooki suit flight, airships, world map exploration, and Koopaling battles." data-es="¡Considerado el mejor juego de plataformas 2D de todos los tiempos! Traje Tanooki para volar, barcos aéreos y 8 mundos épicos.">Universally acclaimed as the greatest 2D platformer of all time! Tanooki suit flight, airships, world map exploration, and Koopaling battles.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);">NES Legend · 60 FPS</span>
-          <span style="color:#f43f5e;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- M3: Super Mario Bros 2 -->
-      <div class="game-card" data-cat="mario" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros_2.nes', 'NES: Super Mario Bros 2')">
-        <div>
-          <span class="game-card-icon">✨</span>
-          <h4>Super Mario Bros 2 (USA)</h4>
-          <p data-en="Choose between Mario, Luigi, Toad, and Princess Peach! Pick up vegetables, defeat Shy Guys, and explore Subcon dreams." data-es="¡Elige entre Mario, Luigi, Toad y Peach! Lanza verduras, derrota Shy Guys y explora el mundo de Subcon con habilidades únicas.">Choose between Mario, Luigi, Toad, and Princess Peach! Pick up vegetables, defeat Shy Guys, and explore Subcon dreams.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">NES 8-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- M4: Super Mario Lost Levels -->
-      <div class="game-card" data-cat="mario" onclick="loadDemoGame('nes', 'assets/demos/super_mario_lost_levels.nes', 'NES: Super Mario Bros The Lost Levels')">
+      <!-- PK1: Pokemon Esmeralda -->
+      <div class="game-card" data-cat="pokemon gba" onclick="loadDemoGame('gba', 'assets/demos/pokemon_emerald.gba', 'Game Boy Advance: Pokémon Esmeralda')" style="border-color: rgba(16, 185, 129, 0.45); background: linear-gradient(135deg, rgba(6, 78, 59, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);">
         <div>
           <span class="game-card-icon">⚡</span>
-          <h4>Super Mario: The Lost Levels</h4>
-          <p data-en="The intense, master-difficulty sequel to the original Super Mario Bros with poisonous mushrooms, wind gusts, and trick jumps." data-es="La secuela de dificultad extrema para verdaderos maestros de Mario, con setas venenosas, ráfagas de viento y saltos milimétricos.">The intense, master-difficulty sequel to the original Super Mario Bros with poisonous mushrooms, wind gusts, and trick jumps.</p>
+          <h4 style="color: #34d399;">Pokémon Esmeralda (GBA)</h4>
+          <p data-en="The ultimate Hoenn Pokémon adventure! Catch Rayquaza, defeat Team Magma &amp; Aqua, and conquer the Battle Frontier." data-es="¡La obra cumbre de Pokémon en Hoenn! Atrapa a Rayquaza, derrota al Team Magma y Aqua, y domina el Frente de Batalla.">The ultimate Hoenn Pokémon adventure! Catch Rayquaza, defeat Team Magma &amp; Aqua, and conquer the Battle Frontier.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag">NES Master</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+          <span class="console-tag" style="background: rgba(16, 185, 129, 0.2); color: #34d399; border-color: rgba(16, 185, 129, 0.4);">GBA 32-Bit · Top RPG</span>
+          <span style="color:#34d399;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- C1: Contra (Konami Original) -->
-      <div class="game-card" data-cat="contra" onclick="loadDemoGame('nes', 'assets/demos/contra.nes', 'NES: Contra (Konami Original 1988)')" style="border-color: rgba(6, 182, 212, 0.4); background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(20, 30, 55, 0.9) 100%);">
+      <!-- PK2: Pokemon Rojo Fuego -->
+      <div class="game-card" data-cat="pokemon gba" onclick="loadDemoGame('gba', 'assets/demos/pokemon_firered.gba', 'Game Boy Advance: Pokémon Rojo Fuego')" style="border-color: rgba(239, 68, 68, 0.45); background: linear-gradient(135deg, rgba(127, 29, 29, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);">
         <div>
-          <span class="game-card-icon">🔫</span>
-          <h4 style="color: #38bdf8;">Contra (Konami Original 1988)</h4>
-          <p data-en="The most legendary run-and-gun arcade shooter in history! Grab Spread Gun (S), Rapid Fire, and blast alien terror with Bill and Lance." data-es="¡El run-and-gun más legendario de la historia! Arma la Spread Gun (S), fuego rápido, el código Konami y destruye la invasión alienígena.">The most legendary run-and-gun arcade shooter in history! Grab Spread Gun (S), Rapid Fire, and blast alien terror with Bill and Lance.</p>
+          <span class="game-card-icon">🔥</span>
+          <h4 style="color: #f87171;">Pokémon Rojo Fuego (GBA)</h4>
+          <p data-en="Relive the original Kanto journey remastered in full 32-bit graphics! Choose Charmander, Bulbasaur or Squirtle and become the Champion." data-es="¡Revive el viaje original por Kanto remasterizado en 32 bits! Elige a Charmander, Bulbasaur o Squirtle y conviértete en Campeón.">Relive the original Kanto journey remastered in full 32-bit graphics! Choose Charmander, Bulbasaur or Squirtle and become the Champion.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag" style="background: rgba(6, 182, 212, 0.2); color: #38bdf8; border-color: rgba(6, 182, 212, 0.4);">Konami Classic · 60 FPS</span>
+          <span class="console-tag" style="background: rgba(239, 68, 68, 0.2); color: #f87171; border-color: rgba(239, 68, 68, 0.4);">GBA 32-Bit · Remaster</span>
+          <span style="color:#f87171;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- PK3: Pokemon Cristal -->
+      <div class="game-card" data-cat="pokemon gbc" onclick="loadDemoGame('gb', 'assets/demos/pokemon_crystal.gbc', 'Game Boy Color: Pokémon Cristal')" style="border-color: rgba(6, 182, 212, 0.45); background: linear-gradient(135deg, rgba(22, 78, 99, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">💎</span>
+          <h4 style="color: #38bdf8;">Pokémon Cristal (GBC)</h4>
+          <p data-en="The definitive Johto classic on Game Boy Color! Animated battle sprites, day/night clock cycle, Suicune mystery, and 16 gym badges." data-es="La joya definitiva de Johto en Game Boy Color con animaciones de combate, ciclo de día/noche, el misterio de Suicune y 16 medallas.">The definitive Johto classic on Game Boy Color! Animated battle sprites, day/night clock cycle, Suicune mystery, and 16 gym badges.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(6, 182, 212, 0.2); color: #38bdf8; border-color: rgba(6, 182, 212, 0.4);">Game Boy Color · Clásico</span>
           <span style="color:#38bdf8;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- C2: Contra Force -->
-      <div class="game-card" data-cat="contra" onclick="loadDemoGame('nes', 'assets/demos/contra_force.nes', 'NES: Contra Force')">
+      <!-- M1: Super Mario World -->
+      <div class="game-card" data-cat="mario gba snes" onclick="loadDemoGame('gba', 'assets/demos/super_mario_world_gba.gba', 'Game Boy Advance: Super Mario World (Advance 2)')" style="border-color: rgba(245, 158, 11, 0.45); background: linear-gradient(135deg, rgba(120, 53, 15, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);">
         <div>
-          <span class="game-card-icon">🎖️</span>
-          <h4>Contra Force</h4>
-          <p data-en="Elite anti-terrorist task force tactical action with weapon selection meters, rolling grenades, and 4 selectable commandos." data-es="Acción táctica del comando especial Contra Force con barra de armas mejorables, granadas y 4 personajes elegibles.">Elite anti-terrorist task force tactical action with weapon selection meters, rolling grenades, and 4 selectable commandos.</p>
+          <span class="game-card-icon">🍄</span>
+          <h4 style="color: #fbbf24;">Super Mario World (Advance 2)</h4>
+          <p data-en="The crowning platforming masterpiece! Ride Yoshi, fly with the Cape Feather, uncover 96 secret exits in Dinosaur Land, and defeat Bowser." data-es="¡La obra cumbre de las plataformas! Monta a Yoshi, vuela con la pluma, descubre 96 salidas secretas en Dinosaur Land y derrota a Bowser.">The crowning platforming masterpiece! Ride Yoshi, fly with the Cape Feather, uncover 96 secret exits in Dinosaur Land, and defeat Bowser.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag">Konami NES</span>
+          <span class="console-tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">GBA / SNES 16-Bit Top</span>
+          <span style="color:#fbbf24;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- M2: Yoshi's Island -->
+      <div class="game-card" data-cat="mario gba snes" onclick="loadDemoGame('gba', 'assets/demos/yoshis_island_gba.gba', 'Game Boy Advance: Yoshi's Island (Advance 3)')">
+        <div>
+          <span class="game-card-icon">🦖</span>
+          <h4>Yoshi's Island (Advance 3)</h4>
+          <p data-en="Stunning hand-drawn art, egg tossing, ground pounds, and unforgettable boss fights to reunite Baby Mario and Baby Luigi." data-es="Arte dibujado a mano inolvidable, lanzamiento de huevos y combates colosales protegiendo a Baby Mario.">Stunning hand-drawn art, egg tossing, ground pounds, and unforgettable boss fights to reunite Baby Mario and Baby Luigi.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit</span>
           <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- B1: Bomberman (Original Classic) -->
-      <div class="game-card" data-cat="bomber" onclick="loadDemoGame('nes', 'assets/demos/bomberman.nes', 'NES: Bomberman (Original Classic)')" style="border-color: rgba(236, 72, 153, 0.4); background: linear-gradient(135deg, rgba(25, 20, 45, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%);">
+      <!-- M3: Mario Kart Super Circuit -->
+      <div class="game-card" data-cat="mario gba" onclick="loadDemoGame('gba', 'assets/demos/mario_kart_gba.gba', 'Game Boy Advance: Mario Kart Super Circuit')">
         <div>
-          <span class="game-card-icon">💣</span>
-          <h4 style="color: #f472b6;">Bomberman (Hudson Soft)</h4>
-          <p data-en="The explosive grid puzzle arcade that started a worldwide phenomenon! Drop bombs, destroy brick labyrinths, collect power-ups, and escape." data-es="¡El juego de laberintos explosivos que inició el fenómeno mundial! Coloca bombas, abre paso entre bloques y recoge power-ups.">The explosive grid puzzle arcade that started a worldwide phenomenon! Drop bombs, destroy brick labyrinths, collect power-ups, and escape.</p>
+          <span class="game-card-icon">🏎️</span>
+          <h4>Mario Kart Super Circuit</h4>
+          <p data-en="High-velocity kart racing with power-sliding drifts, red shells, lightning bolts, and 40 tracks including SNES retro cups." data-es="Carreras de karts a máxima velocidad con derrapes, caparazones rojos, rayos y 40 circuitos con las pistas clásicas de SNES.">High-velocity kart racing with power-sliding drifts, red shells, lightning bolts, and 40 tracks including SNES retro cups.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag" style="background: rgba(236, 72, 153, 0.2); color: #f472b6; border-color: rgba(236, 72, 153, 0.4);">Hudson Soft · 60 FPS</span>
-          <span style="color:#f472b6;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+          <span class="console-tag">GBA 32-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- B2: Bomberman II -->
-      <div class="game-card" data-cat="bomber" onclick="loadDemoGame('nes', 'assets/demos/bomberman_2.nes', 'NES: Bomberman II')">
+      <!-- M4: Super Mario Bros Deluxe -->
+      <div class="game-card" data-cat="mario gbc" onclick="loadDemoGame('gb', 'assets/demos/super_mario_deluxe.gbc', 'Game Boy Color: Super Mario Bros Deluxe')">
+        <div>
+          <span class="game-card-icon">🌟</span>
+          <h4>Super Mario Bros Deluxe</h4>
+          <p data-en="The expanded portable color edition featuring Challenge Mode, red coin hunts, hidden Yoshi eggs, and unlockable Lost Levels." data-es="La edición portátil definitiva a color con Modo Desafío, búsqueda de monedas rojas, huevos de Yoshi y niveles secretos.">The expanded portable color edition featuring Challenge Mode, red coin hunts, hidden Yoshi eggs, and unlockable Lost Levels.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">Game Boy Color</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- M5: Super Mario Bros 1 NES -->
+      <div class="game-card" data-cat="mario nes" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros.nes', 'NES: Super Mario Bros (Original 1985)')">
+        <div>
+          <span class="game-card-icon">🍄</span>
+          <h4>Super Mario Bros (1985)</h4>
+          <p data-en="The immortal masterpiece that defined video gaming! Jump on Goombas, smash bricks, collect Fire Flowers, and rescue Princess Peach." data-es="¡La obra maestra inmortal de Nintendo! Salta sobre Goombas, rompe ladrillos, consigue flores de fuego y rescata a la Princesa Peach.">The immortal masterpiece that defined video gaming! Jump on Goombas, smash bricks, collect Fire Flowers, and rescue Princess Peach.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES Original · 60 FPS</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- M6: Super Mario Bros 2 NES -->
+      <div class="game-card" data-cat="mario nes" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros_2.nes', 'NES: Super Mario Bros 2')">
+        <div>
+          <span class="game-card-icon">🧅</span>
+          <h4>Super Mario Bros 2</h4>
+          <p data-en="Play as Mario, Luigi, Toad or Princess Peach with unique jumping abilities, veggie throwing mechanics, and Subcon dreamlands." data-es="Juega con Mario, Luigi, Toad o Peach con saltos flotantes, lanzamiento de hortalizas y el mundo de ensueño de Subcon.">Play as Mario, Luigi, Toad or Princess Peach with unique jumping abilities, veggie throwing mechanics, and Subcon dreamlands.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES Original · 60 FPS</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- M7: Super Mario Bros 3 NES -->
+      <div class="game-card" data-cat="mario nes" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros_3.nes', 'NES: Super Mario Bros 3')">
+        <div>
+          <span class="game-card-icon">🦝</span>
+          <h4>Super Mario Bros 3</h4>
+          <p data-en="One of the greatest video games ever crafted! Tanooki suit flight, Frog suit swimming, World Maps, and Koopaling airships." data-es="Considerado uno de los mejores juegos de la historia. Vuela con el traje Tanooki, nada como rana y asalta barcos voladores.">One of the greatest video games ever crafted! Tanooki suit flight, Frog suit swimming, World Maps, and Koopaling airships.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES Original · 60 FPS</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- M8: Super Mario Lost Levels NES -->
+      <div class="game-card" data-cat="mario nes" onclick="loadDemoGame('nes', 'assets/demos/super_mario_lost_levels.nes', 'NES: Super Mario Bros The Lost Levels')">
+        <div>
+          <span class="game-card-icon">💀</span>
+          <h4>Super Mario Bros: Lost Levels</h4>
+          <p data-en="The hardcore sequel intended for true platforming masters. Poison mushrooms, ferocious winds, and ultra-precise jumps." data-es="La legendaria secuela extrema para auténticos maestros. Hongos venenosos, ráfagas de viento y saltos al milímetro.">The hardcore sequel intended for true platforming masters. Poison mushrooms, ferocious winds, and ultra-precise jumps.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES Hardcore · 60 FPS</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- Z1: Zelda The Minish Cap -->
+      <div class="game-card" data-cat="zelda gba" onclick="loadDemoGame('gba', 'assets/demos/zelda_minish_cap.gba', 'Game Boy Advance: The Legend of Zelda: The Minish Cap')" style="border-color: rgba(234, 179, 8, 0.45); background: linear-gradient(135deg, rgba(113, 63, 18, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">🗡️</span>
+          <h4 style="color: #facc15;">Zelda: The Minish Cap (GBA)</h4>
+          <p data-en="Capcom and Nintendo's dazzling Zelda masterpiece! Shrink down to microscopic size with Ezlo, forge the Four Sword, and defeat Vaati." data-es="¡Obra maestra deslumbrante de Nintendo y Capcom! Encógete a tamaño microscópico con Ezero, forja la Espada Cuádruple y salva a Hyrule.">Capcom and Nintendo's dazzling Zelda masterpiece! Shrink down to microscopic size with Ezlo, forge the Four Sword, and defeat Vaati.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(234, 179, 8, 0.2); color: #facc15; border-color: rgba(234, 179, 8, 0.4);">GBA 32-Bit · Joya Zelda</span>
+          <span style="color:#facc15;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- Z2: Zelda A Link to the Past -->
+      <div class="game-card" data-cat="zelda gba snes" onclick="loadDemoGame('gba', 'assets/demos/zelda_link_past_gba.gba', 'Game Boy Advance: Zelda: A Link to the Past')" style="border-color: rgba(234, 179, 8, 0.45); background: linear-gradient(135deg, rgba(113, 63, 18, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">🛡️</span>
+          <h4 style="color: #facc15;">Zelda: A Link to the Past</h4>
+          <p data-en="The timeless action-adventure that defined modern gaming! Travel between Light and Dark Worlds, pull the Master Sword, and defeat Ganon." data-es="La aventura atemporal que definió la saga. Viaja entre el Mundo de la Luz y de la Oscuridad, empuña la Espada Maestra y vence a Ganon.">The timeless action-adventure that defined modern gaming! Travel between Light and Dark Worlds, pull the Master Sword, and defeat Ganon.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(234, 179, 8, 0.2); color: #facc15; border-color: rgba(234, 179, 8, 0.4);">GBA / SNES 16-Bit Top</span>
+          <span style="color:#facc15;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- Z3: Zelda Link's Awakening DX -->
+      <div class="game-card" data-cat="zelda gbc" onclick="loadDemoGame('gb', 'assets/demos/zelda_links_awakening.gbc', 'Game Boy Color: Zelda: Link's Awakening DX')">
+        <div>
+          <span class="game-card-icon">🏝️</span>
+          <h4>Zelda: Link's Awakening DX</h4>
+          <p data-en="The unforgettable Koholint Island adventure in vibrant full color! Solve dungeon mysteries, wake the Wind Fish, and find your way home." data-es="La emotiva e inolvidable odisea en la Isla Koholint a todo color. Resuelve mazmorras, despierta al Pez Viento y regresa a casa.">The unforgettable Koholint Island adventure in vibrant full color! Solve dungeon mysteries, wake the Wind Fish, and find your way home.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">Game Boy Color</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- A1: Dragon Ball Z Supersonic Warriors -->
+      <div class="game-card" data-cat="action gba" onclick="loadDemoGame('gba', 'assets/demos/dragon_ball_z_supersonic.gba', 'Game Boy Advance: Dragon Ball Z: Supersonic Warriors')" style="border-color: rgba(244, 63, 94, 0.45); background: linear-gradient(135deg, rgba(136, 19, 55, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">💥</span>
+          <h4 style="color: #fb7185;">Dragon Ball Z: Supersonic Warriors</h4>
+          <p data-en="Spectacular 60 FPS aerial fighting combat! Unleash Kamehamehas, Spirit Bombs, and Super Saiyan transformations across the DBZ saga." data-es="¡Combates aéreos brutales a 60 FPS! Lanza Kamehamehas, Genkidamas, fusiones y transfórmate en Super Saiyan con Goku, Vegeta y Gohan.">Spectacular 60 FPS aerial fighting combat! Unleash Kamehamehas, Spirit Bombs, and Super Saiyan transformations across the DBZ saga.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(244, 63, 94, 0.2); color: #fb7185; border-color: rgba(244, 63, 94, 0.4);">GBA 32-Bit · Lucha DBZ</span>
+          <span style="color:#fb7185;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- A2: Crash Bandicoot The Huge Adventure -->
+      <div class="game-card" data-cat="action gba" onclick="loadDemoGame('gba', 'assets/demos/crash_bandicoot_gba.gba', 'Game Boy Advance: Crash Bandicoot: The Huge Adventure')">
+        <div>
+          <span class="game-card-icon">🦊</span>
+          <h4>Crash Bandicoot: The Huge Adventure</h4>
+          <p data-en="Crash Bandicoot on portable hardware! Spin attack enemies, collect Wumpa fruit, avoid TNT crates, and thwart Dr. Neo Cortex's plans." data-es="¡Crash Bandicoot portátil! Gira contra enemigos, recoge frutas Wumpa, esquiva cajas de TNT y frustra los planes del Dr. Neo Cortex.">Crash Bandicoot on portable hardware! Spin attack enemies, collect Wumpa fruit, avoid TNT crates, and thwart Dr. Neo Cortex's plans.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit · Plataformas</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- A3: Donkey Kong Country -->
+      <div class="game-card" data-cat="action gba snes" onclick="loadDemoGame('gba', 'assets/demos/donkey_kong_country_gba.gba', 'Game Boy Advance: Donkey Kong Country')">
+        <div>
+          <span class="game-card-icon">🍌</span>
+          <h4>Donkey Kong Country</h4>
+          <p data-en="Revolutionary pre-rendered 3D graphics, minecart thrill rides, barrel cannons, and King K. Rool's stolen banana hoard." data-es="Gráficos pre-renderizados en 3D revolucionarios, vagonetas mineras, cañones de barril y la inolvidable música de David Wise.">Revolutionary pre-rendered 3D graphics, minecart thrill rides, barrel cannons, and King K. Rool's stolen banana hoard.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA / SNES 16-Bit Top</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- A4: Sonic Advance -->
+      <div class="game-card" data-cat="action gba" onclick="loadDemoGame('gba', 'assets/demos/sonic_advance.gba', 'Game Boy Advance: Sonic Advance')">
+        <div>
+          <span class="game-card-icon">🦔</span>
+          <h4>Sonic Advance</h4>
+          <p data-en="Lightning-fast supersonic speed! Play as Sonic, Tails, Knuckles, or Amy Rose to destroy Dr. Eggman's Badniks and gather Chaos Emeralds." data-es="¡Velocidad supersónica pura! Juega con Sonic, Tails, Knuckles o Amy para destruir las máquinas del Dr. Eggman y juntar las Esmeraldas del Caos.">Lightning-fast supersonic speed! Play as Sonic, Tails, Knuckles, or Amy Rose to destroy Dr. Eggman's Badniks and gather Chaos Emeralds.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit · 60 FPS</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- A5: Metroid Fusion -->
+      <div class="game-card" data-cat="action gba" onclick="loadDemoGame('gba', 'assets/demos/metroid_fusion.gba', 'Game Boy Advance: Metroid Fusion')">
+        <div>
+          <span class="game-card-icon">🚀</span>
+          <h4>Metroid Fusion</h4>
+          <p data-en="Atmospheric sci-fi thriller with Samus Aran confronting the predatory SA-X parasite aboard the infested BSL research station." data-es="Thriller de ciencia ficción y terror espacial. Controla a Samus Aran cazada por su clon SA-X en la estación espacial BSL.">Atmospheric sci-fi thriller with Samus Aran confronting the predatory SA-X parasite aboard the infested BSL research station.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit · Metroidvania</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- A6: Kirby & The Amazing Mirror -->
+      <div class="game-card" data-cat="action gba" onclick="loadDemoGame('gba', 'assets/demos/kirby_amazing_mirror.gba', 'Game Boy Advance: Kirby & The Amazing Mirror')">
+        <div>
+          <span class="game-card-icon">⭐</span>
+          <h4>Kirby &amp; The Amazing Mirror</h4>
+          <p data-en="Explore the sprawling Mirror World with 4 Kirbys! Inhale enemies to copy abilities like Sword, Fire, Fighter, and Smash." data-es="Explora el laberinto del Mundo Espejo con 4 Kirbys simultáneos. Absorbe enemigos para copiar poderes como Espada, Fuego y Smash.">Explore the sprawling Mirror World with 4 Kirbys! Inhale enemies to copy abilities like Sword, Fire, Fighter, and Smash.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit · Aventura</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- A7: Castlevania Aria of Sorrow -->
+      <div class="game-card" data-cat="action gba" onclick="loadDemoGame('gba', 'assets/demos/castlevania_aria_of_sorrow.gba', 'Game Boy Advance: Castlevania: Aria of Sorrow')">
+        <div>
+          <span class="game-card-icon">🧛</span>
+          <h4>Castlevania: Aria of Sorrow</h4>
+          <p data-en="Widely hailed as the best portable Castlevania! Play as Soma Cruz and harness the Tactical Soul system to wield over 100 monster abilities." data-es="Aclamado como el mejor Castlevania portátil de la historia. Juega como Soma Cruz y absorbe más de 100 almas de monstruos en el castillo de Drácula.">Widely hailed as the best portable Castlevania! Play as Soma Cruz and harness the Tactical Soul system to wield over 100 monster abilities.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit · Obra Maestra</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- A8: Grand Theft Auto Advance -->
+      <div class="game-card" data-cat="action gba" onclick="loadDemoGame('gba', 'assets/demos/gta_advance.gba', 'Game Boy Advance: Grand Theft Auto Advance')">
+        <div>
+          <span class="game-card-icon">🚗</span>
+          <h4>Grand Theft Auto Advance</h4>
+          <p data-en="The full Liberty City open-world sandbox on GBA! High-speed car chases, mob contracts, weapons arsenal, and radio tunes." data-es="El mundo abierto de Liberty City en GBA. Misiones para la mafia, robo de vehículos a toda velocidad, armas y persecuciones policiales.">The full Liberty City open-world sandbox on GBA! High-speed car chases, mob contracts, weapons arsenal, and radio tunes.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit · Open World</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- CS: Counter-Strike 1.6 3D Web Edition -->
+      <div class="game-card" data-cat="fps action" onclick="launchWebGame('https://play-cs.com/', 'Counter-Strike 1.6 (Web 3D)')" style="border-color: rgba(245, 158, 11, 0.45); background: linear-gradient(135deg, rgba(30, 25, 15, 0.8) 0%, rgba(20, 20, 35, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">🎯</span>
+          <h4 style="color: #fbbf24;">Counter-Strike 1.6 (Web 3D Edition)</h4>
+          <p data-en="The authentic 3D Counter-Strike 1.6 running directly in your browser! Classic de_dust2, AK-47, AWP, bots, and online multiplayer with zero install." data-es="¡El auténtico Counter-Strike 1.6 en 3D corriendo directamente en tu navegador! Mapas clásicos (de_dust2, aztec, inferno), armas, bots y multijugador online sin instalar nada.">¡El auténtico Counter-Strike 1.6 en 3D corriendo directamente en tu navegador! Mapas clásicos (de_dust2, aztec, inferno), armas, bots y multijugador online sin instalar nada.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">WebAssembly 3D · 60 FPS</span>
+          <span style="color:#fbbf24;font-weight:700" data-en="Play Online 🕹️" data-es="Jugar Online 🕹️">Play Online 🕹️</span>
+        </div>
+      </div>
+
+      <!-- C1: Contra NES -->
+      <div class="game-card" data-cat="action nes" onclick="loadDemoGame('nes', 'assets/demos/contra.nes', 'NES: Contra (Konami Original 1988)')">
+        <div>
+          <span class="game-card-icon">🔫</span>
+          <h4>Contra (Konami Original 1988)</h4>
+          <p data-en="The greatest co-op run-and-gun shooter in 8-bit history! Bill Rizer and Lance Bean battling alien bio-terrors." data-es="El run-and-gun más aclamado de los 8 bits. Bill Rizer y Lance Bean armados con el Spread Gun contra hordas alienígenas.">The greatest co-op run-and-gun shooter in 8-bit history! Bill Rizer and Lance Bean battling alien bio-terrors.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES Original · 60 FPS</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- C2: Contra Force NES -->
+      <div class="game-card" data-cat="action nes" onclick="loadDemoGame('nes', 'assets/demos/contra_force.nes', 'NES: Contra Force')">
+        <div>
+          <span class="game-card-icon">💥</span>
+          <h4>Contra Force</h4>
+          <p data-en="Select Burns, Iron, Smith or Beans in this tactical urban task force shooter with destructible battlefields." data-es="Selecciona a Burns, Iron, Smith o Beans en esta entrega táctica urbana con campos de tiro destructibles.">Select Burns, Iron, Smith or Beans in this tactical urban task force shooter with destructible battlefields.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES Original · 60 FPS</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- B1: Bomberman NES -->
+      <div class="game-card" data-cat="action nes" onclick="loadDemoGame('nes', 'assets/demos/bomberman.nes', 'NES: Bomberman (Original Classic)')">
+        <div>
+          <span class="game-card-icon">💣</span>
+          <h4>Bomberman (Original Classic)</h4>
+          <p data-en="The legendary maze-clearing action puzzle! Plant bombs, collect blast radius upgrades, and escape 50 challenging stages." data-es="El legendario arcade de laberintos. Coloca bombas, encuentra mejoras de alcance y supera 50 niveles desafiantes.">The legendary maze-clearing action puzzle! Plant bombs, collect blast radius upgrades, and escape 50 challenging stages.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES Original · 60 FPS</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- B2: Bomberman 2 NES -->
+      <div class="game-card" data-cat="action nes" onclick="loadDemoGame('nes', 'assets/demos/bomberman_2.nes', 'NES: Bomberman II')">
         <div>
           <span class="game-card-icon">🧨</span>
           <h4>Bomberman II</h4>
-          <p data-en="Enhanced sequel with multi-bomb upgrades, remote detonators, battle mode arenas, and smoother grid movement." data-es="Secuela mejorada con detonadores remotos, más bombas simultáneas, arenas de batalla y movimiento más rápido.">Enhanced sequel with multi-bomb upgrades, remote detonators, battle mode arenas, and smoother grid movement.</p>
+          <p data-en="Enhanced stages, clever enemies, and explosive multi-directional bomb chain-reactions in Hudson Soft's definitive sequel." data-es="Fases mejoradas, nuevos enemigos inteligentes y cadenas de explosiones letales en la gran secuela de Hudson Soft.">Enhanced stages, clever enemies, and explosive multi-directional bomb chain-reactions in Hudson Soft's definitive sequel.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag">NES 8-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-      <!-- 1: NDS Flappy Bird Touch -->
-      <div class="game-card" data-cat="nds" onclick="loadDemoGame('nds', 'assets/demos/flappy_bird.nds', 'Nintendo DS: Flappy Bird Touch')">
-        <div>
-          <span class="game-card-icon">📱</span>
-          <h4>Nintendo DS: Flappy Bird Touch</h4>
-          <p data-en="Fly through pipes using button A or tap the bottom touchscreen with mouse or stylus. Smooth 60 FPS dual-screen DeSmuME engine." data-es="Vuela entre tuberías con el botón A o toca la pantalla inferior táctil con el ratón o dedo. Doble pantalla a 60 FPS.">Fly through pipes using button A or tap the bottom touchscreen with mouse or stylus. Smooth 60 FPS dual-screen DeSmuME engine.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">NDS Dual Screen</span>
+          <span class="console-tag">NES Original · 60 FPS</span>
           <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- 2: NDS Snake Arcade -->
-      <div class="game-card" data-cat="nds" onclick="loadDemoGame('nds', 'assets/demos/snake.nds', 'Nintendo DS: Snake Arcade')">
-        <div>
-          <span class="game-card-icon">🐍</span>
-          <h4>Nintendo DS: Snake Arcade</h4>
-          <p data-en="Classic retro snake built for Nintendo DS with directional D-Pad, dual-screen score tracker, and fluid mechanics." data-es="El clásico juego de la serpiente adaptado a Nintendo DS con cruceta, contador en pantalla superior y mecánicas fluidas.">Classic retro snake built for Nintendo DS with directional D-Pad, dual-screen score tracker, and fluid mechanics.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">NDS Dual Screen</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 3: GBA Anguna RPG -->
-      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/anguna.gba', 'Game Boy Advance: Anguna RPG')">
-        <div>
-          <span class="game-card-icon">⚔️</span>
-          <h4>Game Boy Advance: Anguna RPG</h4>
-          <p data-en="Epic action-adventure RPG in the style of Zelda with dungeons, monster combat, swords, and smooth 60 FPS mGBA." data-es="Aventura RPG al estilo Zelda con mazmorras, monstruos, espada y combate fluido a 60 FPS con mGBA.">Epic action-adventure RPG in the style of Zelda with dungeons, monster combat, swords, and smooth 60 FPS mGBA.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">GBA 32-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 4: GBA Doom Dark's Revenge -->
-      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/doomdarksrevenge.gba', 'Game Boy Advance: Doom Darks Revenge')">
-        <div>
-          <span class="game-card-icon">🔫</span>
-          <h4>GBA: Doom Dark's Revenge</h4>
-          <p data-en="First-person 3D action shooter inspired by classic Doom. Fast weapon swaps, dark corridors, and monster battles." data-es="Acción y disparos en primera persona 3D inspirado en el clásico Doom con armas y enemigos en pasillos oscuros.">First-person 3D action shooter inspired by classic Doom. Fast weapon swaps, dark corridors, and monster battles.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">GBA 32-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 5: GBA Another World -->
-      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/anotherworld.gba', 'Game Boy Advance: Another World')">
-        <div>
-          <span class="game-card-icon">🌌</span>
-          <h4>GBA: Another World (Sci-Fi Classic)</h4>
-          <p data-en="Legendary sci-fi cinematic platformer with groundbreaking vector animations, real-time puzzles, and alien worlds." data-es="Legendaria aventura cinematográfica de ciencia ficción con cinemáticas vectoriales y puzzles alienígenas en tiempo real.">Legendary sci-fi cinematic platformer with groundbreaking vector animations, real-time puzzles, and alien worlds.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">GBA 32-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 6: GBA Bridge Racer Advance -->
-      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/bridgeracer.gba', 'Game Boy Advance: Bridge Racer')">
-        <div>
-          <span class="game-card-icon">🏎️</span>
-          <h4>GBA: Bridge Racer Advance</h4>
-          <p data-en="High-speed retro highway racer. Dodge traffic at 200 MPH, hit speed boosts, and beat your best lap times." data-es="Carreras a alta velocidad en autopista. Esquiva el tráfico a 200 MPH, agarra turbos y supera tus récords.">High-speed retro highway racer. Dodge traffic at 200 MPH, hit speed boosts, and beat your best lap times.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">GBA 32-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 7: GBA Asteroids Advance -->
-      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/asteroidsb.gba', 'Game Boy Advance: Asteroids Advance')">
-        <div>
-          <span class="game-card-icon">☄️</span>
-          <h4>GBA: Asteroids Advance</h4>
-          <p data-en="The immortal space arcade classic with 360-degree rotation, ship thrusters, laser blasts, and flying saucers." data-es="El clásico espacial de destruir asteroides con rotación 360°, propulsores, ráfagas láser y platillos voladores.">The immortal space arcade classic with 360-degree rotation, ship thrusters, laser blasts, and flying saucers.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">GBA 32-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 8: SNES Astrohawk -->
-      <div class="game-card" data-cat="snes" onclick="loadDemoGame('snes', 'assets/demos/astrohawk.smc', 'Super Nintendo: Astrohawk')">
-        <div>
-          <span class="game-card-icon">🚀</span>
-          <h4>Super Nintendo: Astrohawk</h4>
-          <p data-en="Fast-paced space arcade shoot-em-up with retro synth audio, shield upgrades, and 16-bit explosions." data-es="Shoot'em up espacial a 16 bits con sintetizadores retro, escudos y olas de enemigos en el espacio profundo.">Fast-paced space arcade shoot-em-up with retro synth audio, shield upgrades, and 16-bit explosions.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">SNES 16-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 9: SNES Super Boss Gaiden -->
-      <div class="game-card" data-cat="snes" onclick="loadDemoGame('snes', 'assets/demos/superbossgaiden.sfc', 'Super Nintendo: Super Boss Gaiden')">
-        <div>
-          <span class="game-card-icon">🥊</span>
-          <h4>SNES: Super Boss Gaiden</h4>
-          <p data-en="High-energy anime action brawler with special combos, destructible stages, and hilarious boss fights." data-es="Juego de peleas brawler con combos especiales, escenarios destructibles y combates contra jefes épicos.">High-energy anime action brawler with special combos, destructible stages, and hilarious boss fights.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">SNES 16-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 10: SNES Horizontal Shooter -->
-      <div class="game-card" data-cat="snes" onclick="loadDemoGame('snes', 'assets/demos/horizontal-shooter.sfc', 'Super Nintendo: Horizontal Shooter')">
-        <div>
-          <span class="game-card-icon">🛸</span>
-          <h4>SNES: Horizontal Shmup</h4>
-          <p data-en="Side-scrolling retro shooter in the vein of Gradius and R-Type with multi-directional weapons." data-es="Disparos de desplazamiento lateral al estilo Gradius y R-Type con armas multidireccionales y jefes.">Side-scrolling retro shooter in the vein of Gradius and R-Type with multi-directional weapons.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag">SNES 16-Bit</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 11: NES 31-in-1 Multicart -->
-      <div class="game-card" data-cat="nes" onclick="loadDemoGame('nes', 'assets/demos/31in1_multicart.nes', 'NES: 31-in-1 Arcade Multicart')">
+      <!-- N1: 31-in-1 Retro Multicart -->
+      <div class="game-card" data-cat="nes" onclick="loadDemoGame('nes', 'assets/demos/31in1_multicart.nes', 'NES: 31-in-1 Retro Multicart')">
         <div>
           <span class="game-card-icon">🕹️</span>
-          <h4>NES: 31-in-1 Arcade Multicart</h4>
-          <p data-en="A massive collection of 31 full 8-bit retro games in one cartridge! Puzzles, sports, platformers, and action." data-es="¡Una colección de 31 juegos retro de 8 bits en un solo cartucho! Puzles, deportes, plataformas y acción.">A massive collection of 31 full 8-bit retro games in one cartridge! Puzzles, sports, platformers, and action.</p>
+          <h4>31-in-1 Retro Multicart</h4>
+          <p data-en="Classic multicart packed with 31 distinct 8-bit arcade gems including pinball, racing, shooters, and maze games." data-es="El mítico cartucho recopilatorio con 31 arcades diferentes de disparos, carreras, laberintos y habilidad.">Classic multicart packed with 31 distinct 8-bit arcade gems including pinball, racing, shooters, and maze games.</p>
         </div>
         <div class="game-card-footer">
           <span class="console-tag">NES 8-Bit</span>
@@ -949,7 +1073,7 @@ footer a:hover { color: var(--cyan); }
         </div>
       </div>
 
-      <!-- 12: NES Blaster -->
+      <!-- N2: Blaster Arcade -->
       <div class="game-card" data-cat="nes" onclick="loadDemoGame('nes', 'assets/demos/blaster.nes', 'NES: Blaster Arcade')">
         <div>
           <span class="game-card-icon">💥</span>
@@ -962,33 +1086,20 @@ footer a:hover { color: var(--cyan); }
         </div>
       </div>
 
-      <!-- 13: PS1 Cave Story PSX -->
-      <div class="game-card" data-cat="psx" onclick="loadDemoGame('psx', 'assets/demos/cave_story_ps1.iso', 'PlayStation 1: Cave Story PSX')">
+      <!-- PS1: Cave Story PSX -->
+      <div class="game-card" data-cat="psx action" onclick="loadDemoGame('psx', 'assets/demos/cave_story_ps1.iso', 'PlayStation 1: Cave Story PSX')" style="border-color: rgba(99, 102, 241, 0.45); background: linear-gradient(135deg, rgba(30, 27, 75, 0.35) 0%, rgba(15, 23, 42, 0.9) 100%);">
         <div>
           <span class="game-card-icon">🎮</span>
-          <h4>PlayStation 1: Cave Story PSX</h4>
+          <h4 style="color: #818cf8;">PlayStation 1: Cave Story PSX</h4>
           <p data-en="Acclaimed indie masterpiece running natively on 32-bit PlayStation 1 hardware with controller mapping and CD audio." data-es="Obra maestra legendaria corriendo de forma nativa en la PlayStation 1 con soporte de mandos y audio de CD.">Obra maestra legendaria corriendo de forma nativa en la PlayStation 1 con soporte de mandos y audio de CD.</p>
         </div>
         <div class="game-card-footer">
-          <span class="console-tag" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.35);">PlayStation 1</span>
-          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+          <span class="console-tag" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.35);">PlayStation 1 · 32-Bit ISO</span>
+          <span style="color:#818cf8;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
 
-      <!-- 14: Counter-Strike 1.6 3D Web Edition -->
-      <div class="game-card" data-cat="fps" onclick="launchWebGame('https://play-cs.com/', 'Counter-Strike 1.6 (Web 3D)')" style="border-color: rgba(245, 158, 11, 0.45); background: linear-gradient(135deg, rgba(30, 25, 15, 0.8) 0%, rgba(20, 20, 35, 0.9) 100%);">
-        <div>
-          <span class="game-card-icon">🎯</span>
-          <h4 style="color: #fbbf24;">Counter-Strike 1.6 (Web 3D Edition)</h4>
-          <p data-en="The authentic 3D Counter-Strike 1.6 running directly in your browser! Classic de_dust2, AK-47, AWP, bots, and online multiplayer with zero install." data-es="¡El auténtico Counter-Strike 1.6 en 3D corriendo directamente en tu navegador! Mapas clásicos (de_dust2, aztec, inferno), armas, bots y multijugador online sin instalar nada.">¡El auténtico Counter-Strike 1.6 en 3D corriendo directamente en tu navegador! Mapas clásicos (de_dust2, aztec, inferno), armas, bots y multijugador online sin instalar nada.</p>
-        </div>
-        <div class="game-card-footer">
-          <span class="console-tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">WebAssembly 3D · 60 FPS</span>
-          <span style="color:#fbbf24;font-weight:700" data-en="Play Online 🕹️" data-es="Jugar Online 🕹️">Play Online 🕹️</span>
-        </div>
-      </div>
-
-      <!-- 15: PS1 240p Suite & 3D Test -->
+      <!-- PS2: 240p Suite & 3D Test -->
       <div class="game-card" data-cat="psx" onclick="loadDemoGame('psx', 'assets/demos/240pTestSuitePS1.bin', 'PlayStation 1: 3D Hardware Demo')">
         <div>
           <span class="game-card-icon">🕹️</span>
@@ -997,6 +1108,97 @@ footer a:hover { color: var(--cyan); }
         </div>
         <div class="game-card-footer">
           <span class="console-tag" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.35);">PlayStation 1</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- DS1: Flappy Bird Touch -->
+      <div class="game-card" data-cat="nds" onclick="loadDemoGame('nds', 'assets/demos/flappy_bird.nds', 'Nintendo DS: Flappy Bird Touch')">
+        <div>
+          <span class="game-card-icon">📱</span>
+          <h4>Nintendo DS: Flappy Bird Touch</h4>
+          <p data-en="Addictive touch-screen tap arcade physics with dual-screen layout and instant restart on DeSmuME WebAssembly." data-es="Física táctil adictiva con diseño de doble pantalla interactiva y reinicio instantáneo con DeSmuME Wasm.">Addictive touch-screen tap arcade physics with dual-screen layout and instant restart on DeSmuME WebAssembly.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">Nintendo DS Touch</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- DS2: Snake Arcade NDS -->
+      <div class="game-card" data-cat="nds" onclick="loadDemoGame('nds', 'assets/demos/snake.nds', 'Nintendo DS: Snake Arcade')">
+        <div>
+          <span class="game-card-icon">🐍</span>
+          <h4>Nintendo DS: Snake Arcade</h4>
+          <p data-en="Classic retro snake eating pellets with top score counter and bottom gameplay touchscreen arena." data-es="La clásica serpiente comiendo puntos con marcador en la pantalla superior y arena de juego en la inferior.">Classic retro snake eating pellets with top score counter and bottom gameplay touchscreen arena.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">Nintendo DS Touch</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- SNES1: Astrohawk -->
+      <div class="game-card" data-cat="snes action" onclick="loadDemoGame('snes', 'assets/demos/astrohawk.smc', 'Super Nintendo: Astrohawk 16-Bit')">
+        <div>
+          <span class="game-card-icon">🚀</span>
+          <h4>SNES: Astrohawk 16-Bit</h4>
+          <p data-en="Deep space multidirectional shooter featuring rich 16-bit Mode-7 style starfields, plasma upgrades, and enemy waves." data-es="Shooter espacial multidireccional con campos de estrellas tipo Mode-7 de 16 bits, rayos de plasma y oleadas enemigas.">Deep space multidirectional shooter featuring rich 16-bit Mode-7 style starfields, plasma upgrades, and enemy waves.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">SNES 16-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- SNES2: Super Boss Gaiden -->
+      <div class="game-card" data-cat="snes action" onclick="loadDemoGame('snes', 'assets/demos/superbossgaiden.sfc', 'Super Nintendo: Super Boss Gaiden')">
+        <div>
+          <span class="game-card-icon">🥋</span>
+          <h4>SNES: Super Boss Gaiden</h4>
+          <p data-en="Fast-paced 16-bit beat 'em up satire. Punch, kick, jump, and brawl across corporate headquarters with full chiptune OST." data-es="Beat 'em up de acción satírica a toda velocidad. Golpea, patea y supera enemigos con banda sonora chiptune completa.">Fast-paced 16-bit beat 'em up satire. Punch, kick, jump, and brawl across corporate headquarters with full chiptune OST.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">SNES 16-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- SNES3: Horizontal Shooter -->
+      <div class="game-card" data-cat="snes action" onclick="loadDemoGame('snes', 'assets/demos/horizontal-shooter.sfc', 'Super Nintendo: Horizontal Shmup')">
+        <div>
+          <span class="game-card-icon">👾</span>
+          <h4>SNES: Horizontal Shmup</h4>
+          <p data-en="Classic side-scrolling arcade space shooter reminiscent of Gradius and R-Type with multi-layered parallax backgrounds." data-es="Shooter espacial clásico de desplazamiento lateral al estilo Gradius y R-Type con fondos en scroll parallax multicapa.">Classic side-scrolling arcade space shooter reminiscent of Gradius and R-Type with multi-layered parallax backgrounds.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">SNES 16-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- GBA1: Another World -->
+      <div class="game-card" data-cat="gba action" onclick="loadDemoGame('gba', 'assets/demos/anotherworld.gba', 'Game Boy Advance: Another World')">
+        <div>
+          <span class="game-card-icon">🌌</span>
+          <h4>GBA: Another World (Sci-Fi Classic)</h4>
+          <p data-en="Legendary sci-fi cinematic platformer with groundbreaking vector animations, real-time puzzles, and alien worlds." data-es="Legendaria aventura cinematográfica de ciencia ficción con cinemáticas vectoriales y puzzles alienígenas en tiempo real.">Legendary sci-fi cinematic platformer with groundbreaking vector animations, real-time puzzles, and alien worlds.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- GBA2: Anguna RPG -->
+      <div class="game-card" data-cat="gba" onclick="loadDemoGame('gba', 'assets/demos/anguna.gba', 'Game Boy Advance: Anguna RPG')">
+        <div>
+          <span class="game-card-icon">⚔️</span>
+          <h4>GBA: Anguna RPG</h4>
+          <p data-en="Epic action-adventure RPG in the style of Zelda with dungeons, monster combat, swords, and smooth 60 FPS mGBA." data-es="Aventura RPG al estilo Zelda con mazmorras, monstruos, espada y combate fluido a 60 FPS con mGBA.">Epic action-adventure RPG in the style of Zelda with dungeons, monster combat, swords, and smooth 60 FPS mGBA.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">GBA 32-Bit</span>
           <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
@@ -1061,6 +1263,7 @@ var currentConsoleNames = {
   psp: 'PlayStation Portable (PPSSPP Wasm)',
   psx: 'PlayStation 1 (PCSX ReARMed Wasm)',
   gba: 'Game Boy Advance (mGBA Wasm)',
+  gb: 'Game Boy Color (Gambatte Wasm)',
   n64: 'Nintendo 64 (Mupen64Plus Wasm)',
   snes: 'Super Nintendo (Snes9x Wasm)',
   nes: 'NES 8-Bit (Nestopia / FCEUMM Wasm)'
@@ -1070,8 +1273,9 @@ function filterCatalog(cat, btn){
   document.querySelectorAll('#catalog .console-btn').forEach(function(b){ b.classList.remove('active'); });
   btn.classList.add('active');
   document.querySelectorAll('#gamesGrid .game-card').forEach(function(card){
-    var cardCat = card.getAttribute('data-cat');
-    if(cat === 'all' || cardCat === cat){
+    var rawCat = card.getAttribute('data-cat') || '';
+    var cats = rawCat.trim().split(/\s+/);
+    if(cat === 'all' || cats.indexOf(cat) !== -1){
       card.style.display = 'flex';
     } else {
       card.style.display = 'none';
