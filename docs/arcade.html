@@ -543,20 +543,23 @@ footer a:hover { color: var(--cyan); }
       <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.35);color:#818cf8;font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.8px;">
         ⚡ 1-Click Instant Play · Zero Downloads
       </div>
-      <h2 data-en="Instant Playable Games Library (15 Games Ready)" data-es="Catálogo de Juegos Listos para Jugar (15 Juegos)">Instant Playable Games Library (15 Games Ready)</h2>
+      <h2 data-en="Instant Playable Games Library (22 Games Ready)" data-es="Catálogo de Juegos Listos para Jugar (22 Juegos)">Instant Playable Games Library (22 Games Ready)</h2>
       <p data-en="Click any game below to start playing immediately in your browser. Runs locally at 60 FPS via WebAssembly — no ROMs or downloads needed!" data-es="Haz clic en cualquier juego para empezar a jugar de inmediato en tu navegador a 60 FPS sin descargar nada.">Click any game below to start playing immediately in your browser. Runs locally at 60 FPS via WebAssembly — no ROMs or downloads needed!</p>
     </div>
 
     <!-- Category Filter Bar -->
     <div class="console-bar" style="margin-bottom: 28px;">
       <button class="console-btn active" onclick="filterCatalog('all', this)">
-        <span>🌟</span> <span data-en="All Games (15)" data-es="Todos (15)">All Games (15)</span>
+        <span>🌟</span> <span data-en="All Games (22)" data-es="Todos (22)">All Games (22)</span>
       </button>
-      <button class="console-btn" onclick="filterCatalog('psx', this)">
-        <span>🎮</span> PlayStation 1 (2)
+      <button class="console-btn" onclick="filterCatalog('mario', this)" style="border-color: rgba(245, 158, 11, 0.5); color: #fbbf24;">
+        <span>🍄</span> Mario Bros (4)
       </button>
-      <button class="console-btn" onclick="filterCatalog('psp', this)">
-        <span>⚡</span> PlayStation Portable (1)
+      <button class="console-btn" onclick="filterCatalog('contra', this)" style="border-color: rgba(6, 182, 212, 0.5); color: #38bdf8;">
+        <span>🔫</span> Contra (2)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('bomber', this)" style="border-color: rgba(236, 72, 153, 0.5); color: #f472b6;">
+        <span>💣</span> Bomberman (2)
       </button>
       <button class="console-btn" onclick="filterCatalog('nds', this)">
         <span>📱</span> Nintendo DS (2)
@@ -567,12 +570,118 @@ footer a:hover { color: var(--cyan); }
       <button class="console-btn" onclick="filterCatalog('snes', this)">
         <span>🚀</span> Super Nintendo (3)
       </button>
+      <button class="console-btn" onclick="filterCatalog('psx', this)">
+        <span>🎮</span> PlayStation 1 (2)
+      </button>
       <button class="console-btn" onclick="filterCatalog('nes', this)">
-        <span>🕹️</span> NES 8-Bit (2)
+        <span>🕹️</span> NES Arcade (2)
       </button>
     </div>
 
     <div class="games-grid" id="gamesGrid">
+      <!-- M1: Super Mario Bros -->
+      <div class="game-card" data-cat="mario" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros.nes', 'NES: Super Mario Bros (Original 1985)')" style="border-color: rgba(245, 158, 11, 0.4); background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">🍄</span>
+          <h4 style="color: #fbbf24;">Super Mario Bros (1985)</h4>
+          <p data-en="The immortal masterpiece that defined video gaming! Jump on Goombas, smash bricks, collect Fire Flowers, and rescue Princess Peach." data-es="¡La obra maestra inmortal de Nintendo! Salta sobre Goombas, rompe ladrillos, consigue flores de fuego y rescata a la Princesa Peach.">The immortal masterpiece that defined video gaming! Jump on Goombas, smash bricks, collect Fire Flowers, and rescue Princess Peach.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(245, 158, 11, 0.2); color: #fbbf24; border-color: rgba(245, 158, 11, 0.4);">NES Original · 60 FPS</span>
+          <span style="color:#fbbf24;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- M2: Super Mario Bros 3 -->
+      <div class="game-card" data-cat="mario" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros_3.nes', 'NES: Super Mario Bros 3')" style="border-color: rgba(244, 63, 94, 0.4); background: linear-gradient(135deg, rgba(30, 27, 75, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">🦝</span>
+          <h4 style="color: #f43f5e;">Super Mario Bros 3</h4>
+          <p data-en="Universally acclaimed as the greatest 2D platformer of all time! Tanooki suit flight, airships, world map exploration, and Koopaling battles." data-es="¡Considerado el mejor juego de plataformas 2D de todos los tiempos! Traje Tanooki para volar, barcos aéreos y 8 mundos épicos.">Universally acclaimed as the greatest 2D platformer of all time! Tanooki suit flight, airships, world map exploration, and Koopaling battles.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border-color: rgba(244, 63, 94, 0.4);">NES Legend · 60 FPS</span>
+          <span style="color:#f43f5e;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- M3: Super Mario Bros 2 -->
+      <div class="game-card" data-cat="mario" onclick="loadDemoGame('nes', 'assets/demos/super_mario_bros_2.nes', 'NES: Super Mario Bros 2')">
+        <div>
+          <span class="game-card-icon">✨</span>
+          <h4>Super Mario Bros 2 (USA)</h4>
+          <p data-en="Choose between Mario, Luigi, Toad, and Princess Peach! Pick up vegetables, defeat Shy Guys, and explore Subcon dreams." data-es="¡Elige entre Mario, Luigi, Toad y Peach! Lanza verduras, derrota Shy Guys y explora el mundo de Subcon con habilidades únicas.">Choose between Mario, Luigi, Toad, and Princess Peach! Pick up vegetables, defeat Shy Guys, and explore Subcon dreams.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES 8-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- M4: Super Mario Lost Levels -->
+      <div class="game-card" data-cat="mario" onclick="loadDemoGame('nes', 'assets/demos/super_mario_lost_levels.nes', 'NES: Super Mario Bros The Lost Levels')">
+        <div>
+          <span class="game-card-icon">⚡</span>
+          <h4>Super Mario: The Lost Levels</h4>
+          <p data-en="The intense, master-difficulty sequel to the original Super Mario Bros with poisonous mushrooms, wind gusts, and trick jumps." data-es="La secuela de dificultad extrema para verdaderos maestros de Mario, con setas venenosas, ráfagas de viento y saltos milimétricos.">The intense, master-difficulty sequel to the original Super Mario Bros with poisonous mushrooms, wind gusts, and trick jumps.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES Master</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- C1: Contra (Konami Original) -->
+      <div class="game-card" data-cat="contra" onclick="loadDemoGame('nes', 'assets/demos/contra.nes', 'NES: Contra (Konami Original 1988)')" style="border-color: rgba(6, 182, 212, 0.4); background: linear-gradient(135deg, rgba(15, 23, 42, 0.8) 0%, rgba(20, 30, 55, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">🔫</span>
+          <h4 style="color: #38bdf8;">Contra (Konami Original 1988)</h4>
+          <p data-en="The most legendary run-and-gun arcade shooter in history! Grab Spread Gun (S), Rapid Fire, and blast alien terror with Bill and Lance." data-es="¡El run-and-gun más legendario de la historia! Arma la Spread Gun (S), fuego rápido, el código Konami y destruye la invasión alienígena.">The most legendary run-and-gun arcade shooter in history! Grab Spread Gun (S), Rapid Fire, and blast alien terror with Bill and Lance.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(6, 182, 212, 0.2); color: #38bdf8; border-color: rgba(6, 182, 212, 0.4);">Konami Classic · 60 FPS</span>
+          <span style="color:#38bdf8;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- C2: Contra Force -->
+      <div class="game-card" data-cat="contra" onclick="loadDemoGame('nes', 'assets/demos/contra_force.nes', 'NES: Contra Force')">
+        <div>
+          <span class="game-card-icon">🎖️</span>
+          <h4>Contra Force</h4>
+          <p data-en="Elite anti-terrorist task force tactical action with weapon selection meters, rolling grenades, and 4 selectable commandos." data-es="Acción táctica del comando especial Contra Force con barra de armas mejorables, granadas y 4 personajes elegibles.">Elite anti-terrorist task force tactical action with weapon selection meters, rolling grenades, and 4 selectable commandos.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">Konami NES</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- B1: Bomberman (Original Classic) -->
+      <div class="game-card" data-cat="bomber" onclick="loadDemoGame('nes', 'assets/demos/bomberman.nes', 'NES: Bomberman (Original Classic)')" style="border-color: rgba(236, 72, 153, 0.4); background: linear-gradient(135deg, rgba(25, 20, 45, 0.8) 0%, rgba(20, 20, 40, 0.9) 100%);">
+        <div>
+          <span class="game-card-icon">💣</span>
+          <h4 style="color: #f472b6;">Bomberman (Hudson Soft)</h4>
+          <p data-en="The explosive grid puzzle arcade that started a worldwide phenomenon! Drop bombs, destroy brick labyrinths, collect power-ups, and escape." data-es="¡El juego de laberintos explosivos que inició el fenómeno mundial! Coloca bombas, abre paso entre bloques y recoge power-ups.">The explosive grid puzzle arcade that started a worldwide phenomenon! Drop bombs, destroy brick labyrinths, collect power-ups, and escape.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(236, 72, 153, 0.2); color: #f472b6; border-color: rgba(236, 72, 153, 0.4);">Hudson Soft · 60 FPS</span>
+          <span style="color:#f472b6;font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- B2: Bomberman II -->
+      <div class="game-card" data-cat="bomber" onclick="loadDemoGame('nes', 'assets/demos/bomberman_2.nes', 'NES: Bomberman II')">
+        <div>
+          <span class="game-card-icon">🧨</span>
+          <h4>Bomberman II</h4>
+          <p data-en="Enhanced sequel with multi-bomb upgrades, remote detonators, battle mode arenas, and smoother grid movement." data-es="Secuela mejorada con detonadores remotos, más bombas simultáneas, arenas de batalla y movimiento más rápido.">Enhanced sequel with multi-bomb upgrades, remote detonators, battle mode arenas, and smoother grid movement.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag">NES 8-Bit</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
       <!-- 1: NDS Flappy Bird Touch -->
       <div class="game-card" data-cat="nds" onclick="loadDemoGame('nds', 'assets/demos/flappy_bird.nds', 'Nintendo DS: Flappy Bird Touch')">
         <div>
