@@ -1461,9 +1461,147 @@ footer a:hover { color: var(--cyan); }
   width: 100%;
 }
 
+
+/* ========================================================
+   2026 STATE-OF-THE-ART DYNAMIC WEB ANIMATIONS & FEEL
+   ======================================================== */
+
+/* Top Neon Scroll Progress Bar */
+#scrollProgress {
+  position: fixed;
+  top: 0; left: 0;
+  height: 3px;
+  width: 0%;
+  background: linear-gradient(90deg, #6366f1, #06b6d4, #10b981);
+  box-shadow: 0 0 12px var(--cyan);
+  z-index: 100000;
+  transition: width 0.1s ease-out;
+  pointer-events: none;
+}
+
+/* Kinetic Gradient Typography in Hero */
+.kinetic-gradient-word {
+  display: inline-block;
+  background: linear-gradient(135deg, #06b6d4 0%, #a855f7 50%, #10b981 100%);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: kineticShine 4s ease infinite;
+  min-height: 1.2em;
+  position: relative;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+@keyframes kineticShine {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+.kinetic-cursor {
+  display: inline-block;
+  width: 3px;
+  height: 0.9em;
+  background: var(--cyan);
+  vertical-align: middle;
+  margin-left: 4px;
+  box-shadow: 0 0 8px var(--cyan);
+  animation: blinkCursor 0.8s infinite;
+}
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+/* Sound Toggle Button */
+.sound-toggle-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: var(--txt-muted);
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 11px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+.sound-toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.sound-toggle-btn.active {
+  background: rgba(16, 185, 129, 0.15);
+  border-color: rgba(16, 185, 129, 0.4);
+  color: #34d399;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+/* Live Activity Toast ("Heartbeat Pulse") */
+.live-activity-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 24px;
+  z-index: 998;
+  background: rgba(9, 14, 26, 0.88);
+  border: 1px solid rgba(6, 182, 212, 0.35);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-radius: 999px;
+  padding: 8px 18px 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6), 0 0 20px rgba(6, 182, 212, 0.15);
+  font-size: 12.5px;
+  color: #e2e8f0;
+  max-width: 440px;
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: auto;
+}
+.live-activity-toast:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.7), 0 0 25px rgba(6, 182, 212, 0.3);
+}
+.live-pulse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+  animation: pulseBeacon 2s infinite;
+  flex-shrink: 0;
+}
+@keyframes pulseBeacon {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+  70% { transform: scale(1.1); box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+
+/* Interactive 3D Cursor Shine on Cards */
+.card, .case-card, .resource-card, .blog-card {
+  transition: transform 0.25s cubic-bezier(0.2, 0, 0.2, 1), box-shadow 0.25s ease, border-color 0.25s ease;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+/* Background Ambient Constellation Canvas */
+#ambientCanvas {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.32;
+}
+
 </style>
 </head>
 <body>
+  <div id="scrollProgress"></div>
+  <canvas id="ambientCanvas"></canvas>
+
 
 <!-- Dynamic Ambient Glow Orbs -->
 <div class="orb orb-1"></div>
@@ -1486,6 +1624,7 @@ footer a:hover { color: var(--cyan); }
         <a href="#free-resources" data-en="Resources" data-es="Recursos">Resources</a>
         <a href="#blog" data-en="Guides" data-es="Guías">Guides</a>
         <a href="#faq" data-en="FAQ" data-es="FAQ">FAQ</a>
+        <button class="sound-toggle-btn" id="soundToggleBtn" onclick="toggleAudioFx()" title="Toggle cyber tactile sound fx">🔈 Sound: OFF</button>
         <button class="cli-trigger-nav" onclick="toggleCLI()" title="Open DuarteCLI Terminal (Ctrl+K)">>_ CLI</button>
       </nav>
       <div class="lang-switch">
@@ -1502,7 +1641,8 @@ footer a:hover { color: var(--cyan); }
       <span data-en="Electric B2B Intelligence · WADesk WhatsApp Web CRM · Native 6-Language AI" data-es="Inteligencia B2B Eléctrica · CRM WADesk para WhatsApp Web · IA en 6 Idiomas">Electric B2B Intelligence · WADesk WhatsApp Web CRM · Native 6-Language AI</span>
     </div>
     <h1>
-      <span class="shimmer-text" data-en="Autonomous Data Extraction &amp; WhatsApp Web CRM" data-es="Extracción Autónoma de Datos y CRM en WhatsApp Web">Autonomous Data Extraction &amp; WhatsApp Web CRM</span>
+      <span class="shimmer-text" data-en="Autonomous Systems for" data-es="Sistemas Autónomos para">Autonomous Systems for</span><br>
+      <span id="kineticWord" class="kinetic-gradient-word">B2B Lead Generation</span><span class="kinetic-cursor"></span>
     </h1>
     <p data-en="High-velocity browserless data scrapers on Apify combined with WADesk — the high-converting Chrome CRM extension for WhatsApp Web. Built for modern growth hackers, sales teams, and n8n automators." data-es="Scrapers de datos ultrarrápidos en Apify combinados con WADesk, la extensión CRM de alta conversión para WhatsApp Web. Diseñado para growth hackers, equipos de ventas y agencias de n8n.">High-velocity browserless data scrapers on Apify combined with WADesk — the high-converting Chrome CRM extension for WhatsApp Web. Built for modern growth hackers, sales teams, and n8n automators.</p>
     
@@ -2527,6 +2667,13 @@ footer a:hover { color: var(--cyan); }
     </div>
   </div>
 
+
+    <!-- LIVE ACTIVITY TOAST STREAM -->
+  <div class="live-activity-toast" id="liveActivityToast">
+    <span class="live-pulse-dot"></span>
+    <span id="liveToastText"><strong>⚡</strong> Apify Actor: 420 leads extracted for Madrid clinics</span>
+    <span style="font-size:11px;color:var(--txt-dim);margin-left:auto;" id="liveToastTime">2s ago</span>
+  </div>
 
   <!-- BOTTOM CTA BANNER -->
   <section class="cta-banner">
@@ -3672,6 +3819,236 @@ document.addEventListener('keydown', function(e){
     }
   }
 });
+
+
+
+// ==========================================
+// 1. NEON TOP SCROLL PROGRESS BAR
+// ==========================================
+window.addEventListener('scroll', function(){
+  var bar = document.getElementById('scrollProgress');
+  if(!bar) return;
+  var winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+  var height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+  var scrolled = (winScroll / height) * 100;
+  bar.style.width = scrolled + '%';
+});
+
+// ==========================================
+// 2. KINETIC HERO TYPING & PHRASE ROTATION
+// ==========================================
+var kineticPhrases = [
+  "B2B Lead Generation",
+  "Solana DeFi Algorithmic Trading",
+  "WhatsApp Web CRM Pipelines",
+  "Shopify Competitor Price Spying",
+  "Claude & Cursor MCP Servers",
+  "High-Velocity Python Scrapers"
+];
+var kineticIdx = 0;
+
+function rotateKineticWord(){
+  var el = document.getElementById('kineticWord');
+  if(!el) return;
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(8px)';
+  
+  setTimeout(function(){
+    kineticIdx = (kineticIdx + 1) % kineticPhrases.length;
+    el.innerText = kineticPhrases[kineticIdx];
+    el.style.opacity = '1';
+    el.style.transform = 'translateY(0)';
+  }, 300);
+}
+setInterval(rotateKineticWord, 3200);
+
+// ==========================================
+// 3. TACTILE WEB AUDIO API SYNTHESIZER
+// ==========================================
+var audioCtx = null;
+var audioFxEnabled = false;
+
+function toggleAudioFx(){
+  var btn = document.getElementById('soundToggleBtn');
+  if(!audioCtx){
+    var AudioContext = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AudioContext();
+  }
+  if(audioCtx.state === 'suspended'){
+    audioCtx.resume();
+  }
+  audioFxEnabled = !audioFxEnabled;
+  if(btn){
+    btn.className = 'sound-toggle-btn' + (audioFxEnabled ? ' active' : '');
+    btn.innerHTML = audioFxEnabled ? '🔊 Sound: ON' : '🔈 Sound: OFF';
+  }
+  if(audioFxEnabled){
+    playCyberTone(880, 'sine', 0.06);
+  }
+}
+
+function playCyberTone(freq, type, duration){
+  if(!audioFxEnabled || !audioCtx) return;
+  try {
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.type = type || 'sine';
+    osc.frequency.setValueAtTime(freq || 600, audioCtx.currentTime);
+    gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + (duration || 0.05));
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + (duration || 0.05));
+  } catch(e){}
+}
+
+// Add subtle sound to buttons
+document.addEventListener('DOMContentLoaded', function(){
+  document.querySelectorAll('button, .btn-electric, .btn-glass, .wizard-opt-btn, .blog-pill').forEach(function(el){
+    el.addEventListener('mouseenter', function(){ playCyberTone(440, 'triangle', 0.03); });
+    el.addEventListener('click', function(){ playCyberTone(720, 'sine', 0.07); });
+  });
+});
+
+// ==========================================
+// 4. LIVE ACTIVITY TOAST ("HEARTBEAT PULSE")
+// ==========================================
+var liveEvents = [
+  { icon: '⚡', text: 'Apify Actor: 420 leads extracted for Madrid clinics', time: '2s ago' },
+  { icon: '🤖', text: 'Solana Bot: 40s Stall Exit executed at +31.8% gain', time: '44s ago' },
+  { icon: '💬', text: 'WADesk CRM: 1-click template sent to 14 leads', time: '1m ago' },
+  { icon: '🛍️', text: 'Shopify Spy: Price drop -15% detected on competitor', time: '3m ago' },
+  { icon: '🧠', text: 'Cursor MCP: Local dataset enriched via Claude', time: '5m ago' },
+  { icon: '📥', text: 'Free Asset: Developer downloaded Python Scraper', time: '7m ago' },
+  { icon: '🕹️', text: 'DuarteArcade: 60 FPS WebAssembly game loaded', time: '9m ago' }
+];
+var liveEventIdx = 0;
+
+function cycleLiveToast(){
+  var toastEl = document.getElementById('liveActivityToast');
+  var textEl = document.getElementById('liveToastText');
+  var timeEl = document.getElementById('liveToastTime');
+  if(!toastEl || !textEl) return;
+  
+  toastEl.style.opacity = '0';
+  toastEl.style.transform = 'translateY(10px)';
+  
+  setTimeout(function(){
+    liveEventIdx = (liveEventIdx + 1) % liveEvents.length;
+    var ev = liveEvents[liveEventIdx];
+    textEl.innerHTML = '<strong>' + ev.icon + '</strong> ' + ev.text;
+    if(timeEl) timeEl.innerText = ev.time;
+    toastEl.style.opacity = '1';
+    toastEl.style.transform = 'translateY(0)';
+  }, 400);
+}
+setInterval(cycleLiveToast, 9500);
+
+// ==========================================
+// 5. 3D CURSOR PROXIMITY TILT ON CARDS
+// ==========================================
+document.addEventListener('DOMContentLoaded', function(){
+  var cards = document.querySelectorAll('.card, .case-card, .resource-card, .blog-card');
+  cards.forEach(function(card){
+    card.addEventListener('mousemove', function(e){
+      var rect = card.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var centerX = rect.width / 2;
+      var centerY = rect.height / 2;
+      var deltaX = (x - centerX) / centerX;
+      var deltaY = (y - centerY) / centerY;
+      var rotateX = (-deltaY * 5).toFixed(2);
+      var rotateY = (deltaX * 5).toFixed(2);
+      
+      card.style.transform = 'perspective(900px) rotateX(' + rotateX + 'deg) rotateY(' + rotateY + 'deg) translateY(-4px)';
+    });
+    
+    card.addEventListener('mouseleave', function(){
+      card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateY(0)';
+    });
+  });
+});
+
+// ==========================================
+// 6. AMBIENT INTERACTIVE CONSTELLATION CANVAS
+// ==========================================
+(function(){
+  var canvas = document.getElementById('ambientCanvas');
+  if(!canvas) return;
+  var ctx = canvas.getContext('2d');
+  var width, height;
+  var particles = [];
+  var mouse = { x: -1000, y: -1000 };
+
+  function resize(){
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  }
+  window.addEventListener('resize', resize);
+  resize();
+
+  window.addEventListener('mousemove', function(e){
+    mouse.x = e.clientX;
+    mouse.y = e.clientY;
+  });
+
+  for(var i = 0; i < 48; i++){
+    particles.push({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.45,
+      vy: (Math.random() - 0.5) * 0.45,
+      radius: Math.random() * 1.8 + 1
+    });
+  }
+
+  function draw(){
+    ctx.clearRect(0, 0, width, height);
+    
+    for(var i = 0; i < particles.length; i++){
+      var p = particles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      
+      if(p.x < 0) p.x = width;
+      if(p.x > width) p.x = 0;
+      if(p.y < 0) p.y = height;
+      if(p.y > height) p.y = 0;
+
+      // Mouse pull
+      var dx = mouse.x - p.x;
+      var dy = mouse.y - p.y;
+      var dist = Math.sqrt(dx * dx + dy * dy);
+      if(dist < 120){
+        p.x -= dx * 0.02;
+        p.y -= dy * 0.02;
+      }
+
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(6, 182, 212, 0.45)';
+      ctx.fill();
+
+      // Connect lines
+      for(var j = i + 1; j < particles.length; j++){
+        var p2 = particles[j];
+        var d = Math.sqrt((p.x - p2.x)*(p.x - p2.x) + (p.y - p2.y)*(p.y - p2.y));
+        if(d < 110){
+          ctx.beginPath();
+          ctx.moveTo(p.x, p.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.strokeStyle = 'rgba(99, 102, 241, ' + (0.18 * (1 - d / 110)) + ')';
+          ctx.lineWidth = 0.8;
+          ctx.stroke();
+        }
+      }
+    }
+    requestAnimationFrame(draw);
+  }
+  requestAnimationFrame(draw);
+})();
 
 </script>
 </body>
