@@ -1,6 +1,17 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+<script>
+// Prevent COEP from blocking video embeds on Cinema
+window.coi = { shouldRegister: () => false, shouldDeregister: () => true };
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then(function(registrations) {
+    for (var r of registrations) {
+      r.unregister();
+    }
+  });
+}
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DuarteCinema · Cine Open-Source 4K, Retro Sci-Fi &amp; Radio Lofi 24/7 | DuarteLabs</title>
@@ -428,7 +439,10 @@ footer {
         <span class="cinema-pill-tag" id="currentMovieBadge">4K OPEN CINEMA</span>
         <strong style="color:#fff;font-size:15px;" id="currentMovieTitle">Tears of Steel (4K Cyberpunk Sci-Fi)</strong>
       </div>
-      <div style="display:flex;gap:10px;align-items:center;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <a id="externalWatchBtn" href="https://www.youtube.com/watch?v=R6MlUcmOul8" target="_blank" rel="noopener noreferrer" class="nav-btn" style="padding:4px 10px;font-size:12px;color:var(--cyan);border-color:rgba(6,182,212,0.4);" title="Ver en pestaña externa si tu navegador tiene bloqueadores">
+          ↗ Abrir en YouTube
+        </a>
         <button onclick="toggleCinemaLights()" class="nav-btn" id="cinemaLightsBtn" style="padding:4px 10px;font-size:12px;">
           💡 Modo Cine: OFF
         </button>
@@ -440,7 +454,7 @@ footer {
 
     <div class="video-responsive-wrap" id="videoWrap">
       <!-- Embedded Player -->
-      <iframe id="cinemaIframe" src="https://www.youtube-nocookie.com/embed/R6MlUcmOul8?autoplay=0&rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      <iframe id="cinemaIframe" credentialless src="https://www.youtube.com/embed/R6MlUcmOul8?autoplay=0&rel=0&modestbranding=1" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -657,7 +671,11 @@ function loadMovie(key, el){
   var stage = document.getElementById('theaterStage');
 
   if(iframe){
-    iframe.src = 'https://www.youtube-nocookie.com/embed/' + m.ytId + '?autoplay=1&rel=0&modestbranding=1';
+    iframe.src = 'https://www.youtube.com/embed/' + m.ytId + '?autoplay=1&rel=0&modestbranding=1';
+  }
+  var extBtn = document.getElementById('externalWatchBtn');
+  if(extBtn){
+    extBtn.href = 'https://www.youtube.com/watch?v=' + m.ytId;
   }
   if(titleEl) titleEl.innerText = m.title;
   if(badgeEl) badgeEl.innerText = m.badge;
