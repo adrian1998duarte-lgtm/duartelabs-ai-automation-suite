@@ -543,14 +543,20 @@ footer a:hover { color: var(--cyan); }
       <div style="display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;background:rgba(99,102,241,0.15);border:1px solid rgba(99,102,241,0.35);color:#818cf8;font-size:12px;font-weight:700;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.8px;">
         ⚡ 1-Click Instant Play · Zero Downloads
       </div>
-      <h2 data-en="Instant Playable Games Library (12 Games Ready)" data-es="Catálogo de Juegos Listos para Jugar (12 Juegos)">Instant Playable Games Library (12 Games Ready)</h2>
+      <h2 data-en="Instant Playable Games Library (15 Games Ready)" data-es="Catálogo de Juegos Listos para Jugar (15 Juegos)">Instant Playable Games Library (15 Games Ready)</h2>
       <p data-en="Click any game below to start playing immediately in your browser. Runs locally at 60 FPS via WebAssembly — no ROMs or downloads needed!" data-es="Haz clic en cualquier juego para empezar a jugar de inmediato en tu navegador a 60 FPS sin descargar nada.">Click any game below to start playing immediately in your browser. Runs locally at 60 FPS via WebAssembly — no ROMs or downloads needed!</p>
     </div>
 
     <!-- Category Filter Bar -->
     <div class="console-bar" style="margin-bottom: 28px;">
       <button class="console-btn active" onclick="filterCatalog('all', this)">
-        <span>🌟</span> <span data-en="All Games (12)" data-es="Todos (12)">All Games (12)</span>
+        <span>🌟</span> <span data-en="All Games (15)" data-es="Todos (15)">All Games (15)</span>
+      </button>
+      <button class="console-btn" onclick="filterCatalog('psx', this)">
+        <span>🎮</span> PlayStation 1 (2)
+      </button>
+      <button class="console-btn" onclick="filterCatalog('psp', this)">
+        <span>⚡</span> PlayStation Portable (1)
       </button>
       <button class="console-btn" onclick="filterCatalog('nds', this)">
         <span>📱</span> Nintendo DS (2)
@@ -722,6 +728,60 @@ footer a:hover { color: var(--cyan); }
           <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
         </div>
       </div>
+
+      <!-- 13: PS1 Cave Story PSX -->
+      <div class="game-card" data-cat="psx" onclick="loadDemoGame('psx', 'assets/demos/cave_story_ps1.iso', 'PlayStation 1: Cave Story PSX')">
+        <div>
+          <span class="game-card-icon">🎮</span>
+          <h4>PlayStation 1: Cave Story PSX</h4>
+          <p data-en="Acclaimed indie masterpiece running natively on 32-bit PlayStation 1 hardware with controller mapping and CD audio." data-es="Obra maestra legendaria corriendo de forma nativa en la PlayStation 1 con soporte de mandos y audio de CD.">Obra maestra legendaria corriendo de forma nativa en la PlayStation 1 con soporte de mandos y audio de CD.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.35);">PlayStation 1</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 14: PSP Counter-Strike 2D (CSPSP) -->
+      <div class="game-card" data-cat="psp" onclick="loadDemoGame('psp', 'assets/demos/cspsp.zip', 'PlayStation Portable: CSPSP')">
+        <div>
+          <span class="game-card-icon">⚡</span>
+          <h4>PlayStation Portable: CSPSP (Counter-Strike)</h4>
+          <p data-en="The most famous tactical multiplayer and bot action shooter made for PSP! Fast weapon buys, defusal mode, and intense firefights." data-es="¡El shooter táctico más famoso de PSP con bots, compra de armas, bombas y combates intensos a 60 FPS!">The most famous tactical multiplayer and bot action shooter made for PSP! Fast weapon buys, defusal mode, and intense firefights.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(244, 63, 94, 0.2); color: #f43f5e; border-color: rgba(244, 63, 94, 0.35);">PSP Wasm</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+
+      <!-- 15: PS1 240p Suite & 3D Test -->
+      <div class="game-card" data-cat="psx" onclick="loadDemoGame('psx', 'assets/demos/240pTestSuitePS1.bin', 'PlayStation 1: 3D Hardware Demo')">
+        <div>
+          <span class="game-card-icon">🕹️</span>
+          <h4>PlayStation 1: 3D &amp; Controller Demo</h4>
+          <p data-en="Interactive PS1 3D polygon test and controller input visualizer. Test rumble, response latency, and polygon rendering." data-es="Demostración interactiva en 3D para PlayStation 1 para probar mandos, polígonos, latencia y rendimiento de audio.">Interactive PS1 3D polygon test and controller input visualizer. Test rumble, response latency, and polygon rendering.</p>
+        </div>
+        <div class="game-card-footer">
+          <span class="console-tag" style="background: rgba(99, 102, 241, 0.2); color: #818cf8; border-color: rgba(99, 102, 241, 0.35);">PlayStation 1</span>
+          <span style="color:var(--cyan);font-weight:700" data-en="Play Now 🕹️" data-es="Jugar Ahora 🕹️">Play Now 🕹️</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dedicated PlayStation ISO Power Banner -->
+    <div style="margin-top: 36px; background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 27, 75, 0.8) 100%); border: 1px solid rgba(99, 102, 241, 0.35); border-radius: 18px; padding: 28px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px;">
+      <div style="max-width: 680px;">
+        <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+          <span style="font-size: 20px;">🎮</span>
+          <h3 style="margin: 0; font-size: 20px; color: #fff; font-family: 'Space Grotesk', sans-serif;" data-en="Want to play commercial PS1 &amp; PSP games (Crash, Tekken, God of War)?" data-es="¿Quieres jugar títulos comerciales de PS1 o PSP (Crash, Tekken, God of War)?">Want to play commercial PS1 &amp; PSP games (Crash, Tekken, God of War)?</h3>
+        </div>
+        <p style="margin: 0; color: var(--txt-muted); font-size: 14.5px; line-height: 1.6;" data-en="Commercial PlayStation ISOs range between 500 MB and 1.2 GB. To prevent long web download times, you can drag and drop your own ISO or CSO file directly onto this screen to play instantly at 60 FPS directly from your PC memory." data-es="Las imágenes ISO de PlayStation pesan entre 500 MB y 1.2 GB. Para evitar descargas lentas por internet, puedes arrastrar tu propio archivo .iso o .cso directamente a esta pantalla para jugarlo de inmediato a 60 FPS usando la memoria de tu computadora.">Commercial PlayStation ISOs range between 500 MB and 1.2 GB. To prevent long web download times, you can drag and drop your own ISO or CSO file directly onto this screen to play instantly at 60 FPS directly from your PC memory.</p>
+      </div>
+      <button class="file-upload-btn" onclick="triggerFileSelect()" style="padding: 12px 24px;">
+        <span>📂</span>
+        <span data-en="Load Custom PS1 / PSP ISO" data-es="Cargar Juego ISO / CSO">Load Custom PS1 / PSP ISO</span>
+      </button>
     </div>
   </section>
 
