@@ -3,6 +3,38 @@
   "rewrites": [
     { "source": "/", "destination": "/docs/cinema.html" },
     { "source": "/cinema", "destination": "/docs/cinema.html" },
-    { "source": "/arcade", "destination": "/docs/arcade.html" }
+    { "source": "/arcade", "destination": "/docs/arcade.html" },
+    { "source": "/manifest.json", "destination": "/docs/manifest.json" },
+    { "source": "/sw.js", "destination": "/docs/sw.js" }
+  ],
+  "headers": [
+    {
+      "source": "/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
+      ]
+    },
+    {
+      "source": "/docs/sw.js",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" },
+        { "key": "Content-Type", "value": "application/javascript; charset=utf-8" },
+        { "key": "Service-Worker-Allowed", "value": "/" }
+      ]
+    },
+    {
+      "source": "/manifest.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" }
+      ]
+    },
+    {
+      "source": "/docs/manifest.json",
+      "headers": [
+        { "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" }
+      ]
+    }
   ]
 }

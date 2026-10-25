@@ -1,0 +1,54 @@
+{
+  "name": "DuarteCinema Pro · Películas, Series & K-Doramas",
+  "short_name": "DuarteCinema",
+  "description": "Plataforma de Streaming 4K Ultra HD. Disfruta de películas, series mundiales, estrenos de cine y K-Doramas en español latino y subtitulado sin publicidad.",
+  "start_url": "./cinema.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#030712",
+  "theme_color": "#030712",
+  "categories": ["entertainment", "movies", "video"],
+  "icons": [
+    {
+      "src": "assets/icon_cinema.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon_cinema.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/brand_avatar.jpg",
+      "sizes": "1024x1024",
+      "type": "image/jpeg",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "🔥 Tendencias",
+      "url": "./cinema.html?cat=all",
+      "description": "Ver lo más popular de la semana"
+    },
+    {
+      "name": "🔴 Netflix",
+      "url": "./cinema.html?cat=netflix",
+      "description": "Catálogo oficial Netflix"
+    },
+    {
+      "name": "🇰🇷 K-Doramas",
+      "url": "./cinema.html?cat=kdoramas",
+      "description": "Series y Doramas Coreanos"
+    },
+    {
+      "name": "❤️ Mi Lista",
+      "url": "./cinema.html?cat=favs",
+      "description": "Mis títulos guardados"
+    }
+  ]
+}
