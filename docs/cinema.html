@@ -787,9 +787,12 @@ footer {
     <div class="catalog-search-row">
       <div class="catalog-search-box">
         <span style="color:var(--txt-dim);font-size:16px;">🔍</span>
-        <input type="text" id="catalogSearchInput" class="catalog-search-input" placeholder="Buscar películas o series por nombre (ej. Stranger Things, Dune, Spider-Man, The Boys)..." oninput="onSearchInput(this.value)">
+        <input type="text" id="catalogSearchInput" class="catalog-search-input" placeholder="Buscar entre más de 500,000 películas y series del mundo (ej. Harry Potter, Avatar, Shrek, Gladiador)..." oninput="onSearchInput(this.value)">
       </div>
-      <span style="font-size:12.5px;color:var(--txt-muted);"><strong id="resultsCount">20</strong> títulos disponibles</span>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:11px;background:rgba(6,182,212,0.15);color:#38bdf8;border:1px solid rgba(6,182,212,0.3);padding:2px 8px;border-radius:999px;font-weight:700;">🌐 Universal TMDB</span>
+        <span style="font-size:12.5px;color:var(--txt-muted);"><strong id="resultsCount">30</strong> títulos en vitrina</span>
+      </div>
     </div>
 
     <!-- Category Pills -->
@@ -1214,7 +1217,196 @@ var catalog = [
     backdrop: "https://image.tmdb.org/t/p/original/18TSJF1WLA4CkymvPGye3CGqdR8.jpg",
     desc: "Art the Clown desata el caos sobre los desprevenidos residentes del condado de Miles mientras duermen en Nochebuena.",
     ytTrailer: "bSbc0xOqZ0E"
+  },
+  // 21. AVATAR: THE WAY OF WATER
+  {
+    id: "avatar_2",
+    tmdbId: 76600,
+    imdbId: "tt1630029",
+    type: "movie",
+    title: "Avatar: El Camino del Agua",
+    year: 2022,
+    platform: "Disney+ / Cine",
+    rating: 7.6,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["ciencia-ficcion", "accion", "aventura", "movie"],
+    poster: "https://image.tmdb.org/t/p/w500/t6HIqrRAclMCA60NsSmeqe9RmNV.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/s16H6tpK2utvwDtzZ8Qy4qm5Emw.jpg",
+    desc: "Ambientada más de una década después de los acontecimientos de la primera película, Avatar: The Way of Water empieza a contar la historia de la familia Sully.",
+    ytTrailer: "a8Gx8wiNbs8"
+  },
+  // 22. SHREK 2
+  {
+    id: "shrek_2",
+    tmdbId: 809,
+    imdbId: "tt0298148",
+    type: "movie",
+    title: "Shrek 2",
+    year: 2004,
+    platform: "DreamWorks / Clásico",
+    rating: 7.4,
+    quality: "Full HD",
+    lang: "Latino / Sub / Cast",
+    genres: ["animacion", "comedia", "clasico", "movie"],
+    poster: "https://image.tmdb.org/t/p/w500/2yYP0PQjG8zVqturh1BAqu2bgEN.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/gHjTjUe7ZzC7P5v9o9wXhU3f7aL.jpg",
+    desc: "Shrek y Fiona regresan de su luna de miel para encontrarse con una invitación a visitar a los padres de Fiona, el Rey y la Reina del reino de Muy Muy Lejano.",
+    ytTrailer: "xBgjfOtcqzw"
+  },
+  // 23. JOHN WICK 4
+  {
+    id: "john_wick_4",
+    tmdbId: 603692,
+    imdbId: "tt10366206",
+    type: "movie",
+    title: "John Wick 4 (Baba Yaga)",
+    year: 2023,
+    platform: "Lionsgate / Cine",
+    rating: 7.7,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["accion", "crimen", "thriller", "movie"],
+    poster: "https://image.tmdb.org/t/p/w500/vZloFAK7NmvMGKE7VkF5UHaz0I.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/7I6VUdPj6tQECNHdviJkUHD2389.jpg",
+    desc: "Con el precio sobre su cabeza cada vez mayor, John Wick descubre un camino para derrotar a la Alta Mesa, enfrentándose a un nuevo enemigo formidable.",
+    ytTrailer: "qEVUtrk8_B4"
+  },
+  // 24. MOANA 2
+  {
+    id: "moana_2",
+    tmdbId: 1241982,
+    imdbId: "tt31187121",
+    type: "movie",
+    title: "Moana 2 (Vaiana 2)",
+    year: 2024,
+    platform: "Disney+ / Cine",
+    rating: 7.1,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["animacion", "aventura", "familiar", "movie"],
+    poster: "https://image.tmdb.org/t/p/w500/yh64qw9mg9tinP7egCYqnRaAgSd.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/v9acaWV9Jh4R5G9by5Jn9bbaQ4k.jpg",
+    desc: "Tras recibir una inesperada llamada de sus ancestros, Moana debe viajar a los lejanos mares de Oceanía hacia aguas peligrosas para romper una maldición.",
+    ytTrailer: "hDZ7y8RP5HE"
+  },
+  // 25. PEAKY BLINDERS
+  {
+    id: "peaky_blinders",
+    tmdbId: 60574,
+    imdbId: "tt2442560",
+    type: "tv",
+    title: "Peaky Blinders",
+    year: 2013,
+    platform: "Netflix / BBC",
+    rating: 8.5,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["crimen", "drama", "netflix", "tv"],
+    poster: "https://image.tmdb.org/t/p/w500/vUUqzWa2LnHIVqkaKVlVGkVcZIW.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/w7BYc1h1a1GZ2qQk4n4aY8u7yZ.jpg",
+    desc: "Una notoria banda en Birmingham, Inglaterra, en 1919, está liderada por el feroz Tommy Shelby, un jefe criminal empeñado en avanzar en el mundo sin importar el costo.",
+    ytTrailer: "oVzVdvGIC7U",
+    seasons: 6,
+    episodesPerSeason: [6, 6, 6, 6, 6, 6]
+  },
+  // 26. COBRA KAI
+  {
+    id: "cobra_kai",
+    tmdbId: 77169,
+    imdbId: "tt7221388",
+    type: "tv",
+    title: "Cobra Kai",
+    year: 2018,
+    platform: "Netflix",
+    rating: 8.2,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["accion", "comedia", "drama", "netflix", "tv"],
+    poster: "https://image.tmdb.org/t/p/w500/m7tG5E1E9rU0N2G5m9xK8e8s.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/9ijMGlJKqcZJo2nCw5PkIN27PtZ.jpg",
+    desc: "Treinta y cuatro años después de los eventos del Torneo de Karate All Valley de 1984, la rivalidad entre Johnny Lawrence y Daniel LaRusso se reaviva.",
+    ytTrailer: "sUR9PYwlNaA",
+    seasons: 6,
+    episodesPerSeason: [10, 10, 10, 10, 10, 15]
+  },
+  // 27. DARK
+  {
+    id: "dark_serie",
+    tmdbId: 70523,
+    imdbId: "tt5753856",
+    type: "tv",
+    title: "Dark",
+    year: 2017,
+    platform: "Netflix",
+    rating: 8.4,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["ciencia-ficcion", "misterio", "drama", "netflix", "tv"],
+    poster: "https://image.tmdb.org/t/p/w500/apbrbWs8M9lyOpJYU5WXrpFbk1Z.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/7c9UVPPiTPltouxRVY69929AMNs.jpg",
+    desc: "La desaparición de dos niños en la ciudad alemana de Winden saca a la luz las relaciones rotas y las dobles vidas de cuatro familias mientras buscan conexiones temporales.",
+    ytTrailer: "rrwycJ08PSA",
+    seasons: 3,
+    episodesPerSeason: [10, 8, 8]
+  },
+  // 28. VIKINGOS
+  {
+    id: "vikingos",
+    tmdbId: 44217,
+    imdbId: "tt2306299",
+    type: "tv",
+    title: "Vikingos (Vikings)",
+    year: 2013,
+    platform: "Netflix / History",
+    rating: 8.1,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["accion", "drama", "historia", "netflix", "tv"],
+    poster: "https://image.tmdb.org/t/p/w500/bQLrHIRNEkE3PdIWAcZHGhQwnNI.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/lHe80VR6PvFqJ9wP1Lp8J1q9Jk.jpg",
+    desc: "Las aventuras de Ragnar Lothbrok: el mayor héroe de su época mientras se eleva para convertirse en el rey de las tribus vikingas.",
+    ytTrailer: "mAl60ykBm4A",
+    seasons: 6,
+    episodesPerSeason: [9, 10, 10, 20, 20, 20]
+  },
+  // 29. GLADIADOR (2000)
+  {
+    id: "gladiator_1",
+    tmdbId: 98,
+    imdbId: "tt0172495",
+    type: "movie",
+    title: "Gladiador (2000)",
+    year: 2000,
+    platform: "Clásico / Cine",
+    rating: 8.2,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["accion", "drama", "aventura", "clasico", "movie"],
+    poster: "https://image.tmdb.org/t/p/w500/pTeWn91z3m6r2D6eN9Vd5ZqVn.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/hZkgoQYus5vegHoetLkCJzb17zJ.jpg",
+    desc: "En el año 180, el general hispanorromano Máximo Décimo Meridio es traicionado tras la muerte del emperador Marco Aurelio y forzado a convertirse en gladiador.",
+    ytTrailer: "owK1qxDselE"
+  },
+  // 30. SPIDER-MAN: NO WAY HOME
+  {
+    id: "spiderman_no_way_home",
+    tmdbId: 634649,
+    imdbId: "tt10872600",
+    type: "movie",
+    title: "Spider-Man: Sin Camino a Casa",
+    year: 2021,
+    platform: "HBO Max / Sony",
+    rating: 8.0,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["accion", "ciencia-ficcion", "aventura", "hbo", "movie"],
+    poster: "https://image.tmdb.org/t/p/w500/miZF5HfMoCE2ev0Gvi5k93oY7s6.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/14QbnygCuTO0vl7CAFmPf1fgZfV.jpg",
+    desc: "Por primera vez en la historia cinematográfica de Spider-Man, nuestro amigable héroe vecino está desenmascarado y ya no puede separar su vida normal de los altos riesgos de ser un superhéroe.",
+    ytTrailer: "JfVOs4VSpmA"
   }
+
 ];
 
 // Active State
@@ -1320,6 +1512,48 @@ function selectMedia(item){
     renderEpisodePills(1);
   } else {
     if(epBar) epBar.classList.remove('active');
+  }
+
+  // Asynchronously resolve IMDb ID if not already present
+  if(!item.imdbId && item.tmdbId){
+    var extUrl = 'https://api.themoviedb.org/3/' + item.type + '/' + item.tmdbId + '/external_ids?api_key=' + TMDB_KEY;
+    fetch(extUrl)
+      .then(function(res){ return res.json(); })
+      .then(function(extData){
+        if(extData && extData.imdb_id){
+          item.imdbId = extData.imdb_id;
+          loadVideoSource();
+        }
+      })
+      .catch(function(e){ console.warn('Could not fetch IMDb ID:', e); });
+  }
+
+  // If it's a TV series from TMDB, fetch accurate season & episode structure
+  if(item.type === 'tv' && item.tmdbId){
+    var tvUrl = 'https://api.themoviedb.org/3/tv/' + item.tmdbId + '?api_key=' + TMDB_KEY + '&language=es-MX';
+    fetch(tvUrl)
+      .then(function(res){ return res.json(); })
+      .then(function(tvData){
+        if(tvData && tvData.number_of_seasons){
+          item.seasons = tvData.number_of_seasons;
+          if(Array.isArray(tvData.seasons)){
+            item.episodesPerSeason = tvData.seasons.filter(function(s){ return s.season_number > 0; }).map(function(s){ return s.episode_count || 10; });
+          }
+          var sSelect = document.getElementById('seasonSelect');
+          if(sSelect){
+            sSelect.innerHTML = '';
+            for(var s = 1; s <= item.seasons; s++){
+              var opt = document.createElement('option');
+              opt.value = s;
+              opt.innerText = 'Temporada ' + s;
+              sSelect.appendChild(opt);
+            }
+            sSelect.value = 1;
+          }
+          renderEpisodePills(1);
+        }
+      })
+      .catch(function(e){ console.warn('Could not fetch TV structure:', e); });
   }
 
   // Load Video in Iframe
@@ -1476,36 +1710,174 @@ function switchServer(serverNum, btn){
 }
 
 
-// Search & Filter
+// ==========================================
+// UNIVERSAL TMDB API SEARCH & TRENDING ENGINE
+// ==========================================
+var TMDB_KEY = '844dba0bfd8f3a4f3799f6130ef9e335';
+var searchDebounceTimer = null;
+
 function filterCatalog(cat, btn){
-  document.querySelectorAll('.catalog-pill').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.catalog-pill').forEach(function(b){ b.classList.remove('active'); });
   if(btn) btn.classList.add('active');
+
+  var countEl = document.getElementById('resultsCount');
 
   if(cat === 'all'){
     renderCatalog(catalog);
+    if(countEl) countEl.innerText = catalog.length;
   } else if(cat === 'movie' || cat === 'tv'){
-    var filtered = catalog.filter(m => m.type === cat);
+    var filtered = catalog.filter(function(m){ return m.type === cat; });
     renderCatalog(filtered);
+    if(countEl) countEl.innerText = filtered.length;
   } else {
-    var filtered = catalog.filter(m => m.genres.includes(cat));
+    var filtered = catalog.filter(function(m){ return m.genres.indexOf(cat) !== -1; });
     renderCatalog(filtered);
+    if(countEl) countEl.innerText = filtered.length;
   }
 }
 
+function loadTrendingToday(btn){
+  document.querySelectorAll('.catalog-pill').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+
+  var countEl = document.getElementById('resultsCount');
+  if(countEl) countEl.innerText = 'Cargando tendencias mundiales...';
+
+  var url = 'https://api.themoviedb.org/3/trending/all/day?api_key=' + TMDB_KEY + '&language=es-MX';
+  fetch(url)
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      var raw = data.results || [];
+      var valid = raw.filter(function(i){ return (i.media_type === 'movie' || i.media_type === 'tv') && i.poster_path; });
+      var mapped = valid.map(function(item){
+        var isTv = item.media_type === 'tv';
+        var title = isTv ? (item.name || item.original_name) : (item.title || item.original_title);
+        var date = isTv ? (item.first_air_date || '') : (item.release_date || '');
+        var year = date ? parseInt(date.substring(0, 4), 10) : 2024;
+        return {
+          id: 'tmdb_' + item.id,
+          tmdbId: item.id,
+          imdbId: null,
+          type: isTv ? 'tv' : 'movie',
+          title: title,
+          year: year || 2024,
+          platform: 'Tendencia Mundial TMDB',
+          rating: item.vote_average ? item.vote_average.toFixed(1) : '7.8',
+          quality: '4K UHD',
+          lang: 'Latino / Sub / Cast',
+          genres: ['tendencia', item.media_type],
+          poster: 'https://image.tmdb.org/t/p/w500' + item.poster_path,
+          desc: item.overview || 'Sinopsis disponible al reproducir.',
+          ytTrailer: '',
+          seasons: isTv ? 1 : null,
+          episodesPerSeason: isTv ? [10] : null
+        };
+      });
+      renderCatalog(mapped);
+      if(countEl) countEl.innerText = mapped.length + ' tendencias de hoy';
+    })
+    .catch(function(e){
+      renderCatalog(catalog);
+    });
+}
+
 function onSearchInput(query){
-  var q = (query || '').toLowerCase().trim();
+  clearTimeout(searchDebounceTimer);
+  var q = (query || '').trim();
+
   if(!q){
     renderCatalog(catalog);
+    var countEl = document.getElementById('resultsCount');
+    if(countEl) countEl.innerText = catalog.length;
     return;
   }
-  var matches = catalog.filter(function(m){
-    return m.title.toLowerCase().includes(q) ||
-           String(m.year).includes(q) ||
-           m.platform.toLowerCase().includes(q) ||
-           m.genres.some(g => g.toLowerCase().includes(q));
+
+  // Instant local check
+  var localMatches = catalog.filter(function(m){
+    return m.title.toLowerCase().indexOf(q.toLowerCase()) !== -1 ||
+           String(m.year).indexOf(q) !== -1 ||
+           m.platform.toLowerCase().indexOf(q.toLowerCase()) !== -1;
   });
-  renderCatalog(matches);
+  if(localMatches.length > 0 && q.length < 3){
+    renderCatalog(localMatches);
+    var countEl = document.getElementById('resultsCount');
+    if(countEl) countEl.innerText = localMatches.length + ' (locales)';
+  }
+
+  // Universal TMDB Worldwide API live search when query has 2+ characters
+  if(q.length >= 2){
+    var countEl = document.getElementById('resultsCount');
+    if(countEl) countEl.innerText = 'Buscando en vivo en TMDB...';
+
+    searchDebounceTimer = setTimeout(function(){
+      fetchLiveTmdbSearch(q);
+    }, 320);
+  }
 }
+
+function fetchLiveTmdbSearch(q){
+  var url = 'https://api.themoviedb.org/3/search/multi?api_key=' + TMDB_KEY + '&query=' + encodeURIComponent(q) + '&language=es-MX&include_adult=false';
+  
+  fetch(url)
+    .then(function(res){ return res.json(); })
+    .then(function(data){
+      var raw = data.results || [];
+      var valid = raw.filter(function(item){
+        return (item.media_type === 'movie' || item.media_type === 'tv') && (item.poster_path || item.backdrop_path);
+      });
+
+      if(valid.length === 0){
+        var localMatches = catalog.filter(function(m){
+          return m.title.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+        });
+        renderCatalog(localMatches);
+        var countEl = document.getElementById('resultsCount');
+        if(countEl) countEl.innerText = localMatches.length + ' encontrados';
+        return;
+      }
+
+      var mapped = valid.map(function(item){
+        var isTv = item.media_type === 'tv';
+        var title = isTv ? (item.name || item.original_name) : (item.title || item.original_title);
+        var date = isTv ? (item.first_air_date || '') : (item.release_date || '');
+        var year = date ? parseInt(date.substring(0, 4), 10) : 2024;
+        var poster = item.poster_path 
+          ? 'https://image.tmdb.org/t/p/w500' + item.poster_path 
+          : (item.backdrop_path ? 'https://image.tmdb.org/t/p/w500' + item.backdrop_path : 'assets/brand_avatar.jpg');
+
+        return {
+          id: 'tmdb_' + item.id,
+          tmdbId: item.id,
+          imdbId: null, // Will resolve automatically on select
+          type: isTv ? 'tv' : 'movie',
+          title: title,
+          year: year || 2024,
+          platform: 'Catálogo Mundial TMDB',
+          rating: item.vote_average ? item.vote_average.toFixed(1) : '7.5',
+          quality: '4K UHD',
+          lang: 'Latino / Sub / Cast',
+          genres: ['universal', item.media_type],
+          poster: poster,
+          desc: item.overview || 'Sinopsis oficial en español disponible al reproducir.',
+          ytTrailer: '',
+          seasons: isTv ? 1 : null,
+          episodesPerSeason: isTv ? [10] : null
+        };
+      });
+
+      renderCatalog(mapped);
+      var countEl = document.getElementById('resultsCount');
+      if(countEl) countEl.innerText = mapped.length + ' resultados mundiales';
+    })
+    .catch(function(err){
+      console.warn('TMDB live search error, fallback:', err);
+      var localMatches = catalog.filter(function(m){
+        return m.title.toLowerCase().indexOf(q.toLowerCase()) !== -1;
+      });
+      renderCatalog(localMatches);
+    });
+}
+
 
 // Cinema Mode
 var cinemaLightsOn = true;
