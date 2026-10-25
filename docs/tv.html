@@ -738,119 +738,42 @@
 
     
     <!-- ==========================================
-         MATCH CENTER: PARTIDOS TOP & EL CLÁSICO
+         MATCH CENTER EN VIVO: AGENDA DEPORTIVA DIRECTA
          ========================================== -->
-    <div class="match-center-section" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.9) 0%, rgba(30, 41, 59, 0.8) 100%); border: 1.5px solid rgba(244, 63, 94, 0.4); border-radius: 20px; padding: 20px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 25px rgba(244, 63, 94, 0.15);">
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px; background: rgba(244, 63, 94, 0.2); width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">⚽</span>
+    <div class="match-center-section" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%); border: 1.5px solid rgba(244, 63, 94, 0.45); border-radius: 20px; padding: 22px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 25px rgba(244, 63, 94, 0.2);">
+      
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; flex-wrap: wrap;">
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <span style="font-size: 26px; background: rgba(244, 63, 94, 0.2); width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">⚽</span>
           <div>
-            <h3 style="font-size: 18px; font-weight: 800; color: #fff; font-family: 'Space Grotesk', sans-serif;">Partidos Top en Vivo & El Clásico</h3>
-            <p style="font-size: 12.5px; color: #94a3b8;">Sintoniza los partidos estelares con escudo anti-publicidad de DuarteTV</p>
+            <h3 style="font-size: 19px; font-weight: 800; color: #fff; font-family: 'Space Grotesk', sans-serif; display: flex; align-items: center; gap: 8px;">
+              Agenda de Partidos en Vivo (Fútbol Libre & Roja Directa)
+              <span id="liveMatchesCount" style="font-size: 11px; background: rgba(244,63,94,0.25); color: #f43f5e; border: 1px solid rgba(244,63,94,0.5); padding: 2px 8px; border-radius: 999px;">Cargando...</span>
+            </h3>
+            <p style="font-size: 12.5px; color: #94a3b8;">Todos los partidos del día con opciones de señal y escudo anti-publicidad de DuarteTV</p>
           </div>
         </div>
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 999px; display: inline-flex; align-items: center; gap: 5px;">
-            🛡️ Escudo Anti-Publicidad Activo
+
+        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+          <input type="text" id="matchSearchInput" placeholder="Buscar partido (Madrid, Boca, Milan...)" oninput="filterLiveAgenda()" style="background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 7px 14px; border-radius: 10px; font-size: 13px; outline: none; width: 230px;">
+          <button onclick="fetchLiveAgenda()" class="ctrl-btn" style="padding: 7px 12px; font-size: 12.5px;">
+            🔄 Actualizar
+          </button>
+          <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 999px;">
+            🛡️ Escudo Anti-Publicidad
           </span>
         </div>
       </div>
 
-      <!-- Matches Grid -->
-      <div class="matches-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px;">
-        
-        <!-- Match 1: El Clásico -->
-        <div class="match-card" style="background: rgba(2, 6, 23, 0.65); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 11px; font-weight: 800; background: rgba(244,63,94,0.2); color: #f43f5e; padding: 2px 7px; border-radius: 6px;">🇪🇸 EL CLÁSICO · LALIGA</span>
-            <span style="font-size: 11px; color: #f59e0b; font-weight: 800; background: rgba(245,158,11,0.15); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(245,158,11,0.3);">⏰ HOY 2:00 PM</span>
-          </div>
-          <div style="font-size: 15px; font-weight: 800; color: #fff;">Real Madrid vs FC Barcelona</div>
-          <div style="font-size: 12px; color: #94a3b8;">Santiago Bernabéu / Spotify Camp Nou</div>
-          
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
-            <button onclick="playMatchStream('Real Madrid vs FC Barcelona', 'Servidor 1 (ESPN)', 'https://mdstrm.com/live-stream-playlist/65a1d2fd7e7f14355550d570.m3u8')" style="background: rgba(139, 92, 246, 0.25); border: 1px solid rgba(139, 92, 246, 0.5); color: #c084fc; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ⚡ Opción 1: ESPN
-            </button>
-            <button onclick="playMatchStream('Real Madrid vs FC Barcelona', 'Servidor 2 (DAZN LaLiga)', 'http://186.33.26.18:8000/play/a0s4/index.m3u8')" style="background: rgba(6, 182, 212, 0.25); border: 1px solid rgba(6, 182, 212, 0.5); color: #38bdf8; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ⚡ Opción 2: DAZN
-            </button>
-            <button onclick="openCustomMatchPrompt('Real Madrid vs FC Barcelona')" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ➕ Servidor Personal
-            </button>
-          </div>
+      <!-- Live Matches Dynamic Container -->
+      <div id="liveMatchesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; max-height: 520px; overflow-y: auto; padding-right: 4px;">
+        <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #94a3b8;">
+          ⏳ Conectando con la agenda deportiva en vivo...
         </div>
-
-        <!-- Match 2: Premier League -->
-        <div class="match-card" style="background: rgba(2, 6, 23, 0.65); border: 1px solid rgba(6, 182, 212, 0.3); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 11px; font-weight: 800; background: rgba(6,182,212,0.2); color: #38bdf8; padding: 2px 7px; border-radius: 6px;">🏴󠁧󠁢󠁥󠁮󠁧󠁿 PREMIER LEAGUE</span>
-            <span style="font-size: 11px; color: #34d399; font-weight: 700;">🔴 EN VIVO</span>
-          </div>
-          <div style="font-size: 15px; font-weight: 800; color: #fff;">Manchester City vs Liverpool</div>
-          <div style="font-size: 12px; color: #94a3b8;">Etihad Stadium · Jornada Premier</div>
-          
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
-            <button onclick="playMatchStream('Manchester City vs Liverpool', 'Servidor 1 (Telemundo)', 'https://tv.bitstreaming.net:8443/live/guayapetv.m3u8')" style="background: rgba(6, 182, 212, 0.25); border: 1px solid rgba(6, 182, 212, 0.5); color: #38bdf8; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ⚡ Opción 1: Telemundo
-            </button>
-            <button onclick="playMatchStream('Manchester City vs Liverpool', 'Servidor 2 (DAZN 1)', 'http://162.19.255.233:8080/play/UNbAl57p9hXZClOu56FCTYXmD-MOS3u5IUkeXPpBt80/m3u8')" style="background: rgba(139, 92, 246, 0.25); border: 1px solid rgba(139, 92, 246, 0.5); color: #c084fc; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ⚡ Opción 2: DAZN UK
-            </button>
-            <button onclick="openCustomMatchPrompt('Manchester City vs Liverpool')" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ➕ Servidor Personal
-            </button>
-          </div>
-        </div>
-
-        <!-- Match 3: Champions League -->
-        <div class="match-card" style="background: rgba(2, 6, 23, 0.65); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 11px; font-weight: 800; background: rgba(139,92,246,0.2); color: #c084fc; padding: 2px 7px; border-radius: 6px;">🇪🇺 UEFA CHAMPIONS LEAGUE</span>
-            <span style="font-size: 11px; color: #c084fc; font-weight: 800; background: rgba(139,92,246,0.15); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(139,92,246,0.3);">⏰ MIÉRCOLES 2:00 PM</span>
-          </div>
-          <div style="font-size: 15px; font-weight: 800; color: #fff;">Champions League · Multipantalla</div>
-          <div style="font-size: 12px; color: #94a3b8;">Fase Eliminatoria · Transmisión Simultánea</div>
-          
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
-            <button onclick="playMatchStream('Champions League', 'Servidor 1 (TNT Sports)', 'https://tv.webmedialive.com/azatvhn/live/playlist.m3u8')" style="background: rgba(139, 92, 246, 0.25); border: 1px solid rgba(139, 92, 246, 0.5); color: #c084fc; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ⚡ TNT Sports / Max
-            </button>
-            <button onclick="playMatchStream('Champions League', 'Servidor 2 (Movistar Liga de Campeones)', 'http://168.196.127.137:6001/play/a0ay/index.m3u8')" style="background: rgba(245, 158, 11, 0.25); border: 1px solid rgba(245, 158, 11, 0.5); color: #f59e0b; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ⚡ Movistar Campeones
-            </button>
-            <button onclick="openCustomMatchPrompt('Champions League')" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ➕ Servidor Personal
-            </button>
-          </div>
-        </div>
-
-        <!-- Match 4: Liga de Honduras -->
-        <div class="match-card" style="background: rgba(2, 6, 23, 0.65); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <span style="font-size: 11px; font-weight: 800; background: rgba(16,185,129,0.2); color: #34d399; padding: 2px 7px; border-radius: 6px;">🇭🇳 LIGA BETCRIS HONDURAS</span>
-            <span style="font-size: 11px; color: #34d399; font-weight: 800; background: rgba(16,185,129,0.15); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.3);">⏰ HOY 5:00 PM</span>
-          </div>
-          <div style="font-size: 15px; font-weight: 800; color: #fff;">Olimpia vs Motagua</div>
-          <div style="font-size: 12px; color: #94a3b8;">Estadio Nacional Chelato Uclés</div>
-          
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px;">
-            <button onclick="playMatchStream('Olimpia vs Motagua', 'Deportes TVC', 'http://162.19.255.233:8080/play/UNbAl57p9hXZClOu56FCTYXmD-MOS3u5IUkeXPpBt80/m3u8')" style="background: rgba(16, 185, 129, 0.25); border: 1px solid rgba(16, 185, 129, 0.5); color: #34d399; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ⚡ Deportes TVC
-            </button>
-            <button onclick="playMatchStream('Olimpia vs Motagua', 'Tigo Sports Honduras', 'http://168.196.127.137:6001/play/a0ay/index.m3u8')" style="background: rgba(6, 182, 212, 0.25); border: 1px solid rgba(6, 182, 212, 0.5); color: #38bdf8; font-size: 11.5px; font-weight: 700; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ⚡ Tigo Sports
-            </button>
-            <button onclick="openCustomMatchPrompt('Olimpia vs Motagua')" style="background: rgba(255, 255, 255, 0.08); border: 1px solid rgba(255, 255, 255, 0.15); color: #cbd5e1; font-size: 11px; font-weight: 600; padding: 6px 10px; border-radius: 8px; cursor: pointer;">
-              ➕ Servidor Personal
-            </button>
-          </div>
-        </div>
-
       </div>
-    </div>
 
-    <!-- Private M3U Playlist Banner (El Modelo Neutro) -->
+    </div>
+<!-- Private M3U Playlist Banner (El Modelo Neutro) -->
     <div class="m3u-banner">
       <div class="m3u-banner-info">
         <span class="icon">📡</span>
@@ -1635,6 +1558,154 @@
 
     
     // Match Center Functions
+    
+    // ==========================================
+    // DYNAMIC LIVE AGENDA ENGINE (FÚTBOL LIBRE / ROJA DIRECTA)
+    // ==========================================
+    var liveAgendaMatches = [];
+
+    document.addEventListener('DOMContentLoaded', function(){
+      fetchLiveAgenda();
+    });
+
+    function fetchLiveAgenda(){
+      var container = document.getElementById('liveMatchesGrid');
+      var countBadge = document.getElementById('liveMatchesCount');
+
+      fetch('https://api.wqxag.com/diaries.json')
+        .then(function(res){
+          if(!res.ok) throw new Error('HTTP ' + res.status);
+          return res.json();
+        })
+        .then(function(json){
+          if(!json || !json.data || !Array.isArray(json.data)){
+            throw new Error('Formato no válido');
+          }
+
+          liveAgendaMatches = json.data.map(function(item){
+            var attr = item.attributes || {};
+            var desc = (attr.diary_description || 'Partido').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+            var hour = (attr.diary_hour || '00:00').substring(0, 5);
+            var country = attr.country && attr.country.data && attr.country.data.attributes ? attr.country.data.attributes.name : 'Deportes';
+            var embeds = (attr.embeds && attr.embeds.data) || [];
+
+            var servers = embeds.map(function(e){
+              var eAttr = e.attributes || {};
+              var name = eAttr.embed_name || 'Opción';
+              var iframePath = eAttr.embed_iframe || '';
+              var url = '';
+              if(iframePath.startsWith('http')){
+                url = iframePath;
+              } else {
+                url = 'https://futbollibretvplus.com' + (iframePath.startsWith('/') ? '' : '/') + iframePath;
+              }
+              return { name: name, url: url };
+            });
+
+            return {
+              id: item.id,
+              desc: desc,
+              hour: hour,
+              country: country,
+              servers: servers
+            };
+          });
+
+          if(countBadge) countBadge.textContent = liveAgendaMatches.length + ' Partidos Hoy';
+          renderLiveAgenda();
+        })
+        .catch(function(err){
+          console.warn('Error cargando agenda en vivo:', err);
+          if(container){
+            container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 25px; color: #94a3b8;">' +
+              '⚠️ No se pudo sincronizar la agenda automáticamente. Puedes reintentar o cargar canales desde la lista inferior.' +
+            '</div>';
+          }
+        });
+    }
+
+    function renderLiveAgenda(){
+      var container = document.getElementById('liveMatchesGrid');
+      if(!container) return;
+
+      var q = (document.getElementById('matchSearchInput') ? document.getElementById('matchSearchInput').value : '').toLowerCase().trim();
+
+      var list = liveAgendaMatches.filter(function(m){
+        if(!q) return true;
+        return m.desc.toLowerCase().includes(q) || m.country.toLowerCase().includes(q);
+      });
+
+      if(list.length === 0){
+        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 25px; color: #64748b;">No se encontraron partidos para "' + escapeHtml(q) + '"</div>';
+        return;
+      }
+
+      var html = '';
+      list.forEach(function(m){
+        var isMajor = m.desc.toLowerCase().includes('barcelona') || m.desc.toLowerCase().includes('real madrid') || m.desc.toLowerCase().includes('milan') || m.desc.toLowerCase().includes('bayern') || m.desc.toLowerCase().includes('boca') || m.desc.toLowerCase().includes('champions');
+        
+        var borderColor = isMajor ? 'rgba(244, 63, 94, 0.45)' : 'rgba(255, 255, 255, 0.1)';
+        var badgeColor = isMajor ? 'rgba(244, 63, 94, 0.2)' : 'rgba(255, 255, 255, 0.08)';
+        var badgeText = isMajor ? '#f43f5e' : '#94a3b8';
+
+        html += '<div style="background: rgba(2, 6, 23, 0.7); border: 1px solid ' + borderColor + '; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">' +
+          '<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">' +
+            '<span style="font-size: 11px; font-weight: 800; background: ' + badgeColor + '; color: ' + badgeText + '; padding: 2px 8px; border-radius: 6px;">' + escapeHtml(m.country) + '</span>' +
+            '<span style="font-size: 12px; color: #f59e0b; font-weight: 800; background: rgba(245, 158, 11, 0.12); padding: 2px 7px; border-radius: 6px;">⏰ ' + m.hour + '</span>' +
+          '</div>' +
+          '<div style="font-size: 14.5px; font-weight: 800; color: #fff; line-height: 1.35;">' + escapeHtml(m.desc) + '</div>' +
+          '<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px;">';
+
+        if(m.servers.length === 0){
+          html += '<span style="font-size: 11px; color: #64748b;">Señales disponibles cerca del inicio</span>';
+        } else {
+          m.servers.forEach(function(s, sIdx){
+            var btnBg = sIdx === 0 ? 'linear-gradient(135deg, rgba(244,63,94,0.3) 0%, rgba(139,92,246,0.3) 100%)' : 'rgba(255,255,255,0.06)';
+            var border = sIdx === 0 ? '1px solid rgba(244,63,94,0.5)' : '1px solid rgba(255,255,255,0.12)';
+            var color = sIdx === 0 ? '#fff' : '#cbd5e1';
+
+            html += '<button onclick="playMatchOption(\'' + escapeHtml(m.desc) + '\', \'' + escapeHtml(s.name) + '\', \'' + s.url + '\')" style="background: ' + btnBg + '; border: ' + border + '; color: ' + color + '; font-size: 11.5px; font-weight: 700; padding: 5px 10px; border-radius: 8px; cursor: pointer; transition: all 0.2s;">' +
+              '⚡ ' + escapeHtml(s.name) +
+            '</button>';
+          });
+        }
+
+        html += '</div></div>';
+      });
+
+      container.innerHTML = html;
+    }
+
+    function filterLiveAgenda(){
+      renderLiveAgenda();
+    }
+
+    function playMatchOption(matchTitle, serverName, streamUrl){
+      var video = document.getElementById('tvPlayer');
+      var iframe = document.getElementById('tvIframe');
+      var placeholder = document.getElementById('videoPlaceholder');
+      var notice = document.getElementById('matchWaitingNotice');
+      if(placeholder) placeholder.classList.add('hidden');
+      if(notice) notice.style.display = 'none';
+
+      // Update UI Header
+      document.getElementById('playingTitle').textContent = matchTitle + ' · ' + serverName;
+      document.getElementById('playingLogo').src = 'assets/icon_tv.jpg';
+      document.getElementById('playingCategory').textContent = serverName;
+      document.getElementById('playingCountry').textContent = '⚽ Deportes';
+
+      if(hls){ hls.destroy(); hls = null; }
+      video.pause();
+      video.style.display = 'none';
+
+      iframe.style.display = 'block';
+      iframe.src = streamUrl;
+
+      // Scroll to player
+      var stage = document.getElementById('playerStage');
+      if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
     var currentMatchData = null;
     var matchLoadTimeout = null;
 
