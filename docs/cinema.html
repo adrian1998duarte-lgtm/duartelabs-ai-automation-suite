@@ -686,7 +686,10 @@ footer {
         <strong style="color:#fff;font-size:15px;" id="currentMovieTitle">Deadpool &amp; Wolverine</strong>
         <span style="font-size:12px;color:var(--txt-muted);" id="currentMovieYear">(2024)</span>
       </div>
-      <div style="display:flex;gap:8px;align-items:center;">
+      <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+        <button id="adShieldBtn" onclick="toggleAdShield()" class="nav-btn" style="padding:4px 10px;font-size:12px;color:#34d399;border-color:rgba(52,211,153,0.4);font-weight:700;" title="Bloquea ventanas emergentes y redirecciones no deseadas">
+          🛡️ Escudo Anti-Popups: ACTIVO
+        </button>
         <a id="externalWatchBtn" href="#" target="_blank" rel="noopener noreferrer" class="nav-btn" style="padding:4px 10px;font-size:12px;color:var(--cyan);border-color:rgba(6,182,212,0.4);" title="Abrir reproductor en pestaña externa">
           ↗ Reproductor Externo
         </a>
@@ -766,7 +769,7 @@ footer {
 
     <!-- Video Wrap Container -->
     <div class="video-responsive-wrap" id="videoWrap">
-      <iframe id="cinemaIframe" credentialless src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+      <iframe id="cinemaIframe" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -2078,6 +2081,38 @@ function fetchLiveTmdbSearch(q){
     });
 }
 
+
+
+// ==========================================
+// ANTI-POPUP & ANTI-REDIRECT SHIELD ENGINE
+// ==========================================
+var isAdShieldActive = true;
+
+function toggleAdShield(){
+  var iframe = document.getElementById('cinemaIframe');
+  var btn = document.getElementById('adShieldBtn');
+  if(!iframe) return;
+
+  isAdShieldActive = !isAdShieldActive;
+
+  if(isAdShieldActive){
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
+    if(btn){
+      btn.innerHTML = '🛡️ Escudo Anti-Popups: ACTIVO';
+      btn.style.color = '#34d399';
+      btn.style.borderColor = 'rgba(52,211,153,0.4)';
+    }
+  } else {
+    iframe.removeAttribute('sandbox');
+    if(btn){
+      btn.innerHTML = '⚠️ Escudo: DESACTIVADO';
+      btn.style.color = '#fbbf24';
+      btn.style.borderColor = 'rgba(251,191,36,0.4)';
+    }
+  }
+
+  loadVideoSource();
+}
 
 // Cinema Mode
 var cinemaLightsOn = true;
