@@ -4,6 +4,14 @@
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <meta http-equiv="Expires" content="0">
+<link rel="preconnect" href="https://vidlink.pro" crossorigin>
+<link rel="dns-prefetch" href="https://vidlink.pro">
+<link rel="preconnect" href="https://playlatinsrc.co" crossorigin>
+<link rel="dns-prefetch" href="https://playlatinsrc.co">
+<link rel="preconnect" href="https://vidsrc.to" crossorigin>
+<link rel="dns-prefetch" href="https://vidsrc.to">
+<link rel="preconnect" href="https://image.tmdb.org" crossorigin>
+<link rel="dns-prefetch" href="https://image.tmdb.org">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>DuarteCinema Pro · Películas &amp; Series en HD y 4K | Streaming Multi-Servidor</title>
@@ -771,8 +779,18 @@ footer {
     </div>
 
     <!-- Video Wrap Container -->
-    <div class="video-responsive-wrap" id="videoWrap">
-      <iframe id="cinemaIframe" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+    <div class="video-responsive-wrap" id="videoWrap" style="position:relative;">
+      <!-- Stream Preload Spinner Overlay -->
+      <div id="playerBufferingOverlay" style="display:none;position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(3,5,13,0.92);z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;transition:opacity 0.3s ease;">
+        <div style="width:42px;height:42px;border:3px solid rgba(244,63,94,0.2);border-top-color:#f43f5e;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
+        <div style="font-size:14px;color:#fff;font-weight:700;display:flex;align-items:center;gap:6px;">
+          <span style="color:#38bdf8;">⚡</span> Conectando al Servidor CDN en Alta Velocidad...
+        </div>
+        <div style="font-size:12px;color:#94a3b8;">
+          Cargando buffer de video en Full HD · Si tarda, cambia de servidor en 1 clic
+        </div>
+      </div>
+      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen onload="onIframeStreamLoaded()"></iframe>
     </div>
   </div>
 
@@ -1651,10 +1669,28 @@ function updateServerButtonLabels(){
 }
 
 // Multi-Server & Multi-Language Routing Engine
+function onIframeStreamLoaded(){
+  var overlay = document.getElementById('playerBufferingOverlay');
+  if(overlay){
+    overlay.style.opacity = '0';
+    setTimeout(function(){ overlay.style.display = 'none'; }, 300);
+  }
+}
+
 function loadVideoSource(){
   var iframe = document.getElementById('cinemaIframe');
   var extBtn = document.getElementById('externalWatchBtn');
+  var overlay = document.getElementById('playerBufferingOverlay');
   if(!iframe || !currentItem) return;
+
+  // Show buffer loading overlay
+  if(overlay){
+    overlay.style.display = 'flex';
+    overlay.style.opacity = '1';
+    // Fallback hide after 4.5s max
+    clearTimeout(window.overlayTimer);
+    window.overlayTimer = setTimeout(function(){ onIframeStreamLoaded(); }, 4500);
+  }
 
   var url = '';
   var isTv = currentItem.type === 'tv';
