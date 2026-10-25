@@ -20,6 +20,20 @@
 <meta name="theme-color" content="#03050d">
 
 <script>
+
+// GLOBAL ANTI-POPUP & ANTI-REDIRECT GUARDIAN
+(function(){
+  var _origOpen = window.open;
+  window.open = function(url, target, features){
+    // Only allow explicitly whitelisted links triggered by user
+    if(url && (url.indexOf('duartecinema') !== -1 || url.indexOf('github.io') !== -1 || url.indexOf('microsoftedge') !== -1 || url.indexOf('wa.me') !== -1)){
+      return _origOpen.call(window, url, target, features);
+    }
+    console.warn('🛡️ [DuarteCinema Shield] Intento de ventana emergente / popup bloqueado automáticamente:', url);
+    return null;
+  };
+})();
+
 // Prevent COEP from blocking streaming video iframes on Cinema
 window.coi = { shouldRegister: () => false, shouldDeregister: () => true };
 if ('serviceWorker' in navigator) {
@@ -830,10 +844,10 @@ footer {
             ⚡ Servidor 1 (PlayLatin HD)
           </button>
           <button class="server-btn" id="btnServer2" onclick="switchServer(2, this)">
-            🌐 Servidor 2 (MultiEmbed 100%)
+            🛡️ Servidor 2 (VidLink Pro Sin Anuncios)
           </button>
           <button class="server-btn" id="btnServer3" onclick="switchServer(3, this)">
-            🚀 Servidor 3 (VidLink Pro Rápido)
+            🚀 Servidor 3 (AutoEmbed Global)
           </button>
           <button class="server-btn" id="btnServer4" onclick="switchServer(4, this)">
             🎬 Servidor 4 (Trailer Oficial)
@@ -984,6 +998,20 @@ footer {
 <audio id="radioAudio" preload="none"></audio>
 
 <script>
+
+// GLOBAL ANTI-POPUP & ANTI-REDIRECT GUARDIAN
+(function(){
+  var _origOpen = window.open;
+  window.open = function(url, target, features){
+    // Only allow explicitly whitelisted links triggered by user
+    if(url && (url.indexOf('duartecinema') !== -1 || url.indexOf('github.io') !== -1 || url.indexOf('microsoftedge') !== -1 || url.indexOf('wa.me') !== -1)){
+      return _origOpen.call(window, url, target, features);
+    }
+    console.warn('🛡️ [DuarteCinema Shield] Intento de ventana emergente / popup bloqueado automáticamente:', url);
+    return null;
+  };
+})();
+
 // ==========================================
 // MASSIVE CURATED DATABASE (MOVIES & SERIES)
 // ==========================================
@@ -1813,8 +1841,8 @@ function updateServerButtonLabels(){
 
   if(activeLang === 'latino'){
     if(b1) b1.innerHTML = '⚡ Servidor 1 (PlayLatin HD)';
-    if(b2) b2.innerHTML = '🌐 Servidor 2 (MultiEmbed 100%)';
-    if(b3) b3.innerHTML = '🚀 Servidor 3 (VidLink Pro Rápido)';
+    if(b2) b2.innerHTML = '🛡️ Servidor 2 (VidLink Pro Sin Anuncios)';
+    if(b3) b3.innerHTML = '🚀 Servidor 3 (AutoEmbed Global)';
     if(b4) b4.innerHTML = '🎬 Servidor 4 (Trailer Oficial 4K)';
   } else if(activeLang === 'subtitulado'){
     if(b1) b1.innerHTML = '⚡ Servidor 1 (VidLink Pro 1080p Sub ES)';
@@ -1874,15 +1902,15 @@ function loadVideoSource(){
         ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
         : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
     } else if(activeServer === 2){
-      // MultiEmbed Latino
-      url = isTv
-        ? 'https://multiembed.mov/?video_id=' + tmdbId + '&tmdb=1&s=' + currentSeason + '&e=' + currentEpisode
-        : 'https://multiembed.mov/?video_id=' + tmdbId + '&tmdb=1';
-    } else if(activeServer === 3){
-      // VidLink with Spanish subtitles fallback
+      // VidLink Pro (Clean, Netflix style, No annoying popups)
       url = isTv
         ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
         : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
+    } else if(activeServer === 3){
+      // AutoEmbed / VidSrc Backup (Clean global backup)
+      url = isTv
+        ? 'https://player.autoembed.cc/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://player.autoembed.cc/embed/movie/' + tmdbId;
     }
   } else if(activeLang === 'subtitulado'){
     if(activeServer === 1){
@@ -1908,24 +1936,20 @@ function loadVideoSource(){
         ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
         : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
     } else if(activeServer === 2){
-      // MultiEmbed Castellano
+      // VidLink Pro Castellano
       url = isTv
-        ? 'https://multiembed.mov/?video_id=' + tmdbId + '&tmdb=1&s=' + currentSeason + '&e=' + currentEpisode
-        : 'https://multiembed.mov/?video_id=' + tmdbId + '&tmdb=1';
+        ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
+        : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
     } else if(activeServer === 3){
-      // VidSrc Pro
+      // VidSrc Pro Castellano
       url = isTv
         ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
         : 'https://vidsrc.to/embed/movie/' + tmdbId;
     }
   }
 
-  // Intelligent Sandbox Defender: MultiEmbed blocks playback if sandboxed
-  if(url.indexOf('multiembed.mov') !== -1){
-    iframe.removeAttribute('sandbox');
-  } else if(isAdShieldActive){
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
-  }
+  // Strict Anti-Popup & Anti-Redirect Shield: Strictly block any popups or tab breakouts
+  iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
 
   iframe.src = url;
   if(extBtn) extBtn.href = url;
