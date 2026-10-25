@@ -198,13 +198,21 @@ header {
 }
 .ambient-glow-back {
   position: absolute;
-  top: -10%; left: 10%; right: 10%; bottom: -10%;
+  top: -5%; left: 10%; right: 10%; bottom: -5%;
   border-radius: 30px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
-  filter: blur(60px);
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, transparent 70%);
+  filter: blur(35px);
   pointer-events: none;
   z-index: 0;
-  opacity: 0.6;
+  opacity: 0.5;
+  transform: translateZ(0);
+  will-change: opacity;
+  contain: paint;
+}
+.video-responsive-wrap iframe {
+  transform: translateZ(0);
+  will-change: transform;
+  content-visibility: auto;
 }
 
 .theater-topbar {
@@ -834,13 +842,17 @@ footer {
       </div>
     </div>
 
-    <!-- Category Pills -->
+    <!-- Category & Platform Live Filter Pills -->
     <div class="filter-pills-row">
       <button class="catalog-pill active" onclick="filterCatalog('all', this)">🔥 Todos</button>
+      <button class="catalog-pill" onclick="filterCatalog('estrenos', this)" style="border-color:rgba(244,63,94,0.4);color:#fda4af;">⚡ Estrenos de Hoy</button>
+      <button class="catalog-pill" onclick="filterCatalog('netflix', this)" style="border-color:rgba(239,68,68,0.4);color:#fca5a5;">🔴 Netflix</button>
+      <button class="catalog-pill" onclick="filterCatalog('disney', this)" style="border-color:rgba(56,189,248,0.4);color:#7dd3fc;">🏰 Disney+</button>
+      <button class="catalog-pill" onclick="filterCatalog('hbo', this)" style="border-color:rgba(168,85,247,0.4);color:#d8b4fe;">👑 HBO Max</button>
+      <button class="catalog-pill" onclick="filterCatalog('prime', this)" style="border-color:rgba(14,165,233,0.4);color:#38bdf8;">📦 Prime Video</button>
+      <button class="catalog-pill" onclick="filterCatalog('apple', this)" style="border-color:rgba(156,163,175,0.4);color:#e5e7eb;">🍏 Apple TV+</button>
       <button class="catalog-pill" onclick="filterCatalog('movie', this)">🍿 Películas</button>
-      <button class="catalog-pill" onclick="filterCatalog('tv', this)">📺 Series (Netflix / HBO)</button>
-      <button class="catalog-pill" onclick="filterCatalog('netflix', this)">🔴 Netflix Originals</button>
-      <button class="catalog-pill" onclick="filterCatalog('hbo', this)">👑 HBO Max</button>
+      <button class="catalog-pill" onclick="filterCatalog('tv', this)">📺 Series</button>
       <button class="catalog-pill" onclick="filterCatalog('accion', this)">💥 Acción &amp; Marvel</button>
       <button class="catalog-pill" onclick="filterCatalog('ciencia-ficcion', this)">🚀 Ciencia Ficción</button>
       <button class="catalog-pill" onclick="filterCatalog('terror', this)">😱 Terror &amp; Suspenso</button>
@@ -1736,6 +1748,11 @@ function loadVideoSource(){
   var overlay = document.getElementById('playerBufferingOverlay');
   if(!iframe || !currentItem) return;
 
+  // Auto-pause background radio so CPU & audio pipeline are 100% dedicated to movie
+  if(window.isRadioPlaying && typeof toggleRadio === 'function'){
+    toggleRadio();
+  }
+
   // Show buffer loading overlay
   if(overlay){
     overlay.style.display = 'flex';
@@ -1857,8 +1874,8 @@ function renderCatalog(items, append){
     countEl.innerText = items.length;
   }
 
+  var frag = document.createDocumentFragment();
   items.forEach(function(m){
-    // Avoid duplicates
     if(append && document.getElementById('card_' + m.id)) return;
 
     var card = document.createElement('div');
@@ -1870,7 +1887,7 @@ function renderCatalog(items, append){
 
     card.innerHTML = `
       <div class="poster-img-wrap">
-        <img class="poster-img" src="${m.poster}" alt="${m.title}" loading="lazy">
+        <img class="poster-img" src="${m.poster}" alt="${m.title}" loading="lazy" decoding="async">
         <div class="poster-badges-top">
           <span class="badge-quality">${m.quality}</span>
           <span class="badge-score">⭐ ${m.rating}</span>
@@ -1888,8 +1905,9 @@ function renderCatalog(items, append){
         </div>
       </div>
     `;
-    grid.appendChild(card);
+    frag.appendChild(card);
   });
+  grid.appendChild(frag);
 }
 
 function filterCatalog(cat, btn){
@@ -1913,8 +1931,8 @@ function filterCatalog(cat, btn){
     renderCatalog(activeItemsList, false);
     if(countEl) countEl.innerText = activeItemsList.length;
     fetchCategoryPage('all', 1, true);
-  } else if(cat === 'movie' || cat === 'tv' || cat === 'netflix' || cat === 'hbo'){
-    if(countEl) countEl.innerText = 'Cargando catálogo mundial de ' + cat + '...';
+  } else if(['movie', 'tv', 'estrenos', 'netflix', 'disney', 'hbo', 'prime', 'apple'].indexOf(cat) !== -1){
+    if(countEl) countEl.innerText = 'Consultando en tiempo real estrenos de ' + cat.toUpperCase() + '...';
     activeItemsList = [];
     fetchCategoryPage(cat, 1, false);
   } else {
@@ -1947,14 +1965,23 @@ function fetchCategoryPage(cat, page, appendToCurated){
   var url = '';
   if(cat === 'all' || cat === 'trending'){
     url = 'https://api.themoviedb.org/3/trending/all/week?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+  } else if(cat === 'estrenos'){
+    // Recién agregadas y estrenos de hoy
+    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=primary_release_date.desc&primary_release_date.lte=2026-10-24&vote_count.gte=3&page=' + page;
+  } else if(cat === 'netflix'){
+    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=8&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+  } else if(cat === 'disney'){
+    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=337&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+  } else if(cat === 'hbo'){
+    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=1899&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+  } else if(cat === 'prime'){
+    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=119&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+  } else if(cat === 'apple'){
+    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=350&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
   } else if(cat === 'movie'){
     url = 'https://api.themoviedb.org/3/movie/popular?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
   } else if(cat === 'tv'){
     url = 'https://api.themoviedb.org/3/tv/popular?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
-  } else if(cat === 'netflix'){
-    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_networks=213&language=es-MX&page=' + page + '&sort_by=popularity.desc';
-  } else if(cat === 'hbo'){
-    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_networks=49&language=es-MX&page=' + page + '&sort_by=popularity.desc';
   }
 
   fetch(url)
@@ -1975,8 +2002,12 @@ function fetchCategoryPage(cat, page, appendToCurated){
           : (item.backdrop_path ? 'https://image.tmdb.org/t/p/w500' + item.backdrop_path : 'assets/brand_avatar.jpg');
 
         var platform = 'Mundial TMDB';
-        if(cat === 'netflix') platform = 'Netflix Original';
+        if(cat === 'netflix') platform = 'Netflix';
+        else if(cat === 'disney') platform = 'Disney+';
         else if(cat === 'hbo') platform = 'HBO Max';
+        else if(cat === 'prime') platform = 'Prime Video';
+        else if(cat === 'apple') platform = 'Apple TV+';
+        else if(cat === 'estrenos') platform = 'Estreno Hoy';
         else if(cat === 'movie') platform = 'Cine HD';
         else if(cat === 'tv') platform = 'Serie TV';
 
