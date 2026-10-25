@@ -1412,17 +1412,17 @@ footer {
 
     <!-- Category & Platform Live Filter Pills -->
     <div class="filter-pills-row">
-            <button class="catalog-pill" onclick="filterFavorites(this)" style="border-color:rgba(244,63,94,0.5);color:#fda4af;font-weight:700;">❤️ Mi Lista (<span id="favCountPill">0</span>)</button>
       <button class="catalog-pill active" onclick="filterCatalog('all', this)">🔥 Todos</button>
-      <button class="catalog-pill" onclick="filterCatalog('estrenos', this)" style="border-color:rgba(244,63,94,0.4);color:#fda4af;">⚡ Estrenos de Hoy</button>
+      <button class="catalog-pill" onclick="filterCatalog('tv', this)">📺 Series</button>
+      <button class="catalog-pill" onclick="filterCatalog('movie', this)">🍿 Películas</button>
+      <button class="catalog-pill" onclick="filterCatalog('estrenos', this)" style="border-color:rgba(244,63,94,0.4);color:#fda4af;">⚡ Estrenos</button>
+      <button class="catalog-pill" onclick="filterFavorites(this)" style="border-color:rgba(244,63,94,0.5);color:#fda4af;font-weight:700;">❤️ Mi Lista (<span id="favCountPill">0</span>)</button>
       <button class="catalog-pill" onclick="filterCatalog('netflix', this)" style="border-color:rgba(239,68,68,0.4);color:#fca5a5;">🔴 Netflix</button>
       <button class="catalog-pill" onclick="filterCatalog('disney', this)" style="border-color:rgba(56,189,248,0.4);color:#7dd3fc;">🏰 Disney+</button>
       <button class="catalog-pill" onclick="filterCatalog('hbo', this)" style="border-color:rgba(168,85,247,0.4);color:#d8b4fe;">👑 HBO Max</button>
-      <button class="catalog-pill" onclick="filterCatalog('prime', this)" style="border-color:rgba(14,165,233,0.4);color:#38bdf8;">📦 Prime Video</button>
       <button class="catalog-pill" onclick="filterCatalog('apple', this)" style="border-color:rgba(156,163,175,0.4);color:#e5e7eb;">🍏 Apple TV+</button>
+      <button class="catalog-pill" onclick="filterCatalog('prime', this)" style="border-color:rgba(14,165,233,0.4);color:#38bdf8;">📦 Prime Video</button>
       <button class="catalog-pill" onclick="filterCatalog('kdoramas', this)" style="border-color:rgba(236,72,153,0.5);color:#f472b6;font-weight:700;">🇰🇷 K-Doramas</button>
-      <button class="catalog-pill" onclick="filterCatalog('movie', this)">🍿 Películas</button>
-      <button class="catalog-pill" onclick="filterCatalog('tv', this)">📺 Series</button>
       <button class="catalog-pill" onclick="filterCatalog('accion', this)">💥 Acción &amp; Marvel</button>
       <button class="catalog-pill" onclick="filterCatalog('ciencia-ficcion', this)">🚀 Ciencia Ficción</button>
       <button class="catalog-pill" onclick="filterCatalog('terror', this)">😱 Terror &amp; Suspenso</button>
@@ -2565,13 +2565,22 @@ var PLATFORM_CONFIGS = {
     icon: '🔴',
     subs: [
       { id: 'all', label: '🔴 Todo Netflix', type: 'both' },
-      { id: 'kdoramas', label: '🇰🇷 K-Doramas', type: 'tv', lang: 'ko' },
       { id: 'series', label: '📺 Series', type: 'tv' },
       { id: 'movies', label: '🍿 Películas', type: 'movie' },
-      { id: 'anime', label: '⛩️ Anime', type: 'tv', genre: 16 },
-      { id: 'drama', label: '🎭 Dramas', type: 'both', genre: 18 },
+      { id: 'year_2026', label: '📅 2026', type: 'both', year: 2026 },
+      { id: 'year_2025', label: '📅 2025', type: 'both', year: 2025 },
+      { id: 'year_2024', label: '📅 2024', type: 'both', year: 2024 },
+      { id: 'year_2023', label: '📅 2023', type: 'both', year: 2023 },
+      { id: 'year_2022', label: '📅 2022', type: 'both', year: 2022 },
+      { id: 'year_2021', label: '📅 2021', type: 'both', year: 2021 },
+      { id: 'year_2020', label: '📅 2020', type: 'both', year: 2020 },
+      { id: 'kdoramas', label: '🇰🇷 K-Doramas', type: 'tv', lang: 'ko' },
       { id: 'action', label: '💥 Acción', type: 'both', genre: 28 },
+      { id: 'comedy', label: '😂 Comedia', type: 'both', genre: 35 },
+      { id: 'drama', label: '🎭 Drama & Suspenso', type: 'both', genre: 18 },
+      { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'both', genre: 878 },
       { id: 'terror', label: '😱 Terror', type: 'movie', genre: 27 },
+      { id: 'anime', label: '⛩️ Anime', type: 'tv', genre: 16 },
       { id: 'kids', label: '🍰 Infantil & Familia', type: 'both', genre: 10751 }
     ]
   },
@@ -2582,12 +2591,20 @@ var PLATFORM_CONFIGS = {
     icon: '🏰',
     subs: [
       { id: 'all', label: '🏰 Todo Disney+', type: 'both' },
-      { id: 'movies', label: '🍿 Películas', type: 'movie' },
       { id: 'series', label: '📺 Series', type: 'tv' },
-      { id: 'pixar', label: '🧸 Pixar & Infantil', type: 'both', genre: 10751 },
+      { id: 'movies', label: '🍿 Películas', type: 'movie' },
+      { id: 'year_2026', label: '📅 2026', type: 'both', year: 2026 },
+      { id: 'year_2025', label: '📅 2025', type: 'both', year: 2025 },
+      { id: 'year_2024', label: '📅 2024', type: 'both', year: 2024 },
+      { id: 'year_2023', label: '📅 2023', type: 'both', year: 2023 },
+      { id: 'year_2022', label: '📅 2022', type: 'both', year: 2022 },
+      { id: 'year_2021', label: '📅 2021', type: 'both', year: 2021 },
+      { id: 'year_2020', label: '📅 2020', type: 'both', year: 2020 },
       { id: 'action', label: '🦸 Marvel & Acción', type: 'both', genre: 28 },
       { id: 'scifi', label: '🌌 Star Wars & Sci-Fi', type: 'both', genre: 878 },
-      { id: 'animacion', label: '🎨 Animación', type: 'both', genre: 16 }
+      { id: 'pixar', label: '🧸 Pixar & Infantil', type: 'both', genre: 10751 },
+      { id: 'animacion', label: '🎨 Animación', type: 'both', genre: 16 },
+      { id: 'drama', label: '🎭 Drama & Aventuras', type: 'both', genre: 18 }
     ]
   },
   hbo: {
@@ -2599,23 +2616,19 @@ var PLATFORM_CONFIGS = {
       { id: 'all', label: '👑 Todo HBO Max', type: 'both' },
       { id: 'series', label: '📺 Series Legendarias', type: 'tv' },
       { id: 'movies', label: '🍿 Películas Warner / HBO', type: 'movie' },
+      { id: 'year_2026', label: '📅 2026', type: 'both', year: 2026 },
+      { id: 'year_2025', label: '📅 2025', type: 'both', year: 2025 },
+      { id: 'year_2024', label: '📅 2024', type: 'both', year: 2024 },
+      { id: 'year_2023', label: '📅 2023', type: 'both', year: 2023 },
+      { id: 'year_2022', label: '📅 2022', type: 'both', year: 2022 },
+      { id: 'year_2021', label: '📅 2021', type: 'both', year: 2021 },
+      { id: 'year_2020', label: '📅 2020', type: 'both', year: 2020 },
+      { id: 'action', label: '💥 Acción & DC', type: 'both', genre: 28 },
       { id: 'drama', label: '🎭 Dramas & Thrillers', type: 'both', genre: 18 },
       { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'both', genre: 878 },
-      { id: 'action', label: '💥 Acción & DC', type: 'both', genre: 28 }
-    ]
-  },
-  prime: {
-    name: 'Prime Video',
-    providerId: '119|9',
-    color: '#0ea5e9',
-    icon: '📦',
-    subs: [
-      { id: 'all', label: '📦 Todo Prime Video', type: 'both' },
-      { id: 'movies', label: '🍿 Películas', type: 'movie' },
-      { id: 'series', label: '📺 Series', type: 'tv' },
-      { id: 'action', label: '💥 Acción', type: 'both', genre: 28 },
+      { id: 'comedy', label: '😂 Comedia', type: 'both', genre: 35 },
       { id: 'terror', label: '😱 Terror', type: 'movie', genre: 27 },
-      { id: 'comedy', label: '😂 Comedia', type: 'both', genre: 35 }
+      { id: 'animacion', label: '🎨 Animación & Adult Swim', type: 'both', genre: 16 }
     ]
   },
   apple: {
@@ -2627,8 +2640,41 @@ var PLATFORM_CONFIGS = {
       { id: 'all', label: '🍏 Todo Apple TV+', type: 'both' },
       { id: 'series', label: '📺 Series Exclusivas', type: 'tv' },
       { id: 'movies', label: '🍿 Películas Originales', type: 'movie' },
+      { id: 'year_2026', label: '📅 2026', type: 'both', year: 2026 },
+      { id: 'year_2025', label: '📅 2025', type: 'both', year: 2025 },
+      { id: 'year_2024', label: '📅 2024', type: 'both', year: 2024 },
+      { id: 'year_2023', label: '📅 2023', type: 'both', year: 2023 },
+      { id: 'year_2022', label: '📅 2022', type: 'both', year: 2022 },
+      { id: 'year_2021', label: '📅 2021', type: 'both', year: 2021 },
+      { id: 'year_2020', label: '📅 2020', type: 'both', year: 2020 },
       { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'both', genre: 878 },
-      { id: 'drama', label: '🎭 Grandes Dramas', type: 'both', genre: 18 }
+      { id: 'drama', label: '🎭 Grandes Dramas', type: 'both', genre: 18 },
+      { id: 'action', label: '💥 Acción & Suspenso', type: 'both', genre: 28 },
+      { id: 'comedy', label: '😂 Comedia', type: 'both', genre: 35 },
+      { id: 'kids', label: '🧸 Infantil & Familiar', type: 'both', genre: 10751 }
+    ]
+  },
+  prime: {
+    name: 'Prime Video',
+    providerId: '119|9',
+    color: '#0ea5e9',
+    icon: '📦',
+    subs: [
+      { id: 'all', label: '📦 Todo Prime Video', type: 'both' },
+      { id: 'series', label: '📺 Series', type: 'tv' },
+      { id: 'movies', label: '🍿 Películas', type: 'movie' },
+      { id: 'year_2026', label: '📅 2026', type: 'both', year: 2026 },
+      { id: 'year_2025', label: '📅 2025', type: 'both', year: 2025 },
+      { id: 'year_2024', label: '📅 2024', type: 'both', year: 2024 },
+      { id: 'year_2023', label: '📅 2023', type: 'both', year: 2023 },
+      { id: 'year_2022', label: '📅 2022', type: 'both', year: 2022 },
+      { id: 'year_2021', label: '📅 2021', type: 'both', year: 2021 },
+      { id: 'year_2020', label: '📅 2020', type: 'both', year: 2020 },
+      { id: 'action', label: '💥 Acción', type: 'both', genre: 28 },
+      { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'both', genre: 878 },
+      { id: 'drama', label: '🎭 Drama', type: 'both', genre: 18 },
+      { id: 'terror', label: '😱 Terror', type: 'movie', genre: 27 },
+      { id: 'comedy', label: '😂 Comedia', type: 'both', genre: 35 }
     ]
   },
   kdoramas: {
@@ -2637,6 +2683,13 @@ var PLATFORM_CONFIGS = {
     color: '#ec4899',
     subs: [
       { id: 'all', label: '🇰🇷 Todos los K-Doramas', type: 'tv', lang: 'ko' },
+      { id: 'year_2026', label: '📅 2026', type: 'tv', lang: 'ko', year: 2026 },
+      { id: 'year_2025', label: '📅 2025', type: 'tv', lang: 'ko', year: 2025 },
+      { id: 'year_2024', label: '📅 2024', type: 'tv', lang: 'ko', year: 2024 },
+      { id: 'year_2023', label: '📅 2023', type: 'tv', lang: 'ko', year: 2023 },
+      { id: 'year_2022', label: '📅 2022', type: 'tv', lang: 'ko', year: 2022 },
+      { id: 'year_2021', label: '📅 2021', type: 'tv', lang: 'ko', year: 2021 },
+      { id: 'year_2020', label: '📅 2020', type: 'tv', lang: 'ko', year: 2020 },
       { id: 'romance', label: '💖 Romance Coreano', type: 'tv', lang: 'ko', genre: 10749 },
       { id: 'drama', label: '🎭 Drama & Suspense', type: 'tv', lang: 'ko', genre: 18 },
       { id: 'comedy', label: '😂 Comedia Romántica', type: 'tv', lang: 'ko', genre: 35 }
@@ -2645,8 +2698,16 @@ var PLATFORM_CONFIGS = {
   movie: {
     name: 'Películas',
     icon: '🍿',
+    color: '#f59e0b',
     subs: [
       { id: 'all', label: '🍿 Todas las Películas', type: 'movie' },
+      { id: 'year_2026', label: '📅 2026', type: 'movie', year: 2026 },
+      { id: 'year_2025', label: '📅 2025', type: 'movie', year: 2025 },
+      { id: 'year_2024', label: '📅 2024', type: 'movie', year: 2024 },
+      { id: 'year_2023', label: '📅 2023', type: 'movie', year: 2023 },
+      { id: 'year_2022', label: '📅 2022', type: 'movie', year: 2022 },
+      { id: 'year_2021', label: '📅 2021', type: 'movie', year: 2021 },
+      { id: 'year_2020', label: '📅 2020', type: 'movie', year: 2020 },
       { id: 'action', label: '💥 Acción', type: 'movie', genre: 28 },
       { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'movie', genre: 878 },
       { id: 'terror', label: '😱 Terror', type: 'movie', genre: 27 },
@@ -2657,8 +2718,16 @@ var PLATFORM_CONFIGS = {
   tv: {
     name: 'Series',
     icon: '📺',
+    color: '#06b6d4',
     subs: [
       { id: 'all', label: '📺 Todas las Series', type: 'tv' },
+      { id: 'year_2026', label: '📅 2026', type: 'tv', year: 2026 },
+      { id: 'year_2025', label: '📅 2025', type: 'tv', year: 2025 },
+      { id: 'year_2024', label: '📅 2024', type: 'tv', year: 2024 },
+      { id: 'year_2023', label: '📅 2023', type: 'tv', year: 2023 },
+      { id: 'year_2022', label: '📅 2022', type: 'tv', year: 2022 },
+      { id: 'year_2021', label: '📅 2021', type: 'tv', year: 2021 },
+      { id: 'year_2020', label: '📅 2020', type: 'tv', year: 2020 },
       { id: 'drama', label: '🎭 Drama & Misterio', type: 'tv', genre: 18 },
       { id: 'scifi', label: '🚀 Sci-Fi & Fantasía', type: 'tv', genre: 10765 },
       { id: 'action', label: '💥 Acción & Aventura', type: 'tv', genre: 10759 },
@@ -2740,7 +2809,7 @@ function filterCatalog(cat, btn){
     if(countEl) countEl.innerText = activeItemsList.length;
     fetchCategoryPage('all', 1, true);
   } else if(PLATFORM_CONFIGS[cat] || cat === 'estrenos'){
-    if(countEl) countEl.innerText = 'Consultando en tiempo real estrenos de ' + cat.toUpperCase() + '...';
+    if(countEl) countEl.innerText = 'Consultando en tiempo real catálogo de ' + cat.toUpperCase() + '...';
     activeItemsList = [];
     fetchCategoryPage(cat, 1, false);
   } else {
@@ -2752,69 +2821,129 @@ function filterCatalog(cat, btn){
 }
 
 function fetchCategoryPage(cat, page, appendToCurated){
-  var url = '';
   var cfg = PLATFORM_CONFIGS[cat];
   var subCfg = null;
   if(cfg && Array.isArray(cfg.subs)){
     subCfg = cfg.subs.find(function(s){ return s.id === currentSubCategory; });
   }
 
-  var targetMediaType = 'movie'; // 'movie' or 'tv'
-  if(subCfg){
-    if(subCfg.type === 'tv') targetMediaType = 'tv';
-    else if(subCfg.type === 'movie') targetMediaType = 'movie';
-    else if(subCfg.type === 'both') targetMediaType = 'movie'; // default to movie for both
-  } else if(cat === 'tv') {
+  var targetMediaType = 'both';
+  if(subCfg && subCfg.type){
+    targetMediaType = subCfg.type;
+  } else if(cat === 'tv'){
     targetMediaType = 'tv';
+  } else if(cat === 'movie'){
+    targetMediaType = 'movie';
   }
+
+  var fetchPromises = [];
 
   if(cat === 'all' || cat === 'trending'){
-    url = 'https://api.themoviedb.org/3/trending/all/week?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+    var tUrl = 'https://api.themoviedb.org/3/trending/all/week?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+    fetchPromises.push(fetch(tUrl).then(function(r){ return r.json(); }));
   } else if(cat === 'estrenos'){
-    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=primary_release_date.desc&primary_release_date.lte=2026-10-24&vote_count.gte=3&page=' + page;
+    var emUrl = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=primary_release_date.desc&primary_release_date.lte=2026-10-24&vote_count.gte=3&page=' + page;
+    var etUrl = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=first_air_date.desc&first_air_date.lte=2026-10-24&vote_count.gte=3&page=' + page;
+    fetchPromises.push(fetch(emUrl).then(function(r){ return r.json(); }));
+    fetchPromises.push(fetch(etUrl).then(function(r){ return r.json(); }));
   } else if(cfg && cfg.providerId){
-    var endpoint = (targetMediaType === 'tv') ? 'tv' : 'movie';
-    url = 'https://api.themoviedb.org/3/discover/' + endpoint + '?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
-    if(subCfg && subCfg.genre){
-      url += '&with_genres=' + subCfg.genre;
-    }
-    if(subCfg && subCfg.lang){
-      url += '&with_original_language=' + subCfg.lang;
+    if(targetMediaType === 'both'){
+      var mUrl = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+      var tvUrl = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+      if(subCfg && subCfg.genre){
+        mUrl += '&with_genres=' + subCfg.genre;
+        tvUrl += '&with_genres=' + subCfg.genre;
+      }
+      if(subCfg && subCfg.lang){
+        mUrl += '&with_original_language=' + subCfg.lang;
+        tvUrl += '&with_original_language=' + subCfg.lang;
+      }
+      if(subCfg && subCfg.year){
+        mUrl += '&primary_release_year=' + subCfg.year;
+        tvUrl += '&first_air_date_year=' + subCfg.year;
+      }
+      fetchPromises.push(fetch(mUrl).then(function(r){ return r.json(); }));
+      fetchPromises.push(fetch(tvUrl).then(function(r){ return r.json(); }));
+    } else {
+      var ep = (targetMediaType === 'tv') ? 'tv' : 'movie';
+      var singleUrl = 'https://api.themoviedb.org/3/discover/' + ep + '?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+      if(subCfg && subCfg.genre){
+        singleUrl += '&with_genres=' + subCfg.genre;
+      }
+      if(subCfg && subCfg.lang){
+        singleUrl += '&with_original_language=' + subCfg.lang;
+      }
+      if(subCfg && subCfg.year){
+        if(ep === 'tv') singleUrl += '&first_air_date_year=' + subCfg.year;
+        else singleUrl += '&primary_release_year=' + subCfg.year;
+      }
+      fetchPromises.push(fetch(singleUrl).then(function(r){ return r.json(); }));
     }
   } else if(cat === 'kdoramas' || (subCfg && subCfg.id === 'kdoramas')){
-    var endpoint = 'tv';
     targetMediaType = 'tv';
-    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_origin_country=KR&without_genres=10764,10767&language=es-MX&sort_by=popularity.desc&vote_count.gte=50&page=' + page;
+    var kdUrl = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_origin_country=KR&without_genres=10764,10767&language=es-MX&sort_by=popularity.desc&vote_count.gte=30&page=' + page;
     if(subCfg && subCfg.genre){
-      url += '&with_genres=' + subCfg.genre;
+      kdUrl += '&with_genres=' + subCfg.genre;
     } else {
-      url += '&with_genres=18';
+      kdUrl += '&with_genres=18';
     }
+    if(subCfg && subCfg.year){
+      kdUrl += '&first_air_date_year=' + subCfg.year;
+    }
+    fetchPromises.push(fetch(kdUrl).then(function(r){ return r.json(); }));
   } else if(cat === 'movie'){
-    var endpoint = 'movie';
-    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=popularity.desc&page=' + page;
+    targetMediaType = 'movie';
+    var movUrl = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=popularity.desc&page=' + page;
     if(subCfg && subCfg.genre){
-      url += '&with_genres=' + subCfg.genre;
+      movUrl += '&with_genres=' + subCfg.genre;
     }
+    if(subCfg && subCfg.year){
+      movUrl += '&primary_release_year=' + subCfg.year;
+    }
+    fetchPromises.push(fetch(movUrl).then(function(r){ return r.json(); }));
   } else if(cat === 'tv'){
-    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=popularity.desc&page=' + page;
+    targetMediaType = 'tv';
+    var serUrl = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=popularity.desc&page=' + page;
     if(subCfg && subCfg.genre){
-      url += '&with_genres=' + subCfg.genre;
+      serUrl += '&with_genres=' + subCfg.genre;
     }
+    if(subCfg && subCfg.year){
+      serUrl += '&first_air_date_year=' + subCfg.year;
+    }
+    fetchPromises.push(fetch(serUrl).then(function(r){ return r.json(); }));
   } else {
-    url = 'https://api.themoviedb.org/3/trending/all/week?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+    var defUrl = 'https://api.themoviedb.org/3/trending/all/week?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+    fetchPromises.push(fetch(defUrl).then(function(r){ return r.json(); }));
   }
 
-  fetch(url)
-    .then(function(res){ return res.json(); })
-    .then(function(data){
-      var raw = data.results || [];
+  Promise.all(fetchPromises)
+    .then(function(responses){
+      var raw = [];
+      responses.forEach(function(resp, respIdx){
+        var items = (resp && Array.isArray(resp.results)) ? resp.results : [];
+        items.forEach(function(item){
+          if(!item.media_type){
+            if(fetchPromises.length === 2){
+              item.media_type = (respIdx === 0) ? 'movie' : 'tv';
+            } else if(targetMediaType === 'tv'){
+              item.media_type = 'tv';
+            } else if(targetMediaType === 'movie'){
+              item.media_type = 'movie';
+            }
+          }
+          raw.push(item);
+        });
+      });
+
+      if(fetchPromises.length > 1){
+        raw.sort(function(a, b){ return (b.popularity || 0) - (a.popularity || 0); });
+      }
+
       var valid = raw.filter(function(i){
         return (i.poster_path || i.backdrop_path);
       });
 
       var mapped = valid.map(function(item){
-        // BULLETPROOF TV vs MOVIE DETERMINATION
         var isTv = false;
         if(item.media_type === 'tv') isTv = true;
         else if(item.media_type === 'movie') isTv = false;
@@ -2825,7 +2954,7 @@ function fetchCategoryPage(cat, page, appendToCurated){
 
         var title = isTv ? (item.name || item.original_name) : (item.title || item.original_title);
         var date = isTv ? (item.first_air_date || '') : (item.release_date || '');
-        var year = date ? parseInt(date.substring(0, 4), 10) : 2024;
+        var year = date ? parseInt(date.substring(0, 4), 10) : (subCfg && subCfg.year ? subCfg.year : 2024);
         var poster = item.poster_path 
           ? 'https://image.tmdb.org/t/p/w500' + item.poster_path 
           : (item.backdrop_path ? 'https://image.tmdb.org/t/p/w500' + item.backdrop_path : 'assets/brand_avatar.jpg');
@@ -2864,10 +2993,26 @@ function fetchCategoryPage(cat, page, appendToCurated){
         };
       });
 
-      // Fallback safeguard: if watch_providers returns 0 (e.g. strict region filter), fallback to top popular content for that category
-      if(mapped.length === 0 && (cat === 'disney' || cat === 'hbo' || cat === 'netflix' || cat === 'prime' || cat === 'apple')){
+      // Safely deduplicate items by tmdbId
+      var seenIds = {};
+      var dedupedMapped = [];
+      mapped.forEach(function(m){
+        if(!seenIds[m.tmdbId]){
+          seenIds[m.tmdbId] = true;
+          dedupedMapped.push(m);
+        }
+      });
+      mapped = dedupedMapped;
+
+      // Fallback safeguard: if watch_providers returns 0 (e.g. strict region filter), fallback without region
+      if(mapped.length === 0 && cfg && cfg.providerId){
         console.warn('Fallback triggered for ' + cat + ' without region');
-        var fbUrl = 'https://api.themoviedb.org/3/discover/' + (targetMediaType === 'tv' ? 'tv' : 'movie') + '?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&language=es-MX&sort_by=popularity.desc&page=' + page;
+        var fbEp = (targetMediaType === 'tv') ? 'tv' : 'movie';
+        var fbUrl = 'https://api.themoviedb.org/3/discover/' + fbEp + '?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&language=es-MX&sort_by=popularity.desc&page=' + page;
+        if(subCfg && subCfg.year){
+          if(fbEp === 'tv') fbUrl += '&first_air_date_year=' + subCfg.year;
+          else fbUrl += '&primary_release_year=' + subCfg.year;
+        }
         fetch(fbUrl)
           .then(function(r){ return r.json(); })
           .then(function(fbData){
@@ -2876,7 +3021,7 @@ function fetchCategoryPage(cat, page, appendToCurated){
               var isTv = (targetMediaType === 'tv') || (item.name && !item.title);
               var title = isTv ? (item.name || item.original_name) : (item.title || item.original_title);
               var date = isTv ? (item.first_air_date || '') : (item.release_date || '');
-              var year = date ? parseInt(date.substring(0, 4), 10) : 2024;
+              var year = date ? parseInt(date.substring(0, 4), 10) : (subCfg && subCfg.year ? subCfg.year : 2024);
               var poster = item.poster_path ? 'https://image.tmdb.org/t/p/w500' + item.poster_path : 'assets/brand_avatar.jpg';
               return {
                 id: 'tmdb_' + item.id,
@@ -2899,6 +3044,7 @@ function fetchCategoryPage(cat, page, appendToCurated){
             });
             activeItemsList = fbMapped;
             renderCatalog(activeItemsList, false);
+            var countEl = document.getElementById('resultsCount');
             if(countEl) countEl.innerText = activeItemsList.length;
           });
         return;
