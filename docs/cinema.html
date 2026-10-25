@@ -894,6 +894,7 @@ footer {
       <button class="catalog-pill" onclick="filterCatalog('hbo', this)" style="border-color:rgba(168,85,247,0.4);color:#d8b4fe;">👑 HBO Max</button>
       <button class="catalog-pill" onclick="filterCatalog('prime', this)" style="border-color:rgba(14,165,233,0.4);color:#38bdf8;">📦 Prime Video</button>
       <button class="catalog-pill" onclick="filterCatalog('apple', this)" style="border-color:rgba(156,163,175,0.4);color:#e5e7eb;">🍏 Apple TV+</button>
+      <button class="catalog-pill" onclick="filterCatalog('kdoramas', this)" style="border-color:rgba(236,72,153,0.5);color:#f472b6;font-weight:700;">🇰🇷 K-Doramas</button>
       <button class="catalog-pill" onclick="filterCatalog('movie', this)">🍿 Películas</button>
       <button class="catalog-pill" onclick="filterCatalog('tv', this)">📺 Series</button>
       <button class="catalog-pill" onclick="filterCatalog('accion', this)">💥 Acción &amp; Marvel</button>
@@ -1973,8 +1974,9 @@ var PLATFORM_CONFIGS = {
     icon: '🔴',
     subs: [
       { id: 'all', label: '🔴 Todo Netflix', type: 'both' },
-      { id: 'movies', label: '🍿 Películas', type: 'movie' },
+      { id: 'kdoramas', label: '🇰🇷 K-Doramas', type: 'tv', lang: 'ko' },
       { id: 'series', label: '📺 Series', type: 'tv' },
+      { id: 'movies', label: '🍿 Películas', type: 'movie' },
       { id: 'anime', label: '⛩️ Anime', type: 'tv', genre: 16 },
       { id: 'drama', label: '🎭 Dramas', type: 'both', genre: 18 },
       { id: 'action', label: '💥 Acción', type: 'both', genre: 28 },
@@ -2036,6 +2038,17 @@ var PLATFORM_CONFIGS = {
       { id: 'movies', label: '🍿 Películas Originales', type: 'movie' },
       { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'both', genre: 878 },
       { id: 'drama', label: '🎭 Grandes Dramas', type: 'both', genre: 18 }
+    ]
+  },
+  kdoramas: {
+    name: 'K-Doramas',
+    icon: '🇰🇷',
+    color: '#ec4899',
+    subs: [
+      { id: 'all', label: '🇰🇷 Todos los K-Doramas', type: 'tv', lang: 'ko' },
+      { id: 'romance', label: '💖 Romance Coreano', type: 'tv', lang: 'ko', genre: 10749 },
+      { id: 'drama', label: '🎭 Drama & Suspense', type: 'tv', lang: 'ko', genre: 18 },
+      { id: 'comedy', label: '😂 Comedia Romántica', type: 'tv', lang: 'ko', genre: 35 }
     ]
   },
   movie: {
@@ -2171,6 +2184,15 @@ function fetchCategoryPage(cat, page, appendToCurated){
   } else if(cfg && cfg.providerId){
     var endpoint = (targetMediaType === 'tv') ? 'tv' : 'movie';
     url = 'https://api.themoviedb.org/3/discover/' + endpoint + '?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+    if(subCfg && subCfg.genre){
+      url += '&with_genres=' + subCfg.genre;
+    }
+    if(subCfg && subCfg.lang){
+      url += '&with_original_language=' + subCfg.lang;
+    }
+  } else if(cat === 'kdoramas'){
+    var ep = 'tv';
+    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_original_language=ko&language=es-MX&sort_by=popularity.desc&page=' + page;
     if(subCfg && subCfg.genre){
       url += '&with_genres=' + subCfg.genre;
     }
