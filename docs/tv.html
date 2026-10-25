@@ -673,6 +673,25 @@
         <video id="tvPlayer" playsinline controls preload="auto"></video>
         <iframe id="tvIframe" style="display:none;width:100%;height:100%;border:none;background:#000;" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen *" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads"></iframe>
         
+        <div class="match-waiting-overlay" id="matchWaitingNotice" style="display:none;position:absolute;inset:0;background:radial-gradient(circle at center, rgba(15,23,42,0.96) 0%, rgba(2,6,23,0.98) 100%);z-index:6;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;color:#fff;">
+          <div style="font-size:44px;margin-bottom:8px;">⏳</div>
+          <span style="font-size:12px;background:rgba(245,158,11,0.2);color:#f59e0b;border:1px solid rgba(245,158,11,0.4);padding:3px 10px;border-radius:999px;font-weight:800;margin-bottom:10px;" id="waitingBadge">
+            ⏰ PROGRAMADO · HOY 2:00 PM
+          </span>
+          <h2 style="font-size:22px;font-weight:800;font-family:'Space Grotesk',sans-serif;margin-bottom:6px;" id="waitingMatchTitle">Real Madrid vs FC Barcelona</h2>
+          <p style="font-size:13.5px;color:#94a3b8;max-width:500px;line-height:1.6;margin-bottom:18px;" id="waitingMatchDesc">
+            Este partido comenzará a las <strong>2:00 PM (14:00 hrs)</strong>. Los servidores deportivos (ESPN / DAZN) activan la señal de transmisión en vivo aproximadamente <strong>15 a 30 minutos antes del inicio</strong> con la previa oficial del encuentro.
+          </p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+            <button onclick="playRandomChannel()" class="btn-m3u-modal" style="box-shadow:none;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);">
+              📺 Ver Canales en Vivo 24/7
+            </button>
+            <button onclick="retryCurrentMatch()" class="btn-m3u-modal">
+              ⚡ Probar Conexión Ahora
+            </button>
+          </div>
+        </div>
+
         <div class="video-placeholder" id="videoPlaceholder">
           <div style="font-size: 48px;">📺</div>
           <h2 style="color: #fff; font-size: 20px; font-weight: 800;">Selecciona un canal para comenzar</h2>
@@ -744,7 +763,7 @@
         <div class="match-card" style="background: rgba(2, 6, 23, 0.65); border: 1px solid rgba(244, 63, 94, 0.3); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 11px; font-weight: 800; background: rgba(244,63,94,0.2); color: #f43f5e; padding: 2px 7px; border-radius: 6px;">🇪🇸 EL CLÁSICO · LALIGA</span>
-            <span style="font-size: 11px; color: #34d399; font-weight: 700;">🔴 HOY EN VIVO</span>
+            <span style="font-size: 11px; color: #f59e0b; font-weight: 800; background: rgba(245,158,11,0.15); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(245,158,11,0.3);">⏰ HOY 2:00 PM</span>
           </div>
           <div style="font-size: 15px; font-weight: 800; color: #fff;">Real Madrid vs FC Barcelona</div>
           <div style="font-size: 12px; color: #94a3b8;">Santiago Bernabéu / Spotify Camp Nou</div>
@@ -788,7 +807,7 @@
         <div class="match-card" style="background: rgba(2, 6, 23, 0.65); border: 1px solid rgba(139, 92, 246, 0.3); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 11px; font-weight: 800; background: rgba(139,92,246,0.2); color: #c084fc; padding: 2px 7px; border-radius: 6px;">🇪🇺 UEFA CHAMPIONS LEAGUE</span>
-            <span style="font-size: 11px; color: #34d399; font-weight: 700;">🔴 NOCHE EUROPEA</span>
+            <span style="font-size: 11px; color: #c084fc; font-weight: 800; background: rgba(139,92,246,0.15); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(139,92,246,0.3);">⏰ MIÉRCOLES 2:00 PM</span>
           </div>
           <div style="font-size: 15px; font-weight: 800; color: #fff;">Champions League · Multipantalla</div>
           <div style="font-size: 12px; color: #94a3b8;">Fase Eliminatoria · Transmisión Simultánea</div>
@@ -810,7 +829,7 @@
         <div class="match-card" style="background: rgba(2, 6, 23, 0.65); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">
           <div style="display: flex; justify-content: space-between; align-items: center;">
             <span style="font-size: 11px; font-weight: 800; background: rgba(16,185,129,0.2); color: #34d399; padding: 2px 7px; border-radius: 6px;">🇭🇳 LIGA BETCRIS HONDURAS</span>
-            <span style="font-size: 11px; color: #34d399; font-weight: 700;">🔴 CLÁSICO CAPITALINO</span>
+            <span style="font-size: 11px; color: #34d399; font-weight: 800; background: rgba(16,185,129,0.15); padding: 2px 8px; border-radius: 6px; border: 1px solid rgba(16,185,129,0.3);">⏰ HOY 5:00 PM</span>
           </div>
           <div style="font-size: 15px; font-weight: 800; color: #fff;">Olimpia vs Motagua</div>
           <div style="font-size: 12px; color: #94a3b8;">Estadio Nacional Chelato Uclés</div>
@@ -1616,17 +1635,60 @@
 
     
     // Match Center Functions
-    function playMatchStream(matchName, serverLabel, streamUrl){
+    var currentMatchData = null;
+    var matchLoadTimeout = null;
+
+    function retryCurrentMatch(){
+      if(currentMatchData){
+        var notice = document.getElementById('matchWaitingNotice');
+        if(notice) notice.style.display = 'none';
+        playMatchStream(currentMatchData.name, currentMatchData.server, currentMatchData.url, true);
+      }
+    }
+
+    function playMatchStream(matchName, serverLabel, streamUrl, forcePlay){
       var video = document.getElementById('tvPlayer');
       var iframe = document.getElementById('tvIframe');
       var placeholder = document.getElementById('videoPlaceholder');
+      var notice = document.getElementById('matchWaitingNotice');
       if(placeholder) placeholder.classList.add('hidden');
+      if(notice) notice.style.display = 'none';
+      if(matchLoadTimeout) clearTimeout(matchLoadTimeout);
+
+      currentMatchData = { name: matchName, server: serverLabel, url: streamUrl };
 
       // Update UI Header
       document.getElementById('playingTitle').textContent = matchName + ' (' + serverLabel + ')';
       document.getElementById('playingLogo').src = 'assets/icon_tv.jpg';
-      document.getElementById('playingCategory').textContent = 'Fútbol en Vivo';
+      document.getElementById('playingCategory').textContent = serverLabel;
       document.getElementById('playingCountry').textContent = '⚽ Deportes';
+
+      // Check if this match is scheduled for later (e.g. Madrid vs Barça at 2:00 PM)
+      var now = new Date();
+      var currentHour = now.getHours();
+      var isElClasico = matchName.includes('Real Madrid');
+
+      // If it's El Clásico and it's before 13:30 (1:30 PM) and not forcePlay, show the informative pre-match card
+      if(isElClasico && currentHour < 13 && !forcePlay){
+        document.getElementById('waitingMatchTitle').textContent = matchName;
+        document.getElementById('waitingBadge').textContent = '⏰ PROGRAMADO · HOY 2:00 PM (14:00 HRS)';
+        document.getElementById('waitingMatchDesc').innerHTML = 'El partido comenzará hoy a las <strong>2:00 PM</strong>. La señal de transmisión en vivo de <strong>' + serverLabel + '</strong> se abre automáticamente entre la <strong>1:30 PM y 1:45 PM</strong> con la previa oficial del encuentro.';
+        notice.style.display = 'flex';
+        video.style.display = 'none';
+        iframe.style.display = 'none';
+        return;
+      }
+
+      // If attempting to play: set timeout to detect if stream is off-air/buffering endlessly
+      matchLoadTimeout = setTimeout(function(){
+        if(video && video.readyState < 2 && (!video.currentTime || video.currentTime === 0)){
+          document.getElementById('waitingMatchTitle').textContent = matchName + ' (' + serverLabel + ')';
+          document.getElementById('waitingBadge').textContent = '⏳ SEÑAL EN ESPERA O TRANSMISIÓN PREVIA';
+          document.getElementById('waitingMatchDesc').innerHTML = 'La señal de este servidor está en espera de transmisión o comenzará en breve. Las transmisiones de eventos deportivos se activan automáticamente minutos antes del pitazo inicial. Puedes reintentar la conexión o probar los más de 180 canales activos 24/7.';
+          notice.style.display = 'flex';
+          video.style.display = 'none';
+        }
+      }, 5500);
 
       // Check if URL is an iframe embed or direct HLS stream
       var isEmbed = streamUrl.includes('embed') || streamUrl.includes('player') || streamUrl.includes('html');
