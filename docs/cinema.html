@@ -731,6 +731,361 @@ footer {
   flex-wrap: wrap;
   gap: 16px;
 }
+
+/* ==========================================
+   MASTER UPGRADE: HERO BILLBOARD (NETFLIX STYLE)
+   ========================================== */
+.hero-billboard {
+  position: relative;
+  width: 100%;
+  min-height: 460px;
+  border-radius: 24px;
+  overflow: hidden;
+  margin: 25px 0 35px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 35px rgba(244, 63, 94, 0.15);
+  background-color: #0b0f19;
+  background-size: cover;
+  background-position: center 25%;
+  transition: background-image 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: flex-end;
+}
+.hero-billboard-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, #070a12 0%, rgba(7, 10, 18, 0.88) 45%, rgba(7, 10, 18, 0.3) 75%, transparent 100%),
+              linear-gradient(0deg, #070a12 0%, rgba(7, 10, 18, 0.6) 30%, transparent 70%);
+  pointer-events: none;
+}
+.hero-billboard-content {
+  position: relative;
+  z-index: 2;
+  padding: 38px 42px;
+  max-width: 660px;
+}
+.hero-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(244, 63, 94, 0.2);
+  border: 1px solid rgba(244, 63, 94, 0.5);
+  color: #fda4af;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-size: 36px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.15;
+  font-family: 'Space Grotesk', sans-serif;
+  margin-bottom: 12px;
+  text-shadow: 0 2px 20px rgba(0,0,0,0.85);
+}
+.hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 14px;
+  font-size: 13px;
+  flex-wrap: wrap;
+}
+.hero-desc {
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: #cbd5e1;
+  margin-bottom: 22px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.hero-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.hero-btn-play {
+  background: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+  color: #fff;
+  border: none;
+  padding: 12px 26px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 10px 25px rgba(244, 63, 94, 0.45);
+  transition: all 0.25s ease;
+}
+.hero-btn-play:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 30px rgba(244, 63, 94, 0.65);
+}
+.hero-btn-secondary {
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+.hero-btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.22);
+  transform: translateY(-2px);
+}
+.hero-dots {
+  position: absolute;
+  bottom: 22px;
+  right: 32px;
+  z-index: 5;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.hero-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.35);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.hero-dot.active {
+  background: #f43f5e;
+  width: 26px;
+  border-radius: 999px;
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.9);
+}
+
+/* ==========================================
+   HORIZONTAL STREAMING SHELVES (NETFLIX STYLE)
+   ========================================== */
+.shelf-section {
+  margin: 30px 0 36px;
+  position: relative;
+}
+.shelf-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  padding: 0 4px;
+}
+.shelf-title {
+  font-size: 18px;
+  font-weight: 800;
+  color: #fff;
+  font-family: 'Space Grotesk', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.shelf-controls {
+  display: flex;
+  gap: 8px;
+}
+.shelf-arrow-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.shelf-arrow-btn:hover {
+  background: rgba(244, 63, 94, 0.85);
+  border-color: #f43f5e;
+  transform: scale(1.1);
+}
+.shelf-row {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  padding: 8px 4px 16px;
+  scrollbar-width: none;
+}
+.shelf-row::-webkit-scrollbar {
+  display: none;
+}
+.shelf-card {
+  flex: 0 0 170px;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+.shelf-card:hover {
+  transform: translateY(-7px) scale(1.04);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.65), 0 0 20px rgba(6, 182, 212, 0.25);
+  border-color: rgba(6, 182, 212, 0.5);
+  z-index: 10;
+}
+.shelf-card-img-wrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 2/3;
+  overflow: hidden;
+}
+.shelf-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.shelf-card-info {
+  padding: 10px;
+}
+.shelf-card-title {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+.shelf-card-sub {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: var(--txt-muted);
+}
+
+/* ==========================================
+   FAVORITES HEART ICON BUTTON
+   ========================================== */
+.card-fav-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: all 0.2s;
+}
+.card-fav-btn:hover {
+  transform: scale(1.18);
+  background: rgba(244, 63, 94, 0.85);
+  color: #fff;
+}
+.card-fav-btn.active {
+  background: #f43f5e;
+  color: #fff;
+  border-color: #f43f5e;
+}
+
+/* ==========================================
+   QUICK INFO & TRAILER MODAL
+   ========================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.88);
+  backdrop-filter: blur(14px);
+  z-index: 99999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.modal-overlay.active {
+  display: flex;
+  opacity: 1;
+}
+.modal-box {
+  background: #0f172a;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 22px;
+  width: 100%;
+  max-width: 840px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.9), 0 0 40px rgba(244, 63, 94, 0.2);
+  position: relative;
+  animation: modalPop 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+@keyframes modalPop {
+  0% { transform: scale(0.92); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: all 0.2s;
+}
+.modal-close-btn:hover {
+  background: #f43f5e;
+  transform: rotate(90deg);
+}
+.modal-backdrop-wrap {
+  width: 100%;
+  height: 300px;
+  position: relative;
+  background-size: cover;
+  background-position: center 25%;
+}
+.modal-backdrop-gradient {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(0deg, #0f172a 0%, transparent 60%);
+}
+.modal-body {
+  padding: 22px 28px 30px;
+}
+
 </style>
 </head>
 <body>
@@ -927,6 +1282,120 @@ footer {
     </div>
   </div>
 
+
+  <!-- ==========================================
+       HERO BILLBOARD SHOWCASE (NETFLIX STYLE)
+       ========================================== -->
+  <div class="hero-billboard" id="heroBillboard">
+    <div class="hero-billboard-overlay"></div>
+    <div class="hero-billboard-content">
+      <div class="hero-tag" id="heroTag">🔥 TENDENCIA #1 MUNDIAL</div>
+      <h1 class="hero-title" id="heroTitle">Cargando Título Destacado...</h1>
+      <div class="hero-meta">
+        <span id="heroRating" style="background:#fbbf24;color:#000;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">⭐ 8.4</span>
+        <span id="heroYear" style="color:#fff;font-weight:700;">2024</span>
+        <span id="heroQuality" style="background:rgba(6,182,212,0.25);color:#38bdf8;border:1px solid rgba(6,182,212,0.4);font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;">4K UHD</span>
+        <span id="heroPlatform" style="color:var(--txt-muted);font-size:12.5px;">Netflix Originals</span>
+      </div>
+      <p class="hero-desc" id="heroDesc">Sinopsis destacada cargando...</p>
+      <div class="hero-actions">
+        <button class="hero-btn-play" onclick="playHeroTitle()">
+          <span>▶</span> <span>Reproducir Ahora</span>
+        </button>
+        <button class="hero-btn-secondary" id="heroFavBtn" onclick="toggleHeroFavorite()">
+          <span>❤️</span> <span>Mi Lista</span>
+        </button>
+        <button class="hero-btn-secondary" onclick="openHeroQuickInfo()">
+          <span>ℹ️</span> <span>Trailer &amp; Info</span>
+        </button>
+      </div>
+    </div>
+    <div class="hero-dots" id="heroDots">
+      <!-- Dots injected dynamically -->
+    </div>
+  </div>
+
+  <!-- CONTINUAR VIENDO (SHELF DINÁMICO) -->
+  <div class="shelf-section" id="continueWatchingShelf" style="display:none;">
+    <div class="shelf-header">
+      <div class="shelf-title">
+        <span>🕒</span> <span>Continuar Viendo</span>
+      </div>
+    </div>
+    <div class="shelf-row" id="continueWatchingRow">
+      <!-- Injected from localStorage history -->
+    </div>
+  </div>
+
+  <!-- ==========================================
+       HORIZONTAL STREAMING SHELVES (NETFLIX STYLE)
+       ========================================== -->
+  <div id="horizontalShelvesContainer">
+    <!-- Shelf 1: Tendencias -->
+    <div class="shelf-section">
+      <div class="shelf-header">
+        <div class="shelf-title">
+          <span>🔥</span> <span>Tendencias Globales de la Semana</span>
+        </div>
+        <div class="shelf-controls">
+          <button class="shelf-arrow-btn" onclick="scrollShelf('shelfTrending', -1)">‹</button>
+          <button class="shelf-arrow-btn" onclick="scrollShelf('shelfTrending', 1)">›</button>
+        </div>
+      </div>
+      <div class="shelf-row" id="shelfTrending">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Shelf 2: K-Doramas -->
+    <div class="shelf-section">
+      <div class="shelf-header">
+        <div class="shelf-title">
+          <span>🌸</span> <span>Los K-Doramas Más Aclamados</span>
+        </div>
+        <div class="shelf-controls">
+          <button class="shelf-arrow-btn" onclick="scrollShelf('shelfKDoramas', -1)">‹</button>
+          <button class="shelf-arrow-btn" onclick="scrollShelf('shelfKDoramas', 1)">›</button>
+        </div>
+      </div>
+      <div class="shelf-row" id="shelfKDoramas">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Shelf 3: Disney & Marvel -->
+    <div class="shelf-section">
+      <div class="shelf-header">
+        <div class="shelf-title">
+          <span>🦸</span> <span>Universo Disney+, Pixar &amp; Marvel</span>
+        </div>
+        <div class="shelf-controls">
+          <button class="shelf-arrow-btn" onclick="scrollShelf('shelfDisney', -1)">‹</button>
+          <button class="shelf-arrow-btn" onclick="scrollShelf('shelfDisney', 1)">›</button>
+        </div>
+      </div>
+      <div class="shelf-row" id="shelfDisney">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+
+    <!-- Shelf 4: Grandes Estrenos 4K -->
+    <div class="shelf-section">
+      <div class="shelf-header">
+        <div class="shelf-title">
+          <span>🍿</span> <span>Películas 4K Recientes</span>
+        </div>
+        <div class="shelf-controls">
+          <button class="shelf-arrow-btn" onclick="scrollShelf('shelfRecent', -1)">‹</button>
+          <button class="shelf-arrow-btn" onclick="scrollShelf('shelfRecent', 1)">›</button>
+        </div>
+      </div>
+      <div class="shelf-row" id="shelfRecent">
+        <!-- Injected via JS -->
+      </div>
+    </div>
+  </div>
+
   <!-- SEARCH & FILTERS -->
   <div class="catalog-controls">
     <div class="catalog-search-row">
@@ -943,6 +1412,7 @@ footer {
 
     <!-- Category & Platform Live Filter Pills -->
     <div class="filter-pills-row">
+            <button class="catalog-pill" onclick="filterFavorites(this)" style="border-color:rgba(244,63,94,0.5);color:#fda4af;font-weight:700;">❤️ Mi Lista (<span id="favCountPill">0</span>)</button>
       <button class="catalog-pill active" onclick="filterCatalog('all', this)">🔥 Todos</button>
       <button class="catalog-pill" onclick="filterCatalog('estrenos', this)" style="border-color:rgba(244,63,94,0.4);color:#fda4af;">⚡ Estrenos de Hoy</button>
       <button class="catalog-pill" onclick="filterCatalog('netflix', this)" style="border-color:rgba(239,68,68,0.4);color:#fca5a5;">🔴 Netflix</button>
@@ -2766,14 +3236,612 @@ function setRadioVolume(val){
   if(radioAudio) radioAudio.volume = parseFloat(val);
 }
 
-// Initial Boot
+// Initial Boot & Master Upgrade Initializer
 document.addEventListener('DOMContentLoaded', function(){
   activeItemsList = catalog.slice();
   renderCatalog(activeItemsList, false);
   selectMedia(catalog[0]);
+  
   // Auto-fetch top trending titles to expand grid beyond 50+ movies on start
   fetchCategoryPage('all', 1, true);
+
+  // Initialize Master Streaming Components
+  renderHeroBillboard();
+  resetHeroTimer();
+  renderContinueWatching();
+  renderHorizontalShelves();
+  updateFavoritesUI();
 });
+
+// ==========================================
+// MASTER UPGRADE: HERO BILLBOARD, SHELVES, FAVORITES & MODAL
+// ==========================================
+
+var HERO_ITEMS = [
+  {
+    id: "squid_game_hero",
+    tmdbId: 93405,
+    imdbId: "tt10919420",
+    type: "tv",
+    title: "El Juego del Calamar (Squid Game)",
+    tag: "🇰🇷 #1 EN K-DORAMAS MUNDIALES",
+    year: 2024,
+    platform: "Netflix Originals",
+    rating: 8.0,
+    quality: "4K UHD",
+    lang: "Coreano / Sub Español",
+    isKdorama: true,
+    genres: ["kdoramas", "series", "drama", "suspenso"],
+    backdrop: "https://image.tmdb.org/t/p/original/yDHYTfA3R0jFYba16jBB1ef8oIt.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/dDlGgwX2Nq9Y8gR5DkR6b1b6z9r.jpg",
+    desc: "Cientos de jugadores con problemas económicos aceptan una extraña invitación para competir en juegos infantiles. Adentro les espera un premio tentador y apuestas mortales.",
+    seasons: 2,
+    episodesPerSeason: [9, 6]
+  },
+  {
+    id: "gladiator_2_hero",
+    tmdbId: 558449,
+    imdbId: "tt9603220",
+    type: "movie",
+    title: "Gladiador II (2024)",
+    tag: "⚔️ ESTRENO MUNDIAL EN CINES",
+    year: 2024,
+    platform: "Paramount Pictures",
+    rating: 7.8,
+    quality: "4K UHD",
+    lang: "Latino / Castellano / Sub",
+    genres: ["accion", "drama", "historia"],
+    backdrop: "https://image.tmdb.org/t/p/original/euYIWhGvdaoGHV2G1qdb50cE9b.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/2cxhvwyEwRlysAmRH4iodkvo0z5.jpg",
+    desc: "Años después de presenciar la muerte del admirado Máximo a manos de su tío, Lucio debe entrar en el Coliseo tras ser testigo de la conquista de su hogar por parte de los tiranos emperadores de Roma."
+  },
+  {
+    id: "deadpool_wolverine_hero",
+    tmdbId: 533535,
+    imdbId: "tt6263850",
+    type: "movie",
+    title: "Deadpool & Wolverine",
+    tag: "🦸 MARVEL STUDIOS ÉXITO HISTÓRICO",
+    year: 2024,
+    platform: "Disney+ / Marvel",
+    rating: 7.7,
+    quality: "4K UHD",
+    lang: "Latino / Castellano / Sub",
+    genres: ["accion", "comedia", "marvel"],
+    backdrop: "https://image.tmdb.org/t/p/original/yD369h82QpXW6Z8N8Z6G33qZf7m.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/8cdWjvZQUExUUTzyp4t6EDMubfO.jpg",
+    desc: "Un apático Wade Wilson se afana en la vida civil con sus días como el mercenario moralmente flexible, Deadpool, atrás. Pero cuando su mundo natal se enfrenta a una amenaza existencial, Wade debe volver a ponerse el traje con Wolverine."
+  },
+  {
+    id: "true_beauty_hero",
+    tmdbId: 112888,
+    imdbId: "tt13404594",
+    type: "tv",
+    title: "Belleza Verdadera (True Beauty)",
+    tag: "💖 ROMANCE & COMEDIA K-DORAMA",
+    year: 2020,
+    platform: "tvN / Max",
+    rating: 8.4,
+    quality: "Full HD",
+    lang: "Coreano / Sub Español",
+    isKdorama: true,
+    genres: ["kdoramas", "romance", "comedia"],
+    backdrop: "https://image.tmdb.org/t/p/original/4B3k0mC9QvY5kL9g8fE3q7rD1a.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/c7v3p60qfM7GkE3Q6jD1a.jpg",
+    desc: "Una estudiante de secundaria insegura sobre su apariencia se convierte en una 'diosa' de la escuela gracias a sus habilidades con el maquillaje, enamorando a dos apuestos compañeros mientras guarda su secreto.",
+    seasons: 1,
+    episodesPerSeason: [16]
+  },
+  {
+    id: "dune_part_2_hero",
+    tmdbId: 693134,
+    imdbId: "tt15239678",
+    type: "movie",
+    title: "Dune: Parte Dos",
+    tag: "🌌 CIENCIA FICCIÓN OBRA MAESTRA",
+    year: 2024,
+    platform: "Warner Bros / HBO Max",
+    rating: 8.2,
+    quality: "4K IMAX",
+    lang: "Latino / Castellano / Sub",
+    genres: ["ciencia-ficcion", "aventura", "drama"],
+    backdrop: "https://image.tmdb.org/t/p/original/xOMo8BRK7PfcJv9JCnx7s520b8Q.jpg",
+    poster: "https://image.tmdb.org/t/p/w500/czembW0Rk1Ke7lCJGhkAiTBQ5Zs.jpg",
+    desc: "Paul Atreides se une a Chani y los Fremen mientras busca venganza contra los conspiradores que destruyeron a su familia, enfrentando una elección entre el amor de su vida y el destino del universo."
+  }
+];
+
+var currentHeroIdx = 0;
+var heroAutoTimer = null;
+
+function renderHeroBillboard(){
+  var item = HERO_ITEMS[currentHeroIdx];
+  if(!item) return;
+
+  var bb = document.getElementById('heroBillboard');
+  var tag = document.getElementById('heroTag');
+  var title = document.getElementById('heroTitle');
+  var rating = document.getElementById('heroRating');
+  var year = document.getElementById('heroYear');
+  var quality = document.getElementById('heroQuality');
+  var platform = document.getElementById('heroPlatform');
+  var desc = document.getElementById('heroDesc');
+  var favBtn = document.getElementById('heroFavBtn');
+
+  if(bb && item.backdrop) {
+    bb.style.backgroundImage = 'url("' + item.backdrop + '")';
+  }
+  if(tag) tag.innerText = item.tag || '🔥 TENDENCIA DESTACADA';
+  if(title) title.innerText = item.title;
+  if(rating) rating.innerText = '⭐ ' + (item.rating ? item.rating.toFixed(1) : '8.0');
+  if(year) year.innerText = item.year;
+  if(quality) quality.innerText = item.quality || '4K UHD';
+  if(platform) platform.innerText = item.platform || 'Streaming Mundial';
+  if(desc) desc.innerText = item.desc;
+
+  if(favBtn){
+    var fav = isFavorite(item.id);
+    favBtn.innerHTML = fav ? '<span>❤️</span> <span>En Mi Lista</span>' : '<span>🤍</span> <span>+ Mi Lista</span>';
+    favBtn.style.color = fav ? '#fda4af' : '#fff';
+  }
+
+  // Render Dots
+  var dotsWrap = document.getElementById('heroDots');
+  if(dotsWrap){
+    dotsWrap.innerHTML = '';
+    HERO_ITEMS.forEach(function(_, idx){
+      var d = document.createElement('div');
+      d.className = 'hero-dot' + (idx === currentHeroIdx ? ' active' : '');
+      d.onclick = function(){ goToHeroSlide(idx); };
+      dotsWrap.appendChild(d);
+    });
+  }
+}
+
+function nextHeroSlide(){
+  currentHeroIdx = (currentHeroIdx + 1) % HERO_ITEMS.length;
+  renderHeroBillboard();
+}
+
+function goToHeroSlide(idx){
+  currentHeroIdx = idx;
+  renderHeroBillboard();
+  resetHeroTimer();
+}
+
+function resetHeroTimer(){
+  clearInterval(heroAutoTimer);
+  heroAutoTimer = setInterval(nextHeroSlide, 7500);
+}
+
+function playHeroTitle(){
+  var item = HERO_ITEMS[currentHeroIdx];
+  if(!item) return;
+  selectMedia(item);
+  var stage = document.getElementById('theaterStage');
+  if(stage){
+    stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function toggleHeroFavorite(){
+  var item = HERO_ITEMS[currentHeroIdx];
+  if(!item) return;
+  toggleFavorite(item);
+  renderHeroBillboard();
+}
+
+function openHeroQuickInfo(){
+  var item = HERO_ITEMS[currentHeroIdx];
+  if(!item) return;
+  openQuickInfo(item);
+}
+
+
+// ==========================================
+// FAVORITES (MI LISTA) WITH LOCALSTORAGE
+// ==========================================
+function getFavorites(){
+  try {
+    return JSON.parse(localStorage.getItem('duartecinema_favorites') || '[]');
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveFavorites(list){
+  try {
+    localStorage.setItem('duartecinema_favorites', JSON.stringify(list));
+  } catch(e) {}
+  updateFavoritesUI();
+}
+
+function isFavorite(id){
+  var favs = getFavorites();
+  return favs.some(function(x){ return x.id === id || (x.tmdbId && x.tmdbId === id); });
+}
+
+function toggleFavorite(item, event){
+  if(event) {
+    event.stopPropagation();
+    event.preventDefault();
+  }
+  var favs = getFavorites();
+  var idx = favs.findIndex(function(x){ return x.id === item.id || (x.tmdbId && item.tmdbId && x.tmdbId === item.tmdbId); });
+  if(idx !== -1){
+    favs.splice(idx, 1);
+  } else {
+    favs.unshift(item);
+  }
+  saveFavorites(favs);
+  
+  // Re-render if currently viewing favorites
+  if(currentCategory === 'favorites'){
+    renderCatalog(favs, false);
+  }
+}
+
+function updateFavoritesUI(){
+  var favs = getFavorites();
+  var countSpan = document.getElementById('favCountPill');
+  if(countSpan) countSpan.innerText = favs.length;
+
+  // Update heart icons across catalog
+  document.querySelectorAll('.card-fav-btn').forEach(function(btn){
+    var id = btn.getAttribute('data-id');
+    if(id && isFavorite(id)){
+      btn.classList.add('active');
+      btn.innerHTML = '❤️';
+    } else {
+      btn.classList.remove('active');
+      btn.innerHTML = '🤍';
+    }
+  });
+}
+
+function filterFavorites(btn){
+  currentCategory = 'favorites';
+  document.querySelectorAll('.catalog-pill').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+  var subBar = document.getElementById('platformSubmenuBar');
+  if(subBar) subBar.style.display = 'none';
+
+  var favs = getFavorites();
+  renderCatalog(favs, false);
+  var countEl = document.getElementById('resultsCount');
+  if(countEl) countEl.innerText = favs.length + ' en Mi Lista';
+
+  var loadWrap = document.getElementById('loadMoreWrap');
+  if(loadWrap) loadWrap.style.display = 'none';
+}
+
+
+// ==========================================
+// CONTINUAR VIENDO (HISTORY ENGINE)
+// ==========================================
+function getHistory(){
+  try {
+    return JSON.parse(localStorage.getItem('duartecinema_history') || '[]');
+  } catch(e) {
+    return [];
+  }
+}
+
+function saveToHistory(item, season, episode){
+  if(!item) return;
+  var history = getHistory();
+  // Remove existing entry for same item
+  history = history.filter(function(h){
+    return h.item.id !== item.id && (!h.item.tmdbId || h.item.tmdbId !== item.tmdbId);
+  });
+  // Add new to front
+  history.unshift({
+    item: item,
+    season: season || 1,
+    episode: episode || 1,
+    timestamp: Date.now()
+  });
+  // Keep last 10
+  if(history.length > 10) history = history.slice(0, 10);
+  try {
+    localStorage.setItem('duartecinema_history', JSON.stringify(history));
+  } catch(e) {}
+  renderContinueWatching();
+}
+
+function renderContinueWatching(){
+  var history = getHistory();
+  var shelf = document.getElementById('continueWatchingShelf');
+  var row = document.getElementById('continueWatchingRow');
+  if(!shelf || !row) return;
+
+  if(history.length === 0){
+    shelf.style.display = 'none';
+    return;
+  }
+
+  shelf.style.display = 'block';
+  row.innerHTML = '';
+
+  history.forEach(function(h){
+    var card = document.createElement('div');
+    card.className = 'shelf-card';
+    card.onclick = function(){
+      selectMedia(h.item);
+      if(h.item.type === 'tv'){
+        currentSeason = h.season || 1;
+        currentEpisode = h.episode || 1;
+        var sSelect = document.getElementById('seasonSelect');
+        if(sSelect) sSelect.value = currentSeason;
+        renderEpisodePills(currentSeason);
+        loadVideoSource();
+      }
+      var stage = document.getElementById('theaterStage');
+      if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    var badgeText = h.item.type === 'tv' ? ('T' + h.season + ': Cap ' + h.episode) : 'Película';
+
+    card.innerHTML = `
+      <div class="shelf-card-img-wrap">
+        <img class="shelf-card-img" src="${h.item.poster}" alt="${h.item.title}" loading="lazy" decoding="async">
+        <span style="position:absolute;bottom:6px;left:6px;background:rgba(244,63,94,0.9);color:#fff;font-size:10px;font-weight:800;padding:2px 6px;border-radius:4px;">▶ ${badgeText}</span>
+      </div>
+      <div class="shelf-card-info">
+        <div class="shelf-card-title">${h.item.title}</div>
+        <div class="shelf-card-sub">
+          <span style="color:#34d399;">Continuar</span>
+          <span>⭐ ${h.item.rating}</span>
+        </div>
+      </div>
+    `;
+    row.appendChild(card);
+  });
+}
+
+
+// ==========================================
+// HORIZONTAL SHELVES (NETFLIX STREAMING EXPERIENCE)
+// ==========================================
+function scrollShelf(shelfId, direction){
+  var row = document.getElementById(shelfId);
+  if(!row) return;
+  var scrollAmount = row.clientWidth * 0.75;
+  row.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+}
+
+function renderHorizontalShelves(){
+  // Shelf 1: Trending Global (from curated catalog & top hits)
+  var shelf1 = document.getElementById('shelfTrending');
+  if(shelf1){
+    var trendingItems = catalog.slice(0, 10);
+    renderCardsIntoShelf(shelf1, trendingItems);
+  }
+
+  // Shelf 2: K-Doramas (Filtered verified titles)
+  var shelf2 = document.getElementById('shelfKDoramas');
+  if(shelf2){
+    var kdUrl = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_origin_country=KR&without_genres=10764,10767&language=es-MX&sort_by=popularity.desc&vote_count.gte=50&page=1&with_genres=18';
+    fetch(kdUrl)
+      .then(function(r){ return r.json(); })
+      .then(function(data){
+        var list = (data.results || []).slice(0, 10).map(function(item){
+          return {
+            id: 'tmdb_' + item.id,
+            tmdbId: item.id,
+            type: 'tv',
+            title: item.name || item.original_name,
+            year: item.first_air_date ? parseInt(item.first_air_date.substring(0,4), 10) : 2024,
+            rating: item.vote_average ? item.vote_average.toFixed(1) : '8.0',
+            quality: 'HD',
+            lang: 'Coreano / Sub Español',
+            isKdorama: true,
+            originalLanguage: 'ko',
+            poster: item.poster_path ? ('https://image.tmdb.org/t/p/w500' + item.poster_path) : 'assets/brand_avatar.jpg',
+            desc: item.overview || 'Sinopsis oficial disponible al reproducir.'
+          };
+        });
+        renderCardsIntoShelf(shelf2, list);
+      })
+      .catch(function(e){ console.warn('Could not load KDrama shelf:', e); });
+  }
+
+  // Shelf 3: Disney+ & Marvel
+  var shelf3 = document.getElementById('shelfDisney');
+  if(shelf3){
+    var disneyItems = catalog.filter(function(x){
+      return (x.platform && x.platform.indexOf('Disney') !== -1) || (x.genres && x.genres.indexOf('disney') !== -1) || (x.genres && x.genres.indexOf('marvel') !== -1);
+    });
+    if(disneyItems.length < 5){
+      disneyItems = catalog.slice(0, 8);
+    }
+    renderCardsIntoShelf(shelf3, disneyItems);
+  }
+
+  // Shelf 4: Películas 4K Recientes
+  var shelf4 = document.getElementById('shelfRecent');
+  if(shelf4){
+    var recentMovies = catalog.filter(function(x){ return x.type === 'movie'; }).slice(0, 10);
+    renderCardsIntoShelf(shelf4, recentMovies);
+  }
+}
+
+function renderCardsIntoShelf(container, items){
+  container.innerHTML = '';
+  items.forEach(function(m){
+    var card = document.createElement('div');
+    card.className = 'shelf-card';
+    card.onclick = function(){
+      selectMedia(m);
+      var stage = document.getElementById('theaterStage');
+      if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    };
+
+    var favClass = isFavorite(m.id) ? ' active' : '';
+    var favIcon = isFavorite(m.id) ? '❤️' : '🤍';
+
+    card.innerHTML = `
+      <div class="shelf-card-img-wrap">
+        <img class="shelf-card-img" src="${m.poster}" alt="${m.title}" loading="lazy" decoding="async">
+        <button class="card-fav-btn${favClass}" data-id="${m.id}" onclick="toggleFavoriteWrapper(event, ${JSON.stringify(m).replace(/"/g, '&quot;')})">${favIcon}</button>
+      </div>
+      <div class="shelf-card-info">
+        <div class="shelf-card-title">${m.title}</div>
+        <div class="shelf-card-sub">
+          <span>${m.year || 2024}</span>
+          <span style="color:#fbbf24;font-weight:700;">⭐ ${m.rating}</span>
+        </div>
+      </div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function toggleFavoriteWrapper(e, item){
+  e.stopPropagation();
+  e.preventDefault();
+  toggleFavorite(item, e);
+}
+
+
+// ==========================================
+// QUICK INFO & TRAILER MODAL
+// ==========================================
+var activeModalItem = null;
+
+function openQuickInfo(item){
+  activeModalItem = item;
+  var modal = document.getElementById('quickInfoModal');
+  var mBackdrop = document.getElementById('modalBackdrop');
+  var mTitle = document.getElementById('modalTitle');
+  var mRating = document.getElementById('modalRating');
+  var mQuality = document.getElementById('modalQuality');
+  var mYear = document.getElementById('modalYear');
+  var mDesc = document.getElementById('modalDesc');
+  var mFavBtn = document.getElementById('modalFavBtn');
+  var tWrap = document.getElementById('modalTrailerWrap');
+  var tIframe = document.getElementById('modalTrailerIframe');
+
+  if(mBackdrop) {
+    mBackdrop.style.backgroundImage = 'url("' + (item.backdrop || item.poster) + '")';
+  }
+  if(mTitle) mTitle.innerText = item.title;
+  if(mRating) mRating.innerText = '⭐ ' + item.rating;
+  if(mQuality) mQuality.innerText = item.quality || '4K UHD';
+  if(mYear) mYear.innerText = item.year || 2024;
+  if(mDesc) mDesc.innerText = item.desc || 'Sinopsis oficial en español disponible al reproducir.';
+
+  if(mFavBtn){
+    var fav = isFavorite(item.id);
+    mFavBtn.innerHTML = fav ? '<span>❤️</span> <span>En Mi Lista</span>' : '<span>🤍</span> <span>Guardar en Mi Lista</span>';
+    mFavBtn.style.color = fav ? '#fda4af' : '#fff';
+  }
+
+  // Load YouTube Trailer if available
+  if(tWrap && tIframe){
+    tIframe.src = '';
+    tWrap.style.display = 'none';
+
+    var tmdbId = item.tmdbId;
+    if(tmdbId){
+      var vType = item.type === 'tv' ? 'tv' : 'movie';
+      var vUrl = 'https://api.themoviedb.org/3/' + vType + '/' + tmdbId + '/videos?api_key=' + TMDB_KEY + '&language=es-MX';
+      fetch(vUrl)
+        .then(function(r){ return r.json(); })
+        .then(function(vData){
+          var vids = vData.results || [];
+          if(vids.length === 0){
+            // Fallback to global trailers
+            return fetch('https://api.themoviedb.org/3/' + vType + '/' + tmdbId + '/videos?api_key=' + TMDB_KEY)
+              .then(function(r){ return r.json(); })
+              .then(function(gData){ return gData.results || []; });
+          }
+          return vids;
+        })
+        .then(function(finalVids){
+          if(finalVids && finalVids.length > 0){
+            var trailer = finalVids.find(function(v){ return v.site === 'YouTube' && (v.type === 'Trailer' || v.type === 'Teaser'); }) || finalVids[0];
+            if(trailer && trailer.key){
+              tIframe.src = 'https://www.youtube.com/embed/' + trailer.key + '?rel=0&autoplay=1';
+              tWrap.style.display = 'block';
+            }
+          }
+        })
+        .catch(function(err){ console.warn('Trailer load error:', err); });
+    }
+  }
+
+  if(modal) modal.classList.add('active');
+}
+
+function closeQuickInfo(){
+  var modal = document.getElementById('quickInfoModal');
+  var tIframe = document.getElementById('modalTrailerIframe');
+  if(tIframe) tIframe.src = '';
+  if(modal) modal.classList.remove('active');
+}
+
+function onModalOverlayClick(e){
+  if(e.target.id === 'quickInfoModal'){
+    closeQuickInfo();
+  }
+}
+
+function playCurrentModalTitle(){
+  if(!activeModalItem) return;
+  closeQuickInfo();
+  selectMedia(activeModalItem);
+  var stage = document.getElementById('theaterStage');
+  if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function toggleModalFavorite(){
+  if(!activeModalItem) return;
+  toggleFavorite(activeModalItem);
+  var mFavBtn = document.getElementById('modalFavBtn');
+  var fav = isFavorite(activeModalItem.id);
+  if(mFavBtn){
+    mFavBtn.innerHTML = fav ? '<span>❤️</span> <span>En Mi Lista</span>' : '<span>🤍</span> <span>Guardar en Mi Lista</span>';
+    mFavBtn.style.color = fav ? '#fda4af' : '#fff';
+  }
+}
+
 </script>
+
+<!-- ==========================================
+     QUICK INFO & TRAILER MODAL
+     ========================================== -->
+<div class="modal-overlay" id="quickInfoModal" onclick="onModalOverlayClick(event)">
+  <div class="modal-box">
+    <button class="modal-close-btn" onclick="closeQuickInfo()" title="Cerrar">✕</button>
+    <div class="modal-backdrop-wrap" id="modalBackdrop">
+      <div class="modal-backdrop-gradient"></div>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;flex-wrap:wrap;">
+        <h2 id="modalTitle" style="font-size:24px;color:#fff;font-weight:900;font-family:'Space Grotesk',sans-serif;margin:0;">Título</h2>
+        <span id="modalRating" style="background:#fbbf24;color:#000;font-weight:800;font-size:12px;padding:3px 8px;border-radius:6px;">⭐ 8.4</span>
+        <span id="modalQuality" style="background:rgba(6,182,212,0.25);color:#38bdf8;border:1px solid rgba(6,182,212,0.4);font-size:11px;font-weight:700;padding:2px 7px;border-radius:4px;">4K UHD</span>
+        <span id="modalYear" style="color:#94a3b8;font-size:13px;">2024</span>
+      </div>
+      <p id="modalDesc" style="color:#cbd5e1;font-size:13.5px;line-height:1.6;margin-bottom:18px;">Sinopsis completa...</p>
+      
+      <!-- Video Trailer Container -->
+      <div id="modalTrailerWrap" style="margin-bottom:20px;border-radius:14px;overflow:hidden;border:1px solid rgba(255,255,255,0.1);aspect-ratio:16/9;background:#000;display:none;">
+        <iframe id="modalTrailerIframe" src="" style="width:100%;height:100%;border:none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+      </div>
+
+      <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <button class="hero-btn-play" onclick="playCurrentModalTitle()">
+          <span>▶</span> <span>Reproducir en Pantalla Completa</span>
+        </button>
+        <button class="hero-btn-secondary" id="modalFavBtn" onclick="toggleModalFavorite()">
+          <span>❤️</span> <span>Guardar en Mi Lista</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
