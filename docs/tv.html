@@ -785,14 +785,43 @@
       </div>
 
       <!-- Tab selector in modal -->
-      <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
-        <button id="modalTabUrl" class="filter-pill active" onclick="switchModalTab('url')">🌐 Enlace URL M3U</button>
+      <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; overflow-x: auto;">
+        <button id="modalTabPresets" class="filter-pill active" onclick="switchModalTab('presets')">⚡ Listas Gratuitas (1-Clic)</button>
+        <button id="modalTabUrl" class="filter-pill" onclick="switchModalTab('url')">🌐 Enlace URL M3U</button>
         <button id="modalTabFile" class="filter-pill" onclick="switchModalTab('file')">📁 Subir Archivo .m3u</button>
         <button id="modalTabSingle" class="filter-pill" onclick="switchModalTab('single')">➕ Canal Único</button>
       </div>
 
+      <!-- Tab 0: Presets 1-Clic -->
+      <div id="tabContentPresets">
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">¿No tienes enlaces? Carga miles de canales y eventos deportivos comunitarios con un solo clic:</p>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <button onclick="loadPreset('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes Globales')" class="btn-m3u-modal" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; text-align: left; background: rgba(255,255,255,0.06); border: 1px solid rgba(139,92,246,0.4); box-shadow: none;">
+            <span>⚽ <strong>Deportes Globales</strong> (Fútbol, Torneos, Resúmenes)</span>
+            <span style="font-size: 11px; background: rgba(139,92,246,0.3); padding: 3px 8px; border-radius: 6px;">Cargar</span>
+          </button>
+          <button onclick="loadPreset('https://iptv-org.github.io/iptv/countries/mx.m3u', 'México Completo')" class="btn-m3u-modal" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; text-align: left; background: rgba(255,255,255,0.06); border: 1px solid rgba(6,182,212,0.4); box-shadow: none;">
+            <span>🇲🇽 <strong>México Completo</strong> (Azteca, Televisa, Noticias, Deportes)</span>
+            <span style="font-size: 11px; background: rgba(6,182,212,0.3); padding: 3px 8px; border-radius: 6px;">Cargar</span>
+          </button>
+          <button onclick="loadPreset('https://iptv-org.github.io/iptv/categories/kids.m3u', 'Infantiles & Animación')" class="btn-m3u-modal" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; text-align: left; background: rgba(255,255,255,0.06); border: 1px solid rgba(245,158,11,0.4); box-shadow: none;">
+            <span>🧒 <strong>Infantiles & Animación 24/7</strong> (Caricaturas, Anime)</span>
+            <span style="font-size: 11px; background: rgba(245,158,11,0.3); padding: 3px 8px; border-radius: 6px;">Cargar</span>
+          </button>
+          <button onclick="loadPreset('https://iptv-org.github.io/iptv/categories/news.m3u', 'Noticias 24/7')" class="btn-m3u-modal" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; text-align: left; background: rgba(255,255,255,0.06); border: 1px solid rgba(16,185,129,0.4); box-shadow: none;">
+            <span>📰 <strong>Noticias Mundiales 24/7</strong> (CNN, France24, Euronews, DW)</span>
+            <span style="font-size: 11px; background: rgba(16,185,129,0.3); padding: 3px 8px; border-radius: 6px;">Cargar</span>
+          </button>
+        </div>
+
+        <div style="background: rgba(255,255,255,0.04); border: 1px dashed rgba(255,255,255,0.15); border-radius: 12px; padding: 14px; margin-top: 16px; font-size: 12px; color: #94a3b8; line-height: 1.5;">
+          💡 <strong>¿Cómo ver partidos de la Premier League o Champions League?</strong><br>
+          Los días de partido, las comunidades de fútbol y sitios como <em>Fútbol Libre</em>, <em>Tarjeta Roja</em> o canales de Telegram comparten listas M3U o enlaces directos <code>.m3u8</code> 15 minutos antes de que empiece el juego. Solo copia ese enlace y pégalo en la pestaña <strong>"➕ Canal Único"</strong> para verlo aquí sin publicidad.
+        </div>
+      </div>
+
       <!-- Tab 1: URL M3U -->
-      <div id="tabContentUrl">
+      <div id="tabContentUrl" style="display: none;">
         <div class="modal-form-group">
           <label>URL de tu lista M3U / M3U8:</label>
           <input type="url" id="m3uUrlInput" class="modal-input" placeholder="https://ejemplo.com/tu-lista.m3u">
@@ -1242,24 +1271,52 @@
     }
 
     function switchModalTab(tab){
-      document.getElementById('modalTabUrl').classList.remove('active');
-      document.getElementById('modalTabFile').classList.remove('active');
-      document.getElementById('modalTabSingle').classList.remove('active');
+      var tabs = ['Presets', 'Url', 'File', 'Single'];
+      tabs.forEach(function(t){
+        var b = document.getElementById('modalTab' + t);
+        var c = document.getElementById('tabContent' + t);
+        if(b) b.classList.remove('active');
+        if(c) c.style.display = 'none';
+      });
 
-      document.getElementById('tabContentUrl').style.display = 'none';
-      document.getElementById('tabContentFile').style.display = 'none';
-      document.getElementById('tabContentSingle').style.display = 'none';
+      var targetTab = tab.charAt(0).toUpperCase() + tab.slice(1);
+      var activeBtn = document.getElementById('modalTab' + targetTab);
+      var activeContent = document.getElementById('tabContent' + targetTab);
+      if(activeBtn) activeBtn.classList.add('active');
+      if(activeContent) activeContent.style.display = 'block';
+    }
 
-      if(tab === 'url'){
-        document.getElementById('modalTabUrl').classList.add('active');
-        document.getElementById('tabContentUrl').style.display = 'block';
-      } else if(tab === 'file'){
-        document.getElementById('modalTabFile').classList.add('active');
-        document.getElementById('tabContentFile').style.display = 'block';
-      } else if(tab === 'single'){
-        document.getElementById('modalTabSingle').classList.add('active');
-        document.getElementById('tabContentSingle').style.display = 'block';
-      }
+    function loadPreset(url, name){
+      var btn = event.currentTarget;
+      var origText = btn.innerHTML;
+      btn.innerHTML = '<span>⏳ Cargando ' + name + '...</span>';
+      btn.disabled = true;
+
+      fetch(url)
+        .then(function(res){
+          if(!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        })
+        .then(function(content){
+          var channels = parseM3uText(content);
+          if(channels.length === 0){
+            alert('No se pudieron extraer canales de este preset.');
+            return;
+          }
+          customChannels = customChannels.concat(channels);
+          localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
+          updateCounts();
+          setFilter('custom');
+          closeM3uModal();
+          alert('¡Se cargaron ' + channels.length + ' canales de ' + name + ' con éxito en Mis Canales!');
+        })
+        .catch(function(err){
+          alert('Error al cargar la lista preset: ' + err.message);
+        })
+        .finally(function(){
+          btn.innerHTML = origText;
+          btn.disabled = false;
+        });
     }
 
     function parseM3uText(text){
