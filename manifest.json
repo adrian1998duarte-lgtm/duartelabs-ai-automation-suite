@@ -8,7 +8,11 @@
   "orientation": "any",
   "background_color": "#030712",
   "theme_color": "#030712",
-  "categories": ["entertainment", "movies", "video"],
+  "categories": [
+    "entertainment",
+    "movies",
+    "video"
+  ],
   "icons": [
     {
       "src": "assets/icon_cinema.png",
@@ -34,6 +38,19 @@
       "name": "🔥 Tendencias",
       "url": "./cinema.html?cat=all",
       "description": "Ver lo más popular de la semana"
+    },
+    {
+      "name": "DuarteTV en Vivo",
+      "short_name": "DuarteTV",
+      "description": "Televisión en Vivo y Reproductor IPTV",
+      "url": "/tv",
+      "icons": [
+        {
+          "src": "assets/icon_tv.jpg",
+          "sizes": "512x512",
+          "type": "image/jpeg"
+        }
+      ]
     },
     {
       "name": "🔴 Netflix",

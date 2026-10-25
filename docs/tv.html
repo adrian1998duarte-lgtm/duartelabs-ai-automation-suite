@@ -1,0 +1,1451 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+  <title>DuarteTV Pro — Televisión en Vivo, Canales Abiertos y Reproductor IPTV</title>
+  <meta name="description" content="Sintoniza televisión en vivo gratis, canales abiertos de Honduras, México, España y deportes. Reproductor IPTV neutro compatible con listas M3U privadas.">
+  <meta name="theme-color" content="#030712">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="DuarteTV">
+  
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/jpeg" href="assets/icon_tv.jpg">
+  <link rel="apple-touch-icon" href="assets/icon_tv.jpg">
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- HLS.js for Live Streaming -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.8/dist/hls.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #030712;
+      --card-bg: rgba(15, 23, 42, 0.75);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.4);
+      --accent-cyan: #06b6d4;
+      --accent-rose: #f43f5e;
+      --accent-amber: #f59e0b;
+      --accent-green: #10b981;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      background-image: 
+        radial-gradient(circle at 15% 10%, rgba(139, 92, 246, 0.12) 0%, transparent 40%),
+        radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.10) 0%, transparent 45%),
+        radial-gradient(circle at 50% 90%, rgba(244, 63, 94, 0.08) 0%, transparent 50%);
+      background-attachment: fixed;
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #030712; }
+    ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 4px; border: 1px solid rgba(255,255,255,0.08); }
+    ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+    /* Header Nav */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      background: rgba(3, 7, 18, 0.85);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: #fff;
+    }
+    .brand img {
+      width: 38px;
+      height: 38px;
+      border-radius: 11px;
+      border: 1.5px solid rgba(139, 92, 246, 0.5);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.4);
+      object-fit: cover;
+    }
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 19px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .brand-title span { color: var(--primary); }
+    .badge-pro {
+      font-size: 10.5px;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.25) 0%, rgba(6, 182, 212, 0.25) 100%);
+      color: #c084fc;
+      border: 1px solid rgba(139, 92, 246, 0.45);
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-weight: 800;
+    }
+
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 14px;
+      border-radius: 9px;
+      font-size: 13px;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+      white-space: nowrap;
+    }
+    .nav-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      transform: translateY(-1px);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1440px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+    }
+
+    /* Video Player Stage */
+    .player-stage {
+      background: #000;
+      border-radius: 20px;
+      border: 1.5px solid rgba(139, 92, 246, 0.35);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px rgba(139, 92, 246, 0.15);
+      overflow: hidden;
+      margin-bottom: 24px;
+      position: relative;
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      background: #000;
+      aspect-ratio: 16 / 9;
+      max-height: 72vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    video {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      outline: none;
+    }
+
+    .video-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      background: radial-gradient(circle at center, #111827 0%, #030712 100%);
+      color: var(--text-muted);
+      padding: 20px;
+      text-align: center;
+      z-index: 5;
+    }
+    .video-placeholder.hidden { display: none; }
+
+    /* Player Overlay & Status */
+    .player-bar {
+      background: rgba(15, 23, 42, 0.95);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .channel-playing-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 240px;
+    }
+    .channel-playing-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: #1e293b;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      object-fit: contain;
+      padding: 4px;
+    }
+    .channel-playing-text h3 {
+      font-size: 17px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .channel-badges {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+      flex-wrap: wrap;
+    }
+    .tag-live {
+      background: rgba(244, 63, 94, 0.18);
+      color: #f43f5e;
+      border: 1px solid rgba(244, 63, 94, 0.4);
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag-live::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #f43f5e;
+      animation: pulseLive 1.5s infinite;
+    }
+    @keyframes pulseLive {
+      0% { transform: scale(0.9); opacity: 0.7; }
+      50% { transform: scale(1.3); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.7; }
+    }
+
+    .tag-country, .tag-category {
+      background: rgba(255, 255, 255, 0.06);
+      color: #94a3b8;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-size: 11.5px;
+      font-weight: 600;
+    }
+
+    .player-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .ctrl-btn {
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 7px 14px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .ctrl-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(139, 92, 246, 0.5);
+      transform: translateY(-1px);
+    }
+    .ctrl-btn.active {
+      background: rgba(245, 158, 11, 0.2);
+      border-color: #f59e0b;
+      color: #f59e0b;
+    }
+
+    /* M3U Importer Banner / Action */
+    .m3u-banner {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.15) 0%, rgba(6, 182, 212, 0.15) 100%);
+      border: 1.5px dashed rgba(139, 92, 246, 0.5);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .m3u-banner-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .m3u-banner-info span.icon {
+      font-size: 28px;
+      background: rgba(139, 92, 246, 0.25);
+      width: 50px;
+      height: 50px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .m3u-banner-info h4 {
+      font-size: 15px;
+      color: #fff;
+      font-weight: 700;
+      margin-bottom: 3px;
+    }
+    .m3u-banner-info p {
+      font-size: 12.5px;
+      color: #94a3b8;
+    }
+    .btn-m3u-modal {
+      background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-m3u-modal:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.6);
+    }
+
+    /* Filters & Search */
+    .catalog-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+    .search-input {
+      width: 100%;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1.5px solid rgba(255, 255, 255, 0.12);
+      border-radius: 14px;
+      padding: 14px 20px 14px 48px;
+      color: #fff;
+      font-size: 15px;
+      outline: none;
+      transition: all 0.25s;
+    }
+    .search-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 20px rgba(139, 92, 246, 0.25);
+      background: #0f172a;
+    }
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #64748b;
+      font-size: 18px;
+    }
+
+    .filter-tabs {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: thin;
+    }
+    .filter-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #94a3b8;
+      padding: 8px 16px;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .filter-pill:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+    .filter-pill.active {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.3) 0%, rgba(6, 182, 212, 0.3) 100%);
+      border-color: var(--primary);
+      color: #fff;
+      font-weight: 700;
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+    }
+    .filter-count {
+      font-size: 11px;
+      background: rgba(255, 255, 255, 0.15);
+      padding: 1px 6px;
+      border-radius: 999px;
+    }
+
+    /* Channels Grid */
+    .channels-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 14px;
+    }
+
+    .channel-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 14px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      position: relative;
+      overflow: hidden;
+    }
+    .channel-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(139, 92, 246, 0.5);
+      background: rgba(30, 41, 59, 0.85);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6), 0 0 20px rgba(139, 92, 246, 0.25);
+    }
+    .channel-card.is-active {
+      border-color: var(--primary);
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2) 0%, rgba(15, 23, 42, 0.9) 100%);
+      box-shadow: 0 0 25px rgba(139, 92, 246, 0.4);
+    }
+    .channel-card.is-active::after {
+      content: "EN PANTALLA";
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: var(--primary);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+    }
+
+    .card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .channel-card-logo {
+      width: 44px;
+      height: 44px;
+      border-radius: 10px;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      object-fit: contain;
+      padding: 3px;
+    }
+    .channel-fav-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #64748b;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .channel-fav-btn:hover, .channel-fav-btn.is-fav {
+      color: #f59e0b;
+      background: rgba(245, 158, 11, 0.15);
+      border-color: rgba(245, 158, 11, 0.35);
+    }
+
+    .channel-card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 36px;
+    }
+
+    .channel-card-tags {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+    .card-tag {
+      font-size: 10.5px;
+      color: #94a3b8;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 2px 6px;
+      border-radius: 4px;
+      white-space: nowrap;
+    }
+
+    /* Modals */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 23, 0.88);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      z-index: 9999999;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-box {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      border: 1.5px solid rgba(139, 92, 246, 0.5);
+      border-radius: 24px;
+      max-width: 580px;
+      width: 100%;
+      padding: 28px 24px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.95), 0 0 35px rgba(139, 92, 246, 0.3);
+      position: relative;
+      max-height: 90vh;
+      overflow-y: auto;
+    }
+    .modal-close {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #94a3b8;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { color: #fff; background: rgba(255, 255, 255, 0.18); }
+
+    .modal-form-group {
+      margin-bottom: 16px;
+    }
+    .modal-form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: #cbd5e1;
+      margin-bottom: 6px;
+    }
+    .modal-input {
+      width: 100%;
+      background: rgba(2, 6, 23, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      padding: 12px 16px;
+      color: #fff;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .modal-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 15px rgba(139, 92, 246, 0.3);
+    }
+
+    /* Footer Legal */
+    footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 30px 20px;
+      margin-top: 40px;
+      background: #020617;
+      text-align: center;
+      font-size: 12.5px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    footer a { color: #94a3b8; text-decoration: underline; }
+
+    @media (max-width: 768px) {
+      header { padding: 10px 14px; }
+      .container { padding: 12px 12px 50px; }
+      .player-bar { padding: 12px; }
+      .channels-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+      .channel-card { padding: 10px; }
+      .channel-card-logo { width: 36px; height: 36px; }
+      .channel-card-title { font-size: 12.5px; min-height: 32px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <a href="index.html" class="brand">
+      <img src="assets/icon_tv.jpg" alt="DuarteTV Logo">
+      <div class="brand-title">Duarte<span>TV</span> <span class="badge-pro">PRO</span></div>
+    </a>
+    <div class="nav-actions">
+      <button id="pwaHeaderBtn" onclick="openDownloadModal()" class="nav-btn" style="background:linear-gradient(135deg, rgba(139,92,246,0.38) 0%, rgba(6,182,212,0.38) 100%);border:1px solid rgba(139,92,246,0.75);color:#fff;font-weight:800;box-shadow:0 0 16px rgba(139,92,246,0.45);cursor:pointer;" title="Descargar o instalar DuarteTV App">
+        📥 <span>Descargar App</span>
+      </button>
+      <a href="cinema.html" class="nav-btn" style="color: #f43f5e; border-color: rgba(244,63,94,0.4);">
+        🎬 <span>DuarteCinema</span>
+      </a>
+      <a href="arcade.html" class="nav-btn" style="color: #38bdf8; border-color: rgba(6,182,212,0.4);">
+        🕹️ <span>DuarteArcade</span>
+      </a>
+      <a href="tools.html" class="nav-btn" style="color: #34d399; border-color: rgba(16,185,129,0.4);">
+        🛠️ <span>Web Suite PRO</span>
+      </a>
+      <a href="index.html" class="nav-btn">
+        🏠 <span>Inicio</span>
+      </a>
+    </div>
+  </header>
+
+  <div class="container">
+
+    <!-- Player Stage -->
+    <div class="player-stage" id="playerStage">
+      <div class="video-wrapper" id="videoWrapper">
+        <video id="tvPlayer" playsinline controls preload="auto"></video>
+        
+        <div class="video-placeholder" id="videoPlaceholder">
+          <div style="font-size: 48px;">📺</div>
+          <h2 style="color: #fff; font-size: 20px; font-weight: 800;">Selecciona un canal para comenzar</h2>
+          <p style="font-size: 13.5px; max-width: 460px;">Explora la lista de canales abiertos de Honduras, México, España y deportes, o carga tu propia lista M3U privada con un clic.</p>
+          <button onclick="playRandomChannel()" class="btn-m3u-modal" style="margin-top: 6px;">
+            🔀 Sintonizar Canal al Azar
+          </button>
+        </div>
+      </div>
+
+      <!-- Player Info & Quick Controls Bar -->
+      <div class="player-bar">
+        <div class="channel-playing-info">
+          <img id="playingLogo" src="assets/icon_tv.jpg" alt="Logo Canal" class="channel-playing-logo">
+          <div class="channel-playing-text">
+            <h3 id="playingTitle">DuarteTV Pro — Sintonizador</h3>
+            <div class="channel-badges">
+              <span class="tag-live">EN VIVO</span>
+              <span id="playingCountry" class="tag-country">🌍 Global</span>
+              <span id="playingCategory" class="tag-category">General</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="player-controls">
+          <button class="ctrl-btn" id="btnToggleFav" onclick="toggleCurrentFavorite()" title="Guardar en Favoritos">
+            ⭐ <span id="favBtnLabel">Favorito</span>
+          </button>
+          <button class="ctrl-btn" onclick="togglePip()" title="Ventana Flotante (Picture in Picture)">
+            🪟 <span>Flotante</span>
+          </button>
+          <button class="ctrl-btn" onclick="toggleFullscreen()" title="Pantalla Completa">
+            ⛶ <span>Pantalla Completa</span>
+          </button>
+          <button class="ctrl-btn" onclick="retryStream()" title="Reconectar señal">
+            ⚡ <span>Recargar</span>
+          </button>
+          <button class="ctrl-btn" onclick="playRandomChannel()" title="Cambiar a otro canal">
+            🔀 <span>Zapping</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Private M3U Playlist Banner (El Modelo Neutro) -->
+    <div class="m3u-banner">
+      <div class="m3u-banner-info">
+        <span class="icon">📡</span>
+        <div>
+          <h4>¿Tienes una lista M3U con ESPN, Nickelodeon o Champions League?</h4>
+          <p>Cárgala de forma 100% privada y segura en tu navegador. DuarteTV funciona como VLC / TiviMate neutro.</p>
+        </div>
+      </div>
+      <button onclick="openM3uModal()" class="btn-m3u-modal">
+        ➕ Cargar Lista M3U Privada
+      </button>
+    </div>
+
+    <!-- Catalog Bar: Search & Country Tabs -->
+    <div class="catalog-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Buscar canal por nombre, país o categoría (ej. Honduras, Noticias, Azteca, Deportes)..." oninput="filterChannels()">
+      </div>
+
+      <div class="filter-tabs">
+        <button class="filter-pill active" data-filter="all" onclick="setFilter('all', this)">
+          🌟 Todos <span class="filter-count" id="countAll">0</span>
+        </button>
+        <button class="filter-pill" data-filter="favs" onclick="setFilter('favs', this)">
+          ⭐ Mis Favoritos <span class="filter-count" id="countFavs">0</span>
+        </button>
+        <button class="filter-pill" data-filter="custom" onclick="setFilter('custom', this)">
+          📡 Mis Canales M3U <span class="filter-count" id="countCustom">0</span>
+        </button>
+        <button class="filter-pill" data-filter="honduras" onclick="setFilter('honduras', this)">
+          🇭🇳 Honduras <span class="filter-count" id="countHn">0</span>
+        </button>
+        <button class="filter-pill" data-filter="mexico" onclick="setFilter('mexico', this)">
+          🇲🇽 México <span class="filter-count" id="countMx">0</span>
+        </button>
+        <button class="filter-pill" data-filter="spain" onclick="setFilter('spain', this)">
+          🇪🇸 España <span class="filter-count" id="countEs">0</span>
+        </button>
+        <button class="filter-pill" data-filter="sports" onclick="setFilter('sports', this)">
+          ⚽ Deportes <span class="filter-count" id="countSports">0</span>
+        </button>
+        <button class="filter-pill" data-filter="news" onclick="setFilter('news', this)">
+          📰 Noticias 24/7 <span class="filter-count" id="countNews">0</span>
+        </button>
+        <button class="filter-pill" data-filter="kids" onclick="setFilter('kids', this)">
+          🧒 Niños & Dibujos <span class="filter-count" id="countKids">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Channels Grid -->
+    <div class="channels-grid" id="channelsGrid"></div>
+
+  </div>
+
+  <!-- Modal Cargar Lista M3U Privada -->
+  <div id="m3uModal" class="modal-overlay" onclick="if(event.target === this) closeM3uModal();">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeM3uModal()">✕</button>
+      
+      <div style="text-align: center; margin-bottom: 20px;">
+        <div style="font-size: 38px; margin-bottom: 6px;">📡</div>
+        <h2 style="color: #fff; font-size: 21px; font-weight: 800; font-family: 'Space Grotesk', sans-serif;">Cargar Canales / Lista M3U Privada</h2>
+        <p style="color: #94a3b8; font-size: 13px; margin-top: 4px;">Reproducción neutra estilo VLC / TiviMate. Tus listas se guardan solo en tu dispositivo.</p>
+      </div>
+
+      <!-- Tab selector in modal -->
+      <div style="display: flex; gap: 8px; margin-bottom: 18px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">
+        <button id="modalTabUrl" class="filter-pill active" onclick="switchModalTab('url')">🌐 Enlace URL M3U</button>
+        <button id="modalTabFile" class="filter-pill" onclick="switchModalTab('file')">📁 Subir Archivo .m3u</button>
+        <button id="modalTabSingle" class="filter-pill" onclick="switchModalTab('single')">➕ Canal Único</button>
+      </div>
+
+      <!-- Tab 1: URL M3U -->
+      <div id="tabContentUrl">
+        <div class="modal-form-group">
+          <label>URL de tu lista M3U / M3U8:</label>
+          <input type="url" id="m3uUrlInput" class="modal-input" placeholder="https://ejemplo.com/tu-lista.m3u">
+          <div style="font-size: 11.5px; color: #64748b; margin-top: 6px;">
+            Introduce la URL que te provee tu servicio IPTV o una lista pública de internet.
+          </div>
+        </div>
+        <button onclick="loadM3uFromUrl()" class="btn-m3u-modal" style="width: 100%;">
+          ⚡ Descargar y Cargar Canales
+        </button>
+      </div>
+
+      <!-- Tab 2: File .m3u -->
+      <div id="tabContentFile" style="display: none;">
+        <div class="modal-form-group">
+          <label>Selecciona tu archivo .m3u o .m3u8 desde tu PC o celular:</label>
+          <input type="file" id="m3uFileInput" class="modal-input" accept=".m3u,.m3u8,text/plain">
+        </div>
+        <button onclick="loadM3uFromFile()" class="btn-m3u-modal" style="width: 100%;">
+          📂 Procesar Archivo M3U
+        </button>
+      </div>
+
+      <!-- Tab 3: Single Channel -->
+      <div id="tabContentSingle" style="display: none;">
+        <div class="modal-form-group">
+          <label>Nombre del Canal:</label>
+          <input type="text" id="singleNameInput" class="modal-input" placeholder="Ej: ESPN Deportes HD / Nickelodeon">
+        </div>
+        <div class="modal-form-group">
+          <label>URL del Stream (.m3u8):</label>
+          <input type="url" id="singleUrlInput" class="modal-input" placeholder="https://servidor.com/live/canal.m3u8">
+        </div>
+        <div class="modal-form-group">
+          <label>Categoría:</label>
+          <input type="text" id="singleCatInput" class="modal-input" placeholder="Deportes, Infantiles, Cine...">
+        </div>
+        <button onclick="addSingleChannel()" class="btn-m3u-modal" style="width: 100%;">
+          ➕ Guardar Canal
+        </button>
+      </div>
+
+      <!-- Clear Custom Channels -->
+      <div style="margin-top: 24px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center;">
+        <span style="font-size: 12px; color: #64748b;" id="customStatusText">0 canales personalizados</span>
+        <button onclick="clearCustomChannels()" style="background: none; border: 1px solid rgba(244,63,94,0.4); color: #f43f5e; font-size: 12px; padding: 5px 12px; border-radius: 8px; cursor: pointer;">
+          🗑️ Borrar mi lista
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Download Center Modal (PWA & APK) -->
+  <div id="downloadCenterModal" onclick="if(event.target === this) closeDownloadModal();" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:9999999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%);border:1.5px solid rgba(139,92,246,0.5);border-radius:24px;max-width:520px;width:100%;padding:28px 24px;box-shadow:0 25px 60px rgba(0,0,0,0.95), 0 0 35px rgba(139,92,246,0.3);position:relative;">
+      <button onclick="closeDownloadModal()" style="position:absolute;top:16px;right:18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#94a3b8;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+
+      <div style="text-align:center;margin-bottom:22px;">
+        <img src="assets/icon_tv.jpg" alt="DuarteTV Icon" style="width:72px;height:72px;border-radius:18px;margin:0 auto 12px;display:block;box-shadow:0 0 30px rgba(139,92,246,0.45);border:1.5px solid rgba(255,255,255,0.2);">
+        <h2 style="color:#fff;font-size:22px;font-weight:800;font-family:'Space Grotesk',sans-serif;margin-bottom:4px;">Centro Oficial de Descargas</h2>
+        <p style="color:#94a3b8;font-size:13px;">Instala DuarteTV en tu Celular, Smart TV o Computadora</p>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(139,92,246,0.35);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:24px;background:rgba(139,92,246,0.15);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;">⚡</div>
+            <div>
+              <div style="font-weight:700;color:#fff;font-size:14px;">Instalación 1-Clic Oficial (PWA)</div>
+              <div style="font-size:11.5px;color:#94a3b8;">Android, Windows, Mac (Sin descargas pesadas)</div>
+            </div>
+          </div>
+          <button onclick="triggerPwaInstall(); closeDownloadModal();" style="background:linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);color:#fff;border:none;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(139,92,246,0.4);">
+            Instalar Ahora
+          </button>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(6,182,212,0.35);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:24px;background:rgba(6,182,212,0.15);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;">🤖</div>
+            <div>
+              <div style="font-weight:700;color:#fff;font-size:14px;">Descargar APK para Android</div>
+              <div style="font-size:11.5px;color:#94a3b8;">Instalador para Celulares, Tablets y Smart TV</div>
+            </div>
+          </div>
+          <button onclick="downloadAndroidApk()" style="background:linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);color:#fff;border:none;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;">
+            📥 Descargar APK
+          </button>
+        </div>
+
+        <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div style="font-size:24px;background:rgba(255,255,255,0.08);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;">🍎</div>
+            <div>
+              <div style="font-weight:700;color:#fff;font-size:14px;">Apple iPhone / iPad</div>
+              <div style="font-size:11.5px;color:#94a3b8;">Compartir ⎋ ➔ Agregar al inicio ➕</div>
+            </div>
+          </div>
+          <button onclick="showIosInstallModal(); closeDownloadModal();" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;">
+            Ver Guía
+          </button>
+        </div>
+      </div>
+
+      <div style="text-align:center;font-size:11.5px;color:#64748b;">
+        🔒 100% Seguro · Sin virus ni malware · Reproducción nítida en Full HD
+      </div>
+    </div>
+  </div>
+
+  <!-- iOS Guide Modal -->
+  <div id="iosInstallModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:9999999;align-items:center;justify-content:center;padding:20px;">
+    <div style="background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%);border:1px solid rgba(139,92,246,0.5);border-radius:20px;max-width:420px;width:100%;padding:24px;text-align:center;">
+      <img src="assets/icon_tv.jpg" alt="DuarteTV" style="width:64px;height:64px;border-radius:16px;margin:0 auto 14px;display:block;">
+      <h3 style="color:#fff;font-size:19px;font-weight:800;margin-bottom:8px;">Instalar DuarteTV en iPhone / iPad</h3>
+      <p style="color:#94a3b8;font-size:13px;line-height:1.5;margin-bottom:18px;">Para disfrutar de canales en vivo a pantalla completa sin barras de navegador, sigue estos 2 pasos en Safari:</p>
+      <div style="text-align:left;background:rgba(255,255,255,0.05);border-radius:12px;padding:14px;margin-bottom:20px;display:flex;flex-direction:column;gap:12px;font-size:13px;color:#e2e8f0;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="background:rgba(139,92,246,0.25);color:#c084fc;font-weight:800;padding:4px 9px;border-radius:8px;">1</span>
+          <span>Toca el botón <strong>Compartir</strong> <span style="font-size:16px;">⎋</span> abajo en Safari.</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span style="background:rgba(6,182,212,0.25);color:#38bdf8;font-weight:800;padding:4px 9px;border-radius:8px;">2</span>
+          <span>Desliza y selecciona <strong>"Agregar a pantalla de inicio"</strong> ➕.</span>
+        </div>
+      </div>
+      <button onclick="document.getElementById('iosInstallModal').style.display='none'" style="background:linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);color:#fff;border:none;width:100%;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">¡Entendido!</button>
+    </div>
+  </div>
+
+  <!-- Footer Legal & Disclaimer -->
+  <footer>
+    <div style="max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 8px;">
+      <div style="font-weight: 700; color: #cbd5e1;">DuarteTV Pro — Software Libre de Reproducción Multimedia</div>
+      <div>
+        <strong>Aviso Legal y Descargo de Responsabilidad:</strong> DuarteTV opera exclusivamente como un reproductor multimedia y directorio de señales públicas de libre emisión (Free-To-Air / FTA) bajo el modelo abierto de IPTV-Org. DuarteTV <strong>no aloja, no transmite, no re-codifica ni vende</strong> señales audiovisuales protegidas por derechos de autor en sus servidores. Cualquier lista M3U agregada a través del reproductor es procesada en el almacenamiento local del dispositivo del usuario bajo su propia y exclusiva responsabilidad personal.
+      </div>
+      <div style="margin-top: 6px;">
+        Contacto DMCA / Solicitudes de retiro: <a href="mailto:adrian1998duarte@gmail.com">adrian1998duarte@gmail.com</a> · DuarteLabs Suite
+      </div>
+    </div>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    // Embedded Curated Channel Catalog
+    var defaultChannels = [{"id":"ch_1","name":"Alfa & Omega Vision","logo":"https://i.imgur.com/4BSKCQT.png","category":"General","country":"Honduras","url":"https://srv.panelcast.net/dorian/dorian/playlist.m3u8"},{"id":"ch_2","name":"Alsacias Television","logo":"https://i.imgur.com/SbuD1UW.png","category":"General","country":"Honduras","url":"https://s.emisoras.tv:8081/atv/index.m3u8"},{"id":"ch_3","name":"Aviva TV","logo":"https://i.imgur.com/0jMM4TQ.png","category":"Undefined","country":"Honduras","url":"https://video.misistemareseller.com/atvhonduras/atvhonduras/playlist.m3u8"},{"id":"ch_4","name":"AZA TV HD","logo":"https://i.imgur.com/Jytpy32.png","category":"General","country":"Honduras","url":"https://tv.webmedialive.com/azatvhn/live/playlist.m3u8"},{"id":"ch_5","name":"Azteca Honduras","logo":"https://i.imgur.com/sxFh1dw.png","category":"General","country":"Honduras","url":"https://mdstrm.com/live-stream-playlist/65a1d2fd7e7f14355550d570.m3u8"},{"id":"ch_6","name":"Buendia TV","logo":"https://i.imgur.com/m5hNyNE.png","category":"News","country":"Honduras","url":"https://servilive.com:3508/stream/play.m3u8"},{"id":"ch_7","name":"Campus TV","logo":"https://i.imgur.com/E1TmADM.png","category":"Education","country":"Honduras","url":"https://5e85d90130e77.streamlock.net/6052/6052/playlist.m3u8"},{"id":"ch_8","name":"Canal 5 El Lider","logo":"https://i.imgur.com/4hEYFa9.png","category":"General","country":"Honduras","url":"http://186.33.26.18:8000/play/a0s4/index.m3u8"},{"id":"ch_9","name":"Canal 7 Talanga Vision","logo":"https://i.ibb.co/0cqcyz4/Logo-2020-azul-El-lider-de-la-zona.png","category":"General","country":"Honduras","url":"https://amixtv.com:8081/talangavision/index.m3u8"},{"id":"ch_10","name":"Canal 11","logo":"https://i.imgur.com/Sht2Rd4.png","category":"General","country":"Honduras","url":"http://190.11.225.124:5000/live/canal11_hd/playlist.m3u8"},{"id":"ch_11","name":"Canal 32 STO","logo":"https://i.imgur.com/dS4Gb0Q.jpg","category":"General","country":"Honduras","url":"https://s.emisoras.tv:8081/stocanal32hn/playlist.m3u8"},{"id":"ch_12","name":"Canal 51","logo":"https://i.imgur.com/xhVEEA1.png","category":"General","country":"Honduras","url":"https://live.cn51hn.com/live/cn51.m3u8"},{"id":"ch_13","name":"CCI Channel","logo":"https://i.imgur.com/c6hm03f.png","category":"Religious","country":"Honduras","url":"https://livestream.mediacci.com/ccitv/index.m3u8"},{"id":"ch_14","name":"Cholusat Sur 36","logo":"https://i.imgur.com/6qL2hE5.png","category":"News","country":"Honduras","url":"http://audiotvserver.net:1935/livemedia/cholusat/playlist.m3u8"},{"id":"ch_15","name":"Choluteca TV","logo":"https://i.imgur.com/mpc4Isd.png","category":"Religious","country":"Honduras","url":"https://s.emisoras.tv:8081/cholutecatv/index.m3u8"},{"id":"ch_16","name":"CHTV","logo":"https://i.imgur.com/QLQgwc6.png","category":"General","country":"Honduras","url":"https://viewhn.com/chtv/live/playlist.m3u8"},{"id":"ch_17","name":"CVA TV","logo":"https://i.imgur.com/R8P5enu.jpg","category":"General","country":"Honduras","url":"http://190.124.161.21:8086/cvatv/live.m3u8"},{"id":"ch_18","name":"Deportes TVC","logo":"https://i.imgur.com/Y1t8xkL.png","category":"Sports","country":"Honduras","url":"http://162.19.255.233:8080/play/UNbAl57p9hXZClOu56FCTYXmD-MOS3u5IUkeXPpBt80/m3u8"},{"id":"ch_19","name":"Dios Te Ve","logo":"https://i.imgur.com/7hNwUV2.png","category":"Religious","country":"Honduras","url":"https://s.emisoras.tv:8081/diostevetv/index.m3u8"},{"id":"ch_20","name":"Dios Te Ve Kids","logo":"https://i.imgur.com/GnZicVH.png","category":"Kids","country":"Honduras","url":"https://s.emisoras.tv:8081/diostevekids/index.m3u8"},{"id":"ch_21","name":"Dios Tv Talanga","logo":"https://i.ibb.co/mb8F7R1/Db52f621d30793337de1cdcfc4f02be1.png","category":"Religious","country":"Honduras","url":"https://tv.webmedialive.com/unciontv/live/playlist.m3u8"},{"id":"ch_22","name":"Ebenezer TV","logo":"https://i.imgur.com/IC30j61.png","category":"Religious","country":"Honduras","url":"https://5e85d90130e77.streamlock.net/6010/ngrp:6010_all/playlist.m3u8"},{"id":"ch_23","name":"EDN TV","logo":"https://i.imgur.com/5fPsYTz.png","category":"Entertainment","country":"Honduras","url":"https://60417ddeaf0d9.streamlock.net/edntv/videoedntv/playlist.m3u8"},{"id":"ch_24","name":"Girasol TV (1080i)","logo":"https://i.imgur.com/2t7A2yg.png","category":"Entertainment","country":"Honduras","url":"https://s.emisoras.tv:8081/girasoltv/index.m3u8"},{"id":"ch_25","name":"Globo TV","logo":"https://i.imgur.com/hxGvZ77.png","category":"General","country":"Honduras","url":"https://stream.radiosmundiales.com/hls/globotvhonduras/globotvhonduras.m3u8"},{"id":"ch_26","name":"Guayape TV","logo":"https://i.imgur.com/cteBdAJ.jpg","category":"General","country":"Honduras","url":"https://tv.bitstreaming.net:8443/live/guayapetv.m3u8"},{"id":"ch_27","name":"HCH","logo":"https://i.imgur.com/2CB5ezq.png","category":"News","country":"Honduras","url":"https://live.streamhch.com/live/streams/hch1.m3u8"},{"id":"ch_28","name":"ICN Digital","logo":"https://i.imgur.com/UCZVQgj.png","category":"News","country":"Honduras","url":"https://streaming.icndigital.com/live_output/icn_live_stream_1.m3u8"},{"id":"ch_29","name":"Imagen FM 105.1","logo":"https://i.ibb.co/C9zjz9p/343159606-190989583743350-3489987129696505785-n.jpg","category":"Music","country":"Honduras","url":"https://streaming.imagenfm105-1.com/hls/stream.m3u8"},{"id":"ch_30","name":"Inmaculada TV","logo":"https://i.imgur.com/2lisFJV.png","category":"Religious","country":"Honduras","url":"https://live20.bozztv.com/akamaissh101/ssh101/radiotvcholy/playlist.m3u8"},{"id":"ch_31","name":"JBN TV","logo":"https://i.imgur.com/4EbHIvf.png","category":"Religious","country":"Honduras","url":"https://tv.webmedialive.com/jbn_live/enlace/playlist.m3u8"},{"id":"ch_32","name":"Jehova TV","logo":"https://i.imgur.com/ylZKG57.png","category":"Religious","country":"Honduras","url":"https://mp.panelchs.com:1936/8038/8038/playlist.m3u8"},{"id":"ch_33","name":"JEMR TV [Geo-blocked]","logo":"https://i.imgur.com/CnR2m66.png","category":"Religious","country":"Honduras","url":"https://tv.webmedialive.com/jmrtv/live/playlist.m3u8"},{"id":"ch_34","name":"Kerusso TV","logo":"https://i.imgur.com/S79uof0.png","category":"Religious","country":"Honduras","url":"https://s.emisoras.tv:8081/kerussotv/index.m3u8"},{"id":"ch_35","name":"La 98.1 TV","logo":"https://i.imgur.com/7380kTN.png","category":"Music","country":"Honduras","url":"https://6019dcac4147f.streamlock.net:9443/la98/Invosa/playlist.m3u8"},{"id":"ch_36","name":"8NTV","logo":"https://i.imgur.com/7ecgGIG.png","category":"General","country":"México","url":"https://60417ddeaf0d9.streamlock.net/ntv/videontv/playlist.m3u8"},{"id":"ch_37","name":"15TV","logo":"https://i.imgur.com/CZ8LKmA.png","category":"General","country":"México","url":"https://servilive.com:3380/live/v3n6thy7glive.m3u8"},{"id":"ch_38","name":"Acustik TV","logo":"https://i.imgur.com/dhiNIng.png","category":"News","country":"México","url":"https://s5.mexside.net:1936/clientetv/clientetv/playlist.m3u8"},{"id":"ch_39","name":"ADN 40","logo":"https://i.imgur.com/Og17U9N.png","category":"News","country":"México","url":"https://mdstrm.com/live-stream-playlist/60b578b060947317de7b57ac.m3u8"},{"id":"ch_40","name":"Alcance TV","logo":"https://i.imgur.com/5nYjRlb.png","category":"Religious","country":"México","url":"https://5bf8041cb3fed.streamlock.net/AlcanceTV/AlcanceTV/playlist.m3u8"},{"id":"ch_41","name":"AMX Noticias","logo":"https://i.imgur.com/snIU1UA.jpg","category":"News","country":"México","url":"https://5e50264bd6766.streamlock.net/mexiquense2/videomexiquense2/playlist.m3u8"},{"id":"ch_42","name":"Antena TV","logo":"https://i.imgur.com/1sAgSME.png","category":"General","country":"México","url":"https://5ca9af4645e15.streamlock.net/grd/videogrd/playlist.m3u8"},{"id":"ch_43","name":"Asi Sucede Guanajuato","logo":"https://i.imgur.com/6W7HUtG.png","category":"General","country":"México","url":"https://stream.oursnetworktv.com/latin/encoder13/playlist.m3u8"},{"id":"ch_44","name":"AXN Latin America Mexico","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/AXN_logo_%282015%29.svg/960px-AXN_logo_%282015%29.svg.png","category":"Movies","country":"México","url":"http://190.11.225.124:5000/live/axn_hd/playlist.m3u8"},{"id":"ch_45","name":"AyM Sports","logo":"https://i.imgur.com/yu3Bpbd.png","category":"Sports","country":"México","url":"http://168.196.127.137:6001/play/a06v/index.m3u8"},{"id":"ch_46","name":"Azteca 7","logo":"https://i.imgur.com/UtFXjIn.png","category":"General","country":"México","url":"http://187.245.231.226:8000/play/a0uz/index.m3u8"},{"id":"ch_47","name":"Azteca Deportes Network","logo":"https://match-images.icdb.tv/5913207f2494844101287828e87625eb.jpg","category":"Sports","country":"México","url":"http://209.14.115.253:8081/azteca-deportes/index.m3u8"},{"id":"ch_48","name":"Azteca Internacional","logo":"https://upload.wikimedia.org/wikipedia/commons/e/eb/Azteca_Internacional_logo_2023.png","category":"Entertainment","country":"México","url":"https://azt-mun.otteravision.com/azt/mun/mun.m3u8"},{"id":"ch_49","name":"Azteca Uno","logo":"https://i.imgur.com/rRxgBtI.png","category":"General","country":"México","url":"http://38.44.109.41:8003/play/a033/index.m3u8"},{"id":"ch_50","name":"B15 Fresnillo","logo":"https://i.imgur.com/kaUhEQy.png","category":"General","country":"México","url":"https://s5.mexside.net:1936/lsac/lsac/playlist.m3u8"},{"id":"ch_51","name":"B15 Zacatecas","logo":"https://i.imgur.com/kaUhEQy.png","category":"General","country":"México","url":"https://s5.mexside.net:1936/envio2/envio2/playlist.m3u8"},{"id":"ch_52","name":"BAMOS TV","logo":"https://i.imgur.com/ntK4D64.png","category":"Religious","country":"México","url":"https://video2.getstreamhosting.com:19360/8092/8092.m3u8"},{"id":"ch_53","name":"Bandamax","logo":"https://i.imgur.com/4DfnOTA.png","category":"Music","country":"México","url":"http://181.78.106.127:5000/play/ca064/index.m3u8"},{"id":"ch_54","name":"bitMe","logo":"https://i.imgur.com/79hrcx8.png","category":"Entertainment","country":"México","url":"https://cablered.iptvperu.tv:1936/cablered/bitme-srt_new/playlist.m3u8"},{"id":"ch_55","name":"California Medios TV","logo":"https://i.imgur.com/IDvpRNI.png","category":"General","country":"México","url":"https://s5.mexside.net:1936/medios/medios/playlist.m3u8"},{"id":"ch_56","name":"Canal 5","logo":"https://i.imgur.com/uZdVSoW.png","category":"General","country":"México","url":"http://45.181.87.106/CANAL5HD/index.m3u8"},{"id":"ch_57","name":"Canal 5 XET-TDT","logo":"https://i.imgur.com/cBC2Jre.png","category":"General","country":"México","url":"http://45.5.118.152:8000/play/a03i/index.m3u8"},{"id":"ch_58","name":"Canal 5 TV Cozumel","logo":"https://i.imgur.com/0nzNMuP.jpeg","category":"General","country":"México","url":"https://video0.rogohosting.com:19360/tvcozumel/tvcozumel.m3u8"},{"id":"ch_59","name":"Canal 10 Cancun","logo":"https://i.imgur.com/TvTn3hO.png","category":"Undefined","country":"México","url":"http://stream2.dynalias.com:1935/live/tvlive1/playlist.m3u8"},{"id":"ch_60","name":"Canal 10 Durango","logo":"https://i.imgur.com/H34quHQ.png","category":"Undefined","country":"México","url":"https://5e50264bd6766.streamlock.net/canal10durango/videocanal10durango/playlist.m3u8"},{"id":"ch_61","name":"Canal 13 Bajio","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_1c690d40dfb711eeabd66ba1b9ba93a1/index.fmp4.m3u8"},{"id":"ch_62","name":"Canal 13 Campeche","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_38c14fb0dfbd11ee8847c303f3096501/index.fmp4.m3u8"},{"id":"ch_63","name":"Canal 13 Chiapas","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_55784330f36711ee97a7a19a8448730c/index.fmp4.m3u8"},{"id":"ch_64","name":"Canal 13 Guadalajara","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_fa0ed380dfbe11eeabd66ba1b9ba93a1/index.fmp4.m3u8"},{"id":"ch_65","name":"Canal 13 Michoacan","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_0424eb20dfbf11ee821911a0b6ba5091/index.fmp4.m3u8"},{"id":"ch_66","name":"Canal 13 Oaxaca","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_0bd65ed0dfbf11ee848c53d8a686e201/index.fmp4.m3u8"},{"id":"ch_67","name":"Canal 13 Puebla","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_19c1e870dfbf11eeadd41749c3286f4a/index.fmp4.m3u8"},{"id":"ch_68","name":"Canal 13 Tabasco","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_185f5f10888711ee83e2f144889e3879/index.fmp4.m3u8"},{"id":"ch_69","name":"Canal 13 Tapachula","logo":"https://i.imgur.com/SlycKgZ.png","category":"General","country":"México","url":"https://stream-207963.castr.net/65313d270e749722b6474684/live_2b589fc0dfbf11ee9ce13534ca2a46c3/index.fmp4.m3u8"},{"id":"ch_70","name":"Canal 22 Nacional [Geo-blocked]","logo":"https://i.imgur.com/6qiYvhe.png","category":"Undefined","country":"México","url":"https://5fc584f3f19c9.streamlock.net/canal22/smil:canal22.smil/playlist.m3u8"},{"id":"ch_71","name":"3Cat Cameres del temps","logo":"https://i.imgur.com/zXy2kbe.png","category":"Public","country":"España","url":"https://directes-tv-int.3catdirectes.cat/live-content/beauties-hls/master.m3u8"},{"id":"ch_72","name":"3Cat Exclusiu 1 [Geo-blocked]","logo":"https://i.imgur.com/YQvLPT1.png","category":"News","country":"España","url":"https://directes-tv-cat.3catdirectes.cat/live-content/oca1-hls/master.m3u8"},{"id":"ch_73","name":"3Cat Exclusiu 2 [Geo-blocked]","logo":"https://i.imgur.com/YQvLPT1.png","category":"News","country":"España","url":"https://directes-tv-cat.3catdirectes.cat/live-content/oca2-hls/master.m3u8"},{"id":"ch_74","name":"3Cat Exclusiu 3 [Geo-blocked]","logo":"https://i.imgur.com/YQvLPT1.png","category":"News","country":"España","url":"https://directes-tv-cat.3catdirectes.cat/live-content/oca3-hls/master.m3u8"},{"id":"ch_75","name":"3Cat Plats bruts","logo":"https://i.imgur.com/49ZENis.png","category":"Classic","country":"España","url":"https://fast-tailor.3catdirectes.cat/v1/channel/ccma-channel2/hls.m3u8"},{"id":"ch_76","name":"3CatInfo","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/69/3CatInfo_logo.svg/960px-3CatInfo_logo.svg.png","category":"News","country":"España","url":"https://directes-tv-int.3catdirectes.cat/live-origin/canal324-hls/master.m3u8"},{"id":"ch_77","name":"7TV","logo":"https://i.imgur.com/rnzMR9R.png","category":"General","country":"España","url":"https://especial7tv.gestec-video.com/hls/regional.m3u8"},{"id":"ch_78","name":"7TV Cordoba","logo":"https://i.imgur.com/rnzMR9R.png","category":"General","country":"España","url":"https://streaming004.gestec-video.com/hls/7TVCORDOBA.m3u8"},{"id":"ch_79","name":"7TV Jaen","logo":"https://i.imgur.com/rnzMR9R.png","category":"General","country":"España","url":"https://streaming004.gestec-video.com/hls/7TVJAEN.m3u8"},{"id":"ch_80","name":"7TV Jerez","logo":"https://i.imgur.com/rnzMR9R.png","category":"General","country":"España","url":"https://streaming004.gestec-video.com/hls/7TVJEREZ.m3u8"},{"id":"ch_81","name":"7TV Malaga","logo":"https://i.imgur.com/rnzMR9R.png","category":"General","country":"España","url":"https://streaming004.gestec-video.com/hls/7TVMALAGA.m3u8"},{"id":"ch_82","name":"7TV Sevilla","logo":"https://i.imgur.com/rnzMR9R.png","category":"General","country":"España","url":"https://especial7tv.gestec-video.com/hls/7TVSEVILLA.m3u8"},{"id":"ch_83","name":"8 La Marina TV","logo":"https://i.imgur.com/BTJvvBK.png","category":"General","country":"España","url":"https://streaming005.gestec-video.com/hls/canal24.m3u8"},{"id":"ch_84","name":"9 la Loma TV [Geo-blocked]","logo":"https://i.imgur.com/WQP3el2.png","category":"General","country":"España","url":"https://9laloma.tv/live.m3u8"},{"id":"ch_85","name":"12tv","logo":"https://i.imgur.com/VSTgXsh.png","category":"General","country":"España","url":"https://cloud.fastchannel.es/mic/manifiest/hls/12tv/12tv.m3u8"},{"id":"ch_86","name":"24 Horas","logo":"https://i.ibb.co/21sXZ3GT/24h.png","category":"News","country":"España","url":"https://ztnr.rtve.es/ztnr/1694255.m3u8"},{"id":"ch_87","name":"24 Horas Canarias","logo":"https://i.ibb.co/21sXZ3GT/24h.png","category":"News","country":"España","url":"http://185.47.212.25:8080/24h_HD/index.m3u8"},{"id":"ch_88","name":"24 Horas Catalunya","logo":"https://i.ibb.co/21sXZ3GT/24h.png","category":"News","country":"España","url":"https://ztnr.rtve.es/ztnr/4952053.m3u8"},{"id":"ch_89","name":"28 kanala","logo":"https://i.imgur.com/DyvK28q.png","category":"General","country":"España","url":"https://streaming.28kanala.eus/hls/z.m3u8"},{"id":"ch_90","name":"like Gecko) Chrome/120.0.0.0 Safari/537.36\" group-title=\"General\",101tv Antequera [Geo-blocked]","logo":"https://i.imgur.com/GzI3RC4.png","category":"General","country":"España","url":"https://liveingesta318.cdnmedia.tv/101weblive/smil:antequera.smil/playlist.m3u8"},{"id":"ch_91","name":"101tv Cadiz","logo":"https://i.imgur.com/GzI3RC4.png","category":"General","country":"España","url":"https://streaming101tv.es:19360/cadiz/cadiz.m3u8"},{"id":"ch_92","name":"101tv Malaga","logo":"https://i.imgur.com/GzI3RC4.png","category":"News","country":"España","url":"https://liveingesta318.cdnmedia.tv/101weblive/smil:malaga.smil/playlist.m3u8"},{"id":"ch_93","name":"101tv Sevilla","logo":"https://i.imgur.com/GzI3RC4.png","category":"General","country":"España","url":"https://liveingesta318.cdnmedia.tv/101weblive/smil:sevilla.smil/playlist.m3u8"},{"id":"ch_94","name":"A Punt","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Logotip_d%27%C3%80_Punt_%282017-%29.svg/960px-Logotip_d%27%C3%80_Punt_%282017-%29.svg.png","category":"General","country":"España","url":"https://fastly.live.brightcove.com/1846756479408303045/eu-central-1/6057955885001/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJob3N0IjoiZWFxNWh4LmVncmVzcy53YzQ3bTEiLCJhY2NvdW50X2lkIjoiNjA1Nzk1NTg4NTAwMSIsImVobiI6ImZhc3RseS5saXZlLmJyaWdodGNvdmUuY29tIiwiaXNzIjoiYmxpdmUtcGxheWJhY2stc291cmNlLWFwaSIsInN1YiI6InBhdGhtYXB0b2tlbiIsImF1ZCI6WyI2MDU3OTU1ODg1MDAxIl0sImp0aSI6IjE4NDY3NTY0Nzk0MDgzMDMwNDUifQ.o6wb_VA-TVxl3ERgr7FKLlaTjY7smErmsf73QAydySE/playlist-hls-dvr.m3u8"},{"id":"ch_95","name":"Activa TV","logo":"https://i.imgur.com/VCUZKiw.png","category":"Music","country":"España","url":"https://streamtv.mediasector.es/hls/activatv/index.m3u8"},{"id":"ch_96","name":"Actualidad 360","logo":"https://i.imgur.com/3YeTu0n.png","category":"News","country":"España","url":"https://jmp2.uk/plu-67517fae5534bb0008187997.m3u8"},{"id":"ch_97","name":"Alacanti TV","logo":"https://i.imgur.com/pcWU6e1.png","category":"General","country":"España","url":"https://streaming01.gestec-video.com/hls/artequatreAlacanti.m3u8"},{"id":"ch_98","name":"Alcarria TV","logo":"https://i.imgur.com/pzJAYan.png","category":"General","country":"España","url":"http://217.182.77.27/live/alcarriatv-livestream.m3u8"},{"id":"ch_99","name":"Ana y los 7","logo":"https://i.imgur.com/X5g6gXS.png","category":"Series","country":"España","url":"https://jmp2.uk/plu-5f1acce7f17797000718f9be.m3u8"},{"id":"ch_100","name":"Andromeda","logo":"https://i.imgur.com/6ot2lmd.png","category":"Series","country":"España","url":"https://jmp2.uk/plu-6850335b5965a2fd49f7e36d.m3u8"},{"id":"ch_101","name":"5Plus","logo":"https://i.imgur.com/L3RA9Lv.png","category":"Sports","country":"Internacional","url":"http://89.33.29.115:8080/sportplus/index.m3u8"},{"id":"ch_102","name":"5Stars","logo":"https://i.imgur.com/IQtAKIa.png","category":"Sports","country":"Internacional","url":"http://89.33.29.115:8080/IL_5Stars/index.m3u8"},{"id":"ch_103","name":"30A Golf Kingdom","logo":"https://i.imgur.com/Lv53nh4.png","category":"Sports","country":"Internacional","url":"https://30a-tv.com/feeds/vidaa/golf.m3u8"},{"id":"ch_104","name":"A Spor SD","logo":"https://i.imgur.com/ZhkZzLf.png","category":"Sports","country":"Internacional","url":"https://rnttwmjcin.turknet.ercdn.net/lcpmvefbyo/aspor/aspor.m3u8"},{"id":"ch_105","name":"ACC Digital Network","logo":"https://i.imgur.com/V6Kaqha.png","category":"Sports","country":"Internacional","url":"https://raycom-accdn-firetv.amagi.tv/playlist.m3u8"},{"id":"ch_106","name":"ACC Network","logo":"https://i.imgur.com/TpCkbkT.png","category":"Sports","country":"Internacional","url":"http://23.239.31.26:8989/accnetwork/index.m3u8"},{"id":"ch_107","name":"ACI Sport TV SD","logo":"https://i.imgur.com/U8cHMOt.png","category":"Sports","country":"Internacional","url":"https://webstream.multistream.it/memfs/e2cb3629-c1a2-495b-b43a-9eb386f04ed8.m3u8"},{"id":"ch_108","name":"Adjarasport 1","logo":"https://i.imgur.com/SVV5xHC.png","category":"Sports","country":"Internacional","url":"https://live20.bozztv.com/dvrfl05/gin-adjara/index.m3u8"},{"id":"ch_109","name":"ADO TV","logo":"https://i.imgur.com/pxFamLr.png","category":"Kids","country":"Internacional","url":"https://strhls.streamakaci.tv/ortb/ortb2-multi/playlist.m3u8"},{"id":"ch_110","name":"Africa 24 Sport","logo":"https://i0.wp.com/africa24tv.com/wp-content/uploads/2023/12/LOGO-AFRICASPORT-4-HD-sans-fond.png?fit=512%2C107&ssl=1","category":"News","country":"Internacional","url":"https://africa24.vedge.infomaniak.com/livecast/ik:africa24sport/manifest.m3u8"},{"id":"ch_111","name":"Al Iraqia Sport","logo":"https://i.imgur.com/DrrlxTO.png","category":"Sports","country":"Internacional","url":"https://imn-live.esite-lab.com/hls/iraqia-sports-1.m3u8"},{"id":"ch_112","name":"Alfa Sport","logo":"https://i.imgur.com/vhMPYIW.png","category":"Sports","country":"Internacional","url":"https://dev.aftermind.xyz/edge-hls/unitrust/alfasports/index.m3u8?token=8TXWzhY3h6jrzqEqx"},{"id":"ch_113","name":"American Ninja Warrior","logo":"https://raw.githubusercontent.com/RoqueDJ/iptv-svg/main/1792421696158.png","category":"Sports","country":"Internacional","url":"https://d4whmvwm0rdvi.cloudfront.net/10007/99951318/hls/master.m3u8?ads.xumo_channelId=99951318&ads.asnw=169843&ads.afid=405342864&ads.sfid=19647852&ads.csid=xumo_web_NBCUAmericanNinjaWarrior_ssai_cro&ads._fw_is_lat=0&ads._fw_us_privacy=&ads._fw_coppa=0&ads._fw_did=a5090924-15b1-4b7f-b6cd-2f06e2ba51e1&ads._fw_vcid2=512116:a5090924-15b1-4b7f-b6cd-2f06e2ba51e1&ads._fw_app_bundle=web.xumo.com&ads._fw_app_store_url=&ads._fw_content_category=&ads._fw_content_genre=&ads._fw_content_language=en&ads._fw_content_rating=&ads._fw_deviceMake=GitHubAction&ads._fw_device_model=PythonScript&ads._fw_deviceType=3-Connected_TV&ads.appVersion=1.0.0&ads.appName=XumoPlay&ads.xumo_contentId=4063&ads.xumo_contentName=NBCUAmericanNinjaWarrior&ads.xumo_providerId=4063&ads.xumo_providerName=NBCUAmericanNinjaWarrior&ads.channelId=99951318"},{"id":"ch_114","name":"Arena4","logo":"https://i.imgur.com/uAaQDr6.png","category":"Sports","country":"Internacional","url":"http://88.212.15.17/live/arena4/index.m3u8"},{"id":"ch_115","name":"like Gecko) Chrome/149.0.0.0 Safari/537.3\" group-title=\"Sports\",Arena Sport 1","logo":"https://i.imgur.com/2qf67zW.png","category":"Sports","country":"Internacional","url":"http://88.212.15.17/live/test_arenasport/playlist.m3u8"},{"id":"ch_116","name":"Arena Sport 1 Premium (Serbia)","logo":"https://i.imgur.com/csv6YsL.png","category":"Sports","country":"Internacional","url":"http://telekomsrbije.com:2095/play/lhpjmkfVyhON1JAiZCx7vmRdlEHaaMaQAQw3LRAakpnghBMtR57sXXgLEXZF8gVD"},{"id":"ch_117","name":"Arena Sport 1 Premium (Slovenia)","logo":"https://i.imgur.com/csv6YsL.png","category":"Sports","country":"Internacional","url":"http://telekomsrbije.com:2095/play/lhpjmkfVyhON1JAiZCx7vhWLdkJ_3C0RZgs4W19uhl8S3kU0l__4SxERjFMDgcT6"},{"id":"ch_118","name":"like Gecko) Chrome/149.0.0.0 Safari/537.3\" group-title=\"Sports\",Arena Sport 2","logo":"https://i.imgur.com/Yq3Jf19.png","category":"Sports","country":"Internacional","url":"http://88.212.15.17/live/test_arenasport_dva/playlist.m3u8"},{"id":"ch_119","name":"Arena Sport Premium M1","logo":"https://tvarenasport.mk/wp-content/themes/tvarenasport-mk/assets/channels/arena-m1.png","category":"Sports","country":"Internacional","url":"http://telekomsrbije.com:2095/play/lhpjmkfVyhON1JAiZCx7vgvje3t-Jiqa5d94ZBmKAqQgIFxl-Ch6B37eGpkVDb28"},{"id":"ch_120","name":"Arena Sport Premium M2","logo":"https://tvarenasport.mk/wp-content/themes/tvarenasport-mk/assets/channels/arena-m2.png","category":"Sports","country":"Internacional","url":"http://telekomsrbije.com:2095/play/lhpjmkfVyhON1JAiZCx7vgvje3t-Jiqa5d94ZBmKAqR25sVNOuyj97sUY8aJBFf4"},{"id":"ch_121","name":"Arena Sport Premium M3","logo":"https://tvarenasport.mk/wp-content/themes/tvarenasport-mk/assets/channels/arena-m3.png","category":"Sports","country":"Internacional","url":"http://telekomsrbije.com:2095/play/lhpjmkfVyhON1JAiZCx7vgvje3t-Jiqa5d94ZBmKAqSVr5S9_a_TNo_sg7gE1yvH"},{"id":"ch_122","name":"Arryadia","logo":"https://i.imgur.com/XjzK3gZ.png","category":"Sports","country":"Internacional","url":"http://149.100.11.252:8000/play/a065/index.m3u8"},{"id":"ch_123","name":"AS3 Sport TV","logo":"https://i.ibb.co/bRmGbsyV/A3-SPORTTV.jpg","category":"Sports","country":"Internacional","url":"https://streamtv.as3sport.online:3394/hybrid/play.m3u8"},{"id":"ch_124","name":"Astrahan.Ru Sport","logo":"https://i.imgur.com/BKaEtqL.png","category":"Sports","country":"Internacional","url":"https://streaming.astrakhan.ru/astrakhanrusporthd/playlist.m3u8"},{"id":"ch_125","name":"ATG Live","logo":"https://i.imgur.com/bPWFXkL.png","category":"Sports","country":"Internacional","url":"https://kanal75xto-llhls.akamaized.net/live/Data/atg-kanal-15-02a-rr/HLS-Legacy-HL/atg-kanal-15-02a-rr.m3u8"},{"id":"ch_126","name":"Awapa Sports TV","logo":"https://i.imgur.com/MNw5cJH.jpg","category":"Sports","country":"Internacional","url":"https://mgv-awapa.akamaized.net/hls/live/2104282/MGV_CHANNEL15/master.m3u8"},{"id":"ch_127","name":"AyM Sports","logo":"https://i.imgur.com/yu3Bpbd.png","category":"Sports","country":"Internacional","url":"http://168.196.127.137:6001/play/a06v/index.m3u8"},{"id":"ch_128","name":"Azteca Deportes Network","logo":"https://match-images.icdb.tv/5913207f2494844101287828e87625eb.jpg","category":"Sports","country":"Internacional","url":"http://209.14.115.253:8081/azteca-deportes/index.m3u8"},{"id":"ch_129","name":"Bahrain Sports 1","logo":"https://i.imgur.com/fBpLsbC.png","category":"Sports","country":"Internacional","url":"https://5c7b683162943.streamlock.net/live/ngrp:sportsone_all/playlist.m3u8"},{"id":"ch_130","name":"Bahrain Sports 2","logo":"https://i.imgur.com/ZkuZmIo.png","category":"Sports","country":"Internacional","url":"https://5c7b683162943.streamlock.net/live/ngrp:bahrainsportstwo_all/playlist.m3u8"},{"id":"ch_131","name":"4Dmas Noticias TV","logo":"https://i.ibb.co/1fb5BtN/unnamed.png","category":"News","country":"Internacional","url":"https://rds3.desdeparaguay.net/4dmasnoticiastv/4dmasnoticiastv/playlist.m3u8"},{"id":"ch_132","name":"4TV News","logo":"https://jiotvimages.cdn.jio.com/dare_images/images/4_TV.png","category":"News","country":"Internacional","url":"https://cdn.pishow.tv/ott/live/1007/master.m3u8"},{"id":"ch_133","name":"7 News","logo":"https://i.imgur.com/PTl92P5.png","category":"News","country":"Internacional","url":"https://sscsott.com/7news/live/index.m3u8"},{"id":"ch_134","name":"9 Plus News","logo":"https://jiotvimages.cdn.jio.com/dare_images/images/9plusnews.png","category":"News","country":"Internacional","url":"https://stream.ottlive.co.in/9plusnews/index.m3u8"},{"id":"ch_135","name":"22Scope News","logo":"https://jiotvimages.cdn.jio.com/dare_images/images/22Scope_News.png","category":"News","country":"Internacional","url":"https://thelegitpro.in/HDlive/22scope/index.fmp4.m3u8"},{"id":"ch_136","name":"24/7 Canal de Noticias","logo":"https://i.imgur.com/4hDCB1M.png","category":"News","country":"Internacional","url":"https://panel.host-live.com:19360/cn247tv/cn247tv.m3u8"},{"id":"ch_137","name":"24 News","logo":"https://sund-images.sunnxt.com/202222/300x300_24News_202222_d63feca0-79ae-47ea-b75a-66c17d456f4c.png","category":"News","country":"Internacional","url":"https://mumt07.tangotv.in/zHjX9OFlTWENTYFOURNEWS/index.m3u8"},{"id":"ch_138","name":"24 News HD","logo":"https://upload.wikimedia.org/wikipedia/en/9/93/24_News_HD_Logo.png","category":"News","country":"Internacional","url":"https://cdn4.mjunoon.tv:8087/streamtest/146M/chunks.m3u8"},{"id":"ch_139","name":"92 News HD","logo":"https://i.imgur.com/eqKrL9S.png","category":"News","country":"Internacional","url":"http://92news.vdn.dstreamone.net/92newshd/92hd/playlist.m3u8"},{"id":"ch_140","name":"100% NEWS","logo":"https://i.imgur.com/bSXKdK5.png","category":"Business","country":"Internacional","url":"http://85.238.112.40:8810/hls_sec/239.33.16.32-.m3u8"},{"id":"ch_141","name":"360° News","logo":"https://i.imgur.com/YXDeX8q.png","category":"News","country":"Internacional","url":"https://live-vgtrksmotrim.cdnvideo.ru/vgtrksmotrim/smotrim-live-03-srt.smil/playlist.m3u8"},{"id":"ch_142","name":"365 News","logo":"https://i.imgur.com/8I6PWof.png","category":"News","country":"Internacional","url":"https://cdn4.mjunoon.tv:8087/streamtest/140M/chunks.m3u8"},{"id":"ch_143","name":"Aaj News","logo":"https://i.imgur.com/VNGnHYz.png","category":"News","country":"Internacional","url":"http://115.42.65.142:9981/stream/channelid/750987367"},{"id":"ch_144","name":"ABC News","logo":"https://i.imgur.com/BrW7gk8.png","category":"News","country":"Internacional","url":"https://abc-news-dmd-streams-1.akamaized.net/out/v1/701126012d044971b3fa89406a440133/index.m3u8"},{"id":"ch_145","name":"ABC News Live 1","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023560/abcnewshudson1/master.m3u8"},{"id":"ch_146","name":"ABC News Live 2","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023561/abcnewshudson2/master.m3u8"},{"id":"ch_147","name":"ABC News Live 3","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023562/abcnewshudson3/master.m3u8"},{"id":"ch_148","name":"ABC News Live 4","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023563/abcnewshudson4/master.m3u8"},{"id":"ch_149","name":"ABC News Live 5","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023564/abcnewshudson5/master.m3u8"},{"id":"ch_150","name":"ABC News Live 6","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023565/abcnewshudson6/master.m3u8"},{"id":"ch_151","name":"ABC News Live 7","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023566/abcnewshudson7/master.m3u8"},{"id":"ch_152","name":"ABC News Live 8","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023567/abcnewshudson8/master.m3u8"},{"id":"ch_153","name":"ABC News Live 9","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023568/abcnewshudson9/master.m3u8"},{"id":"ch_154","name":"ABC News Live 10","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://abcnews-streams.akamaized.net/hls/live/2023569/abcnewshudson10/master.m3u8"},{"id":"ch_155","name":"ABC News Live","logo":"https://upload.wikimedia.org/wikipedia/commons/thumb/6/63/ABC_News_Live_logo_2021.svg/960px-ABC_News_Live_logo_2021.svg.png","category":"News","country":"Internacional","url":"https://jmp2.uk/plu-6508be683a0d700008c534e4.m3u8"},{"id":"ch_156","name":"ABN News","logo":"https://i.imgur.com/R7BThkR.jpeg","category":"News","country":"Internacional","url":"http://115.42.65.142:9981/stream/channelid/966869781"},{"id":"ch_157","name":"ABP News","logo":"https://dtil.tmsimg.com/assets/s158138_ld_h15_aa.png?lock=720x540","category":"News","country":"Internacional","url":"https://d1rc86nwwc9fag.cloudfront.net/vglive-sk-472500/abpnews/master.m3u8"},{"id":"ch_158","name":"Africanews English","logo":"https://i.imgur.com/5UxU4zc.png","category":"News","country":"Internacional","url":"https://cdn-euronews.akamaized.net/live/eds/africanews-en/25049/index.m3u8"},{"id":"ch_159","name":"Africanews French","logo":"https://i.imgur.com/5UxU4zc.png","category":"News","country":"Internacional","url":"https://cdn-euronews.akamaized.net/live/eds/africanews-fr/25050/index.m3u8"},{"id":"ch_160","name":"Aik News SD","logo":"https://i.imgur.com/svPXoAP.png","category":"News","country":"Internacional","url":"https://s2.ideationtec.live/Pnn/Pnn.m3u8?token=KsR3k27_sH3n-2"},{"id":"ch_161","name":"3ABN Kids","logo":"https://i.imgur.com/z3npqO1.png","category":"Animation","country":"Internacional","url":"https://3abn.bozztv.com/3abn2/Kids_live/smil:Kids_live.smil/playlist.m3u8"},{"id":"ch_162","name":"4 Fun Kids (576i)","logo":"https://i.imgur.com/2JO5Y8c.png","category":"Kids","country":"Internacional","url":"https://stream.4fun.tv:8889/hls/4fk.m3u8"},{"id":"ch_163","name":"9Go! [Geo-blocked]","logo":"https://i.imgur.com/RLijQI8.png","category":"Entertainment","country":"Internacional","url":"https://9now-livestreams.akamaized.net/hls/live/2008312/go-syd/master.m3u8"},{"id":"ch_164","name":"13 Kids","logo":"https://i.imgur.com/8WJUbSD.png","category":"Kids","country":"Internacional","url":"https://origin.dpsgo.com/ssai/event/LhHrVtyeQkKZ-Ye_xEU75g/master.m3u8"},{"id":"ch_165","name":"90's Kids","logo":"https://images.pluto.tv/channels/6452c814939a590008567a3b/colorLogoPNG_1731836283044.png","category":"Kids","country":"Internacional","url":"https://jmp2.uk/plu-6452c814939a590008567a3b.m3u8"},{"id":"ch_166","name":"90s Kids TV 2","logo":"https://images.pluto.tv/channels/6452c77ed3fdde00080eb3a8/colorLogoPNG.png","category":"Kids","country":"Internacional","url":"https://jmp2.uk/plu-6452c77ed3fdde00080eb3a8.m3u8"},{"id":"ch_167","name":"ABC Entertains","logo":"https://upload.wikimedia.org/wikipedia/en/thumb/3/35/ABC_Entertains_logo.svg/960px-ABC_Entertains_logo.svg.png","category":"Education","country":"Internacional","url":"https://c.mjh.nz/abc-me.m3u8"},{"id":"ch_168","name":"ABC Kids","logo":"https://static.wikia.nocookie.net/logopedia/images/2/29/ABC_Kids_%282020%29.svg/revision/latest/scale-to-width-down/512","category":"Kids","country":"Internacional","url":"https://c.mjh.nz/abc-kids.m3u8"},{"id":"ch_169","name":"ADO TV","logo":"https://i.imgur.com/pxFamLr.png","category":"Kids","country":"Internacional","url":"https://strhls.streamakaci.tv/ortb/ortb2-multi/playlist.m3u8"},{"id":"ch_170","name":"Afarin Baxcha","logo":"https://i.postimg.cc/4xRkBDRx/Afarin-Baxcha-200.png","category":"Kids","country":"Internacional","url":"https://5dcabf026b188.streamlock.net/afarinTV/livestream/playlist.m3u8"},{"id":"ch_171","name":"Afarin TV","logo":"https://i.imgur.com/6MnXD7g.png","category":"Kids","country":"Internacional","url":"https://65f16f0fdfc51.streamlock.net/afarinTV/livestream/playlist.m3u8"},{"id":"ch_172","name":"Akili Kids!","logo":"https://i.imgur.com/xFm2co6.png","category":"Kids","country":"Internacional","url":"https://m6.livecdn.io/akilikids.co.ke/akilikids.smil/playlist.m3u8"},{"id":"ch_173","name":"Amou Yazid TV","logo":"https://i.imgur.com/L8UPGPC.png","category":"Kids","country":"Internacional","url":"http://mkstream.servehttp.com:1940/AmouYazid/ay1/playlist.m3u8"},{"id":"ch_174","name":"Ani","logo":"https://i.imgur.com/i2AP0hp.png","category":"Kids","country":"Internacional","url":"http://46.32.176.50/anitv/index.m3u8"},{"id":"ch_175","name":"Aqlvoy","logo":"https://i.imgur.com/ekF5cAi.png","category":"Kids","country":"Internacional","url":"https://stream8.cinerama.uz/1205/tracks-v1a1/mono.m3u8"},{"id":"ch_176","name":"Atfal & Mawaheb TV","logo":"https://i.imgur.com/Y2BqP9m.png","category":"Kids","country":"Internacional","url":"https://5aafcc5de91f1.streamlock.net/atfal1.com/atfal2/playlist.m3u8"},{"id":"ch_177","name":"Avatar (Germany)","logo":"https://images.pluto.tv/channels/656df599c0fc8800089c75ab/colorLogoPNG.png","category":"Animation","country":"Internacional","url":"https://jmp2.uk/plu-656df599c0fc8800089c75ab.m3u8"},{"id":"ch_178","name":"Avatar (Sweden)","logo":"https://images.pluto.tv/channels/61c09b48d6d97900076e91c5/colorLogoPNG.png","category":"Animation","country":"Internacional","url":"https://jmp2.uk/plu-61c09b48d6d97900076e91c5.m3u8"},{"id":"ch_179","name":"Avatar: A lenda de Aang","logo":"https://images.pluto.tv/channels/6759eeb1bd523200083b4f29/colorLogoPNG.png","category":"Kids","country":"Internacional","url":"https://jmp2.uk/plu-6759eeb1bd523200083b4f29.m3u8"},{"id":"ch_180","name":"Avatar: La Leyenda de Aang","logo":"https://images.pluto.tv/channels/6759ee82bd523200083b4f0f/colorLogoPNG.png","category":"Kids","country":"Internacional","url":"https://jmp2.uk/plu-6759ee82bd523200083b4f0f.m3u8"}];
+
+    // State
+    var customChannels = [];
+    var favorites = JSON.parse(localStorage.getItem('duarte_tv_favs') || '[]');
+    var currentFilter = 'all';
+    var currentChannel = null;
+    var hls = null;
+    var deferredPwaPrompt = null;
+
+    // Load custom channels from localStorage
+    try {
+      customChannels = JSON.parse(localStorage.getItem('duarte_tv_custom') || '[]');
+    } catch(e) {
+      customChannels = [];
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', function(){
+      updateCounts();
+      renderChannels();
+
+      // Check if URL has a specific channel
+      var params = new URLSearchParams(window.location.search);
+      var chId = params.get('ch');
+      if(chId){
+        var found = getAllChannels().find(function(c){ return c.id === chId; });
+        if(found) playChannel(found);
+      }
+    });
+
+    function getAllChannels(){
+      return customChannels.concat(defaultChannels);
+    }
+
+    function updateCounts(){
+      var all = getAllChannels();
+      document.getElementById('countAll').textContent = all.length;
+      document.getElementById('countFavs').textContent = favorites.length;
+      document.getElementById('countCustom').textContent = customChannels.length;
+      document.getElementById('customStatusText').textContent = customChannels.length + ' canales personalizados guardados';
+      
+      document.getElementById('countHn').textContent = all.filter(function(c){ return c.country === 'Honduras'; }).length;
+      document.getElementById('countMx').textContent = all.filter(function(c){ return c.country === 'México'; }).length;
+      document.getElementById('countEs').textContent = all.filter(function(c){ return c.country === 'España'; }).length;
+      document.getElementById('countSports').textContent = all.filter(function(c){ return (c.category||'').toLowerCase().includes('deport') || (c.category||'').toLowerCase().includes('sport'); }).length;
+      document.getElementById('countNews').textContent = all.filter(function(c){ return (c.category||'').toLowerCase().includes('notic') || (c.category||'').toLowerCase().includes('news'); }).length;
+      document.getElementById('countKids').textContent = all.filter(function(c){ return (c.category||'').toLowerCase().includes('niñ') || (c.category||'').toLowerCase().includes('kid') || (c.category||'').toLowerCase().includes('anim'); }).length;
+    }
+
+    function setFilter(filter, btn){
+      currentFilter = filter;
+      document.querySelectorAll('.filter-pill').forEach(function(p){ p.classList.remove('active'); });
+      if(btn) btn.classList.add('active');
+      renderChannels();
+    }
+
+    function filterChannels(){
+      renderChannels();
+    }
+
+    function renderChannels(){
+      var grid = document.getElementById('channelsGrid');
+      var query = (document.getElementById('searchInput').value || '').toLowerCase().trim();
+      var channels = getAllChannels();
+
+      var filtered = channels.filter(function(c){
+        // Category / Tab filter
+        if(currentFilter === 'favs'){
+          if(favorites.indexOf(c.id) === -1) return false;
+        } else if(currentFilter === 'custom'){
+          if(!c.isCustom) return false;
+        } else if(currentFilter === 'honduras'){
+          if(c.country !== 'Honduras') return false;
+        } else if(currentFilter === 'mexico'){
+          if(c.country !== 'México') return false;
+        } else if(currentFilter === 'spain'){
+          if(c.country !== 'España') return false;
+        } else if(currentFilter === 'sports'){
+          var cat = (c.category || '').toLowerCase();
+          if(!cat.includes('deport') && !cat.includes('sport')) return false;
+        } else if(currentFilter === 'news'){
+          var cat = (c.category || '').toLowerCase();
+          if(!cat.includes('notic') && !cat.includes('news')) return false;
+        } else if(currentFilter === 'kids'){
+          var cat = (c.category || '').toLowerCase();
+          if(!cat.includes('niñ') && !cat.includes('kid') && !cat.includes('anim')) return false;
+        }
+
+        // Search Query
+        if(query){
+          var nameMatch = c.name.toLowerCase().includes(query);
+          var countryMatch = (c.country || '').toLowerCase().includes(query);
+          var catMatch = (c.category || '').toLowerCase().includes(query);
+          if(!nameMatch && !countryMatch && !catMatch) return false;
+        }
+
+        return true;
+      });
+
+      if(filtered.length === 0){
+        grid.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; color: #64748b;">' +
+          '<div style="font-size: 36px; margin-bottom: 8px;">📡</div>' +
+          '<h3 style="color: #cbd5e1; font-size: 16px;">No se encontraron canales con este filtro</h3>' +
+          '<p style="font-size: 13px; margin-top: 4px;">Intenta cambiar la búsqueda o carga tu propia lista M3U privada.</p>' +
+        '</div>';
+        return;
+      }
+
+      var html = '';
+      filtered.forEach(function(c){
+        var isActive = currentChannel && currentChannel.id === c.id;
+        var isFav = favorites.indexOf(c.id) !== -1;
+        var flag = c.country === 'Honduras' ? '🇭🇳' : c.country === 'México' ? '🇲🇽' : c.country === 'España' ? '🇪🇸' : '🌍';
+        var logoSrc = c.logo ? c.logo : 'assets/icon_tv.jpg';
+
+        html += '<div class="channel-card ' + (isActive ? 'is-active' : '') + '" onclick="playChannelById(\'' + c.id + '\')">' +
+          '<div class="card-top">' +
+            '<img class="channel-card-logo" src="' + logoSrc + '" alt="' + escapeHtml(c.name) + '" onerror="this.onerror=null;this.src=\'assets/icon_tv.jpg\';">' +
+            '<button class="channel-fav-btn ' + (isFav ? 'is-fav' : '') + '" onclick="event.stopPropagation(); toggleFavorite(\'' + c.id + '\', this);" title="Marcar Favorito">' +
+              (isFav ? '★' : '☆') +
+            '</button>' +
+          '</div>' +
+          '<div class="channel-card-title">' + escapeHtml(c.name) + '</div>' +
+          '<div class="channel-card-tags">' +
+            '<span class="card-tag">' + flag + ' ' + escapeHtml(c.country || 'Global') + '</span>' +
+            '<span class="card-tag">' + escapeHtml(c.category || 'General') + '</span>' +
+          '</div>' +
+        '</div>';
+      });
+
+      grid.innerHTML = html;
+    }
+
+    function playChannelById(id){
+      var channel = getAllChannels().find(function(c){ return c.id === id; });
+      if(channel) playChannel(channel);
+    }
+
+    function playChannel(c){
+      currentChannel = c;
+      var video = document.getElementById('tvPlayer');
+      var placeholder = document.getElementById('videoPlaceholder');
+      if(placeholder) placeholder.classList.add('hidden');
+
+      // Update UI Header
+      document.getElementById('playingTitle').textContent = c.name;
+      document.getElementById('playingLogo').src = c.logo || 'assets/icon_tv.jpg';
+      document.getElementById('playingCategory').textContent = c.category || 'General';
+      
+      var flag = c.country === 'Honduras' ? '🇭🇳 ' : c.country === 'México' ? '🇲🇽 ' : c.country === 'España' ? '🇪🇸 ' : '🌍 ';
+      document.getElementById('playingCountry').textContent = flag + (c.country || 'Global');
+
+      updateFavButtonState();
+      renderChannels(); // re-render to highlight active card
+
+      // Scroll to player smoothly on small screens
+      if(window.innerWidth < 800){
+        var stage = document.getElementById('playerStage');
+        if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      // Stream Playback Engine
+      if(hls){
+        hls.destroy();
+        hls = null;
+      }
+
+      var streamUrl = c.url;
+
+      if(Hls.isSupported()){
+        hls = new Hls({
+          enableWorker: true,
+          lowLatencyMode: true,
+          backBufferLength: 60
+        });
+
+        hls.loadSource(streamUrl);
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, function(){
+          video.play().catch(function(e){
+            console.log('Autoplay bloqueado, esperando interacción:', e);
+          });
+        });
+
+        hls.on(Hls.Events.ERROR, function(event, data){
+          if(data.fatal){
+            switch(data.type){
+              case Hls.ErrorTypes.NETWORK_ERROR:
+                console.warn('Network error en señal de streaming, reintentando...');
+                hls.startLoad();
+                break;
+              case Hls.ErrorTypes.MEDIA_ERROR:
+                console.warn('Media error en codec de streaming, recuperando...');
+                hls.recoverMediaError();
+                break;
+              default:
+                console.error('Fatal HLS error, destruyendo instancia:', data);
+                hls.destroy();
+                break;
+            }
+          }
+        });
+
+      } else if(video.canPlayType('application/vnd.apple.mpegurl')){
+        // Native Safari HLS
+        video.src = streamUrl;
+        video.play().catch(function(e){ console.log('Autoplay Safari:', e); });
+      } else {
+        video.src = streamUrl;
+      }
+    }
+
+    function retryStream(){
+      if(currentChannel){
+        playChannel(currentChannel);
+      }
+    }
+
+    function playRandomChannel(){
+      var channels = getAllChannels();
+      if(channels.length === 0) return;
+      var randomIdx = Math.floor(Math.random() * channels.length);
+      playChannel(channels[randomIdx]);
+    }
+
+    // Favorites
+    function toggleFavorite(id, btn){
+      var idx = favorites.indexOf(id);
+      if(idx === -1){
+        favorites.push(id);
+        if(btn) { btn.classList.add('is-fav'); btn.textContent = '★'; }
+      } else {
+        favorites.splice(idx, 1);
+        if(btn) { btn.classList.remove('is-fav'); btn.textContent = '☆'; }
+      }
+      localStorage.setItem('duarte_tv_favs', JSON.stringify(favorites));
+      updateCounts();
+      updateFavButtonState();
+      if(currentFilter === 'favs') renderChannels();
+    }
+
+    function toggleCurrentFavorite(){
+      if(!currentChannel) return;
+      toggleFavorite(currentChannel.id);
+    }
+
+    function updateFavButtonState(){
+      var btn = document.getElementById('btnToggleFav');
+      var label = document.getElementById('favBtnLabel');
+      if(!btn || !currentChannel) return;
+
+      var isFav = favorites.indexOf(currentChannel.id) !== -1;
+      if(isFav){
+        btn.classList.add('active');
+        label.textContent = 'Guardado ★';
+      } else {
+        btn.classList.remove('active');
+        label.textContent = 'Favorito ☆';
+      }
+    }
+
+    // Fullscreen & PiP
+    function toggleFullscreen(){
+      var wrapper = document.getElementById('videoWrapper') || document.getElementById('playerStage');
+      if(!document.fullscreenElement){
+        if(wrapper.requestFullscreen){
+          wrapper.requestFullscreen();
+        } else if(wrapper.webkitRequestFullscreen){
+          wrapper.webkitRequestFullscreen();
+        }
+      } else {
+        if(document.exitFullscreen){
+          document.exitFullscreen();
+        }
+      }
+    }
+
+    function togglePip(){
+      var video = document.getElementById('tvPlayer');
+      if(document.pictureInPictureElement){
+        document.exitPictureInPicture();
+      } else if(video && document.pictureInPictureEnabled){
+        video.requestPictureInPicture().catch(function(e){
+          alert('Tu navegador no soporta Picture-in-Picture o la señal no permite modo flotante.');
+        });
+      }
+    }
+
+    // Modal M3U Logic
+    function openM3uModal(){
+      var m = document.getElementById('m3uModal');
+      if(m) m.style.display = 'flex';
+    }
+
+    function closeM3uModal(){
+      var m = document.getElementById('m3uModal');
+      if(m) m.style.display = 'none';
+    }
+
+    function switchModalTab(tab){
+      document.getElementById('modalTabUrl').classList.remove('active');
+      document.getElementById('modalTabFile').classList.remove('active');
+      document.getElementById('modalTabSingle').classList.remove('active');
+
+      document.getElementById('tabContentUrl').style.display = 'none';
+      document.getElementById('tabContentFile').style.display = 'none';
+      document.getElementById('tabContentSingle').style.display = 'none';
+
+      if(tab === 'url'){
+        document.getElementById('modalTabUrl').classList.add('active');
+        document.getElementById('tabContentUrl').style.display = 'block';
+      } else if(tab === 'file'){
+        document.getElementById('modalTabFile').classList.add('active');
+        document.getElementById('tabContentFile').style.display = 'block';
+      } else if(tab === 'single'){
+        document.getElementById('modalTabSingle').classList.add('active');
+        document.getElementById('tabContentSingle').style.display = 'block';
+      }
+    }
+
+    function parseM3uText(text){
+      var lines = text.split('\n');
+      var parsed = [];
+      var current = null;
+
+      for(var i = 0; i < lines.length; i++){
+        var line = lines[i].trim();
+        if(line.startsWith('#EXTINF:')){
+          var logoMatch = line.match(/tvg-logo="([^"]*)"/);
+          var groupMatch = line.match(/group-title="([^"]*)"/);
+          var parts = line.split(',');
+          var name = parts.length > 1 ? parts.slice(1).join(',').trim() : 'Canal M3U';
+
+          current = {
+            id: 'custom_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+            name: name,
+            logo: logoMatch ? logoMatch[1] : '',
+            category: groupMatch && groupMatch[1] ? groupMatch[1].split(';')[0] : 'Privado',
+            country: 'M3U Privado',
+            url: '',
+            isCustom: true
+          };
+        } else if(line.startsWith('http://') || line.startsWith('https://')){
+          if(current){
+            current.url = line;
+            parsed.push(current);
+            current = null;
+          }
+        }
+      }
+      return parsed;
+    }
+
+    function loadM3uFromUrl(){
+      var url = (document.getElementById('m3uUrlInput').value || '').trim();
+      if(!url){
+        alert('Por favor introduce una URL válida de lista M3U.');
+        return;
+      }
+
+      var btn = event.target;
+      var origText = btn.textContent;
+      btn.textContent = '⏳ Descargando lista...';
+      btn.disabled = true;
+
+      fetch(url)
+        .then(function(res){
+          if(!res.ok) throw new Error('HTTP ' + res.status);
+          return res.text();
+        })
+        .then(function(content){
+          var channels = parseM3uText(content);
+          if(channels.length === 0){
+            alert('No se pudieron extraer canales de este archivo M3U. Revisa que tenga formato #EXTINF.');
+            return;
+          }
+          customChannels = customChannels.concat(channels);
+          localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
+          updateCounts();
+          setFilter('custom');
+          closeM3uModal();
+          alert('¡Se agregaron con éxito ' + channels.length + ' canales a tu lista privada!');
+        })
+        .catch(function(err){
+          alert('No se pudo descargar la lista por bloqueo CORS o enlace caído. Te recomendamos descargar el archivo .m3u y subirlo directamente desde la pestaña "📁 Subir Archivo .m3u". Error: ' + err.message);
+        })
+        .finally(function(){
+          btn.textContent = origText;
+          btn.disabled = false;
+        });
+    }
+
+    function loadM3uFromFile(){
+      var fileInput = document.getElementById('m3uFileInput');
+      if(!fileInput.files || fileInput.files.length === 0){
+        alert('Por favor selecciona un archivo .m3u o .m3u8 desde tu dispositivo.');
+        return;
+      }
+
+      var file = fileInput.files[0];
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var text = e.target.result;
+        var channels = parseM3uText(text);
+        if(channels.length === 0){
+          alert('No se pudieron extraer canales del archivo. Revisa que contenga etiquetas #EXTINF.');
+          return;
+        }
+        customChannels = customChannels.concat(channels);
+        localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
+        updateCounts();
+        setFilter('custom');
+        closeM3uModal();
+        alert('¡Se agregaron con éxito ' + channels.length + ' canales a tu lista!');
+      };
+      reader.readAsText(file);
+    }
+
+    function addSingleChannel(){
+      var name = (document.getElementById('singleNameInput').value || '').trim();
+      var url = (document.getElementById('singleUrlInput').value || '').trim();
+      var cat = (document.getElementById('singleCatInput').value || '').trim() || 'Deportes';
+
+      if(!name || !url){
+        alert('Por favor introduce el nombre y la URL del canal.');
+        return;
+      }
+
+      var newCh = {
+        id: 'single_' + Date.now(),
+        name: name,
+        logo: '',
+        category: cat,
+        country: 'Privado',
+        url: url,
+        isCustom: true
+      };
+
+      customChannels.unshift(newCh);
+      localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
+      updateCounts();
+      setFilter('custom');
+      closeM3uModal();
+      playChannel(newCh);
+      alert('¡Canal agregado con éxito!');
+    }
+
+    function clearCustomChannels(){
+      if(confirm('¿Seguro que deseas eliminar todos tus canales personalizados guardados?')){
+        customChannels = [];
+        localStorage.removeItem('duarte_tv_custom');
+        updateCounts();
+        setFilter('all');
+        renderChannels();
+      }
+    }
+
+    // Modal Download Center (PWA / APK)
+    function openDownloadModal(){
+      var m = document.getElementById('downloadCenterModal');
+      if(m) m.style.display = 'flex';
+    }
+    function closeDownloadModal(){
+      var m = document.getElementById('downloadCenterModal');
+      if(m) m.style.display = 'none';
+    }
+    function showIosInstallModal(){
+      var m = document.getElementById('iosInstallModal');
+      if(m) m.style.display = 'flex';
+    }
+    function downloadAndroidApk(){
+      var link = document.createElement('a');
+      link.href = 'downloads/DuarteCinema.apk';
+      link.download = 'DuarteCinema.apk';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      closeDownloadModal();
+    }
+    function triggerPwaInstall(){
+      if(deferredPwaPrompt){
+        deferredPwaPrompt.prompt();
+        deferredPwaPrompt.userChoice.then(function(choiceResult){
+          deferredPwaPrompt = null;
+        });
+      } else {
+        var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        if(isIos){
+          showIosInstallModal();
+        } else {
+          alert('Para instalar DuarteTV: Haz clic en los tres puntos (⋮) de tu navegador o en el icono de instalación (🖥️ / 📲) en la barra de direcciones y selecciona "Instalar aplicación".');
+        }
+      }
+    }
+
+    window.addEventListener('beforeinstallprompt', function(e){
+      e.preventDefault();
+      deferredPwaPrompt = e;
+    });
+
+    function escapeHtml(str){
+      if(!str) return '';
+      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+  </script>
+</body>
+</html>
