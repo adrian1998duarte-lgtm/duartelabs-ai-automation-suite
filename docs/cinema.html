@@ -844,13 +844,13 @@ footer {
             ⚡ Servidor 1 (PlayLatin HD)
           </button>
           <button class="server-btn" id="btnServer2" onclick="switchServer(2, this)">
-            🛡️ Servidor 2 (VidLink Pro Sin Anuncios)
+            🛡️ Servidor 2 (Videasy Pro 4K)
           </button>
           <button class="server-btn" id="btnServer3" onclick="switchServer(3, this)">
-            🚀 Servidor 3 (AutoEmbed Global)
+            🚀 Servidor 3 (VidSrc Global)
           </button>
           <button class="server-btn" id="btnServer4" onclick="switchServer(4, this)">
-            🎬 Servidor 4 (Trailer Oficial)
+            🌐 Servidor 4 (VidSrc PM Espejo)
           </button>
         </div>
       </div>
@@ -900,7 +900,7 @@ footer {
           Cargando buffer de video en Full HD · Si tarda, cambia de servidor en 1 clic
         </div>
       </div>
-      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen onload="onIframeStreamLoaded()"></iframe>
+      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen onload="onIframeStreamLoaded()"></iframe>
     </div>
   </div>
 
@@ -1852,26 +1852,26 @@ function updateServerButtonLabels(){
   var isKdrama = currentItem && (currentItem.isKdorama || currentItem.originalLanguage === 'ko' || (currentItem.genres && currentItem.genres.indexOf('kdoramas') !== -1) || (currentItem.originCountry && currentItem.originCountry.indexOf('KR') !== -1));
 
   if(isKdrama){
-    if(b1) b1.innerHTML = '⚡ Servidor 1 (VidLink Pro 4K · Sub Español)';
+    if(b1) b1.innerHTML = '⚡ Servidor 1 (Videasy HD Pro · Principal)';
     if(b2) b2.innerHTML = '🚀 Servidor 2 (VidSrc Stream Coreano)';
-    if(b3) b3.innerHTML = '🌐 Servidor 3 (Videasy CDN Rápido)';
-    if(b4) b4.innerHTML = '🎬 Servidor 4 (VidSrc ME Espejo)';
+    if(b3) b3.innerHTML = '🌐 Servidor 3 (VidSrc PM Espejo)';
+    if(b4) b4.innerHTML = '🎬 Servidor 4 (Smashy Multi-Host)';
   } else {
     if(activeLang === 'latino'){
       if(b1) b1.innerHTML = '⚡ Servidor 1 (PlayLatin HD)';
-      if(b2) b2.innerHTML = '🛡️ Servidor 2 (VidLink Pro Sin Anuncios)';
+      if(b2) b2.innerHTML = '🛡️ Servidor 2 (Videasy Pro 4K)';
       if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Global)';
-      if(b4) b4.innerHTML = '🌐 Servidor 4 (Videasy Pro HD)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (VidSrc PM Espejo)';
     } else if(activeLang === 'subtitulado'){
-      if(b1) b1.innerHTML = '⚡ Servidor 1 (VidLink Pro 1080p Sub ES)';
+      if(b1) b1.innerHTML = '⚡ Servidor 1 (Videasy Pro 1080p Sub ES)';
       if(b2) b2.innerHTML = '🌐 Servidor 2 (PlayLatin Subtitulado)';
       if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Pro Sub)';
-      if(b4) b4.innerHTML = '🌐 Servidor 4 (Videasy Pro HD)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (VidSrc PM Espejo)';
     } else if(activeLang === 'castellano'){
       if(b1) b1.innerHTML = '⚡ Servidor 1 (Castellano España - PlayLatin)';
-      if(b2) b2.innerHTML = '🌐 Servidor 2 (VidLink Pro)';
+      if(b2) b2.innerHTML = '🌐 Servidor 2 (Videasy Pro Castellano)';
       if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Pro)';
-      if(b4) b4.innerHTML = '🌐 Servidor 4 (Videasy Pro HD)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (VidSrc PM Espejo)';
     }
   }
 }
@@ -1900,9 +1900,8 @@ function loadVideoSource(){
   if(overlay){
     overlay.style.display = 'flex';
     overlay.style.opacity = '1';
-    // Fallback hide after 4.5s max
     clearTimeout(window.overlayTimer);
-    window.overlayTimer = setTimeout(function(){ onIframeStreamLoaded(); }, 4500);
+    window.overlayTimer = setTimeout(function(){ onIframeStreamLoaded(); }, 4000);
   }
 
   var url = '';
@@ -1916,17 +1915,17 @@ function loadVideoSource(){
   if(isKdrama){
     // Dedicated 100% working multi-server routing for K-Doramas & Asian content
     if(activeServer === 1){
-      // VidLink Pro (Spanish subtitles auto, 4K, no popups)
-      url = 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es';
+      // Videasy Pro (Principal · Sin Pestañas Emergentes · Carga Rápida)
+      url = 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode;
     } else if(activeServer === 2){
       // VidSrc Pro Stream
       url = 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode;
     } else if(activeServer === 3){
-      // Videasy CDN Pro
-      url = 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode;
+      // VidSrc PM Mirror
+      url = 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode;
     } else if(activeServer === 4){
-      // VidSrc ME / Sh mirror
-      url = 'https://vidsrc.me/embed/tv?tmdb=' + tmdbId + '&season=' + currentSeason + '&episode=' + currentEpisode;
+      // SmashyStream Multi-Host CDN
+      url = 'https://player.smashystream.com/tv/' + tmdbId + '?s=' + currentSeason + '&e=' + currentEpisode;
     }
   } else {
     // Standard Movies & Western TV series
@@ -1937,22 +1936,22 @@ function loadVideoSource(){
           : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
       } else if(activeServer === 2){
         url = isTv
-          ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
-          : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
+          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://player.videasy.net/movie/' + tmdbId;
       } else if(activeServer === 3){
         url = isTv
           ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
           : 'https://vidsrc.to/embed/movie/' + tmdbId;
       } else if(activeServer === 4){
         url = isTv
-          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://player.videasy.net/movie/' + tmdbId;
+          ? 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://vidsrc.pm/embed/movie/' + tmdbId;
       }
     } else if(activeLang === 'subtitulado'){
       if(activeServer === 1){
         url = isTv
-          ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
-          : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
+          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://player.videasy.net/movie/' + tmdbId;
       } else if(activeServer === 2){
         url = isTv
           ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
@@ -1963,8 +1962,8 @@ function loadVideoSource(){
           : 'https://vidsrc.to/embed/movie/' + tmdbId;
       } else if(activeServer === 4){
         url = isTv
-          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://player.videasy.net/movie/' + tmdbId;
+          ? 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://vidsrc.pm/embed/movie/' + tmdbId;
       }
     } else if(activeLang === 'castellano'){
       if(activeServer === 1){
@@ -1973,27 +1972,30 @@ function loadVideoSource(){
           : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
       } else if(activeServer === 2){
         url = isTv
-          ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
-          : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
+          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://player.videasy.net/movie/' + tmdbId;
       } else if(activeServer === 3){
         url = isTv
           ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
           : 'https://vidsrc.to/embed/movie/' + tmdbId;
       } else if(activeServer === 4){
         url = isTv
-          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://player.videasy.net/movie/' + tmdbId;
+          ? 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://vidsrc.pm/embed/movie/' + tmdbId;
       }
     }
   }
 
-  // Allow storage & media decoders without SecurityError on Next.js/React players
-  iframe.removeAttribute('sandbox');
+  // Enforce Anti-Popup Sandbox: Completely blocks window.open, ads, and new tabs!
+  if(isAdShieldActive){
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads');
+  } else {
+    iframe.removeAttribute('sandbox');
+  }
 
   iframe.src = url;
   if(extBtn) extBtn.href = url;
 }
-
 
 function switchToOfficialMario(){
   var officialMario = catalog.find(function(m){ return m.id === 'super_mario_bros_2023'; });
@@ -2308,7 +2310,7 @@ function fetchCategoryPage(cat, page, appendToCurated){
   } else if(cat === 'kdoramas' || (subCfg && subCfg.id === 'kdoramas')){
     var endpoint = 'tv';
     targetMediaType = 'tv';
-    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_origin_country=KR&without_genres=10764,10767&language=es-MX&sort_by=popularity.desc&vote_count.gte=10&page=' + page;
+    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_origin_country=KR&without_genres=10764,10767&language=es-MX&sort_by=popularity.desc&vote_count.gte=50&page=' + page;
     if(subCfg && subCfg.genre){
       url += '&with_genres=' + subCfg.genre;
     } else {
@@ -2638,8 +2640,17 @@ function fetchLiveTmdbSearch(q){
 var isAdShieldActive = true;
 
 function toggleAdShield(){
+  var iframe = document.getElementById('cinemaIframe');
   var btn = document.getElementById('adShieldBtn');
   isAdShieldActive = !isAdShieldActive;
+
+  if(iframe){
+    if(isAdShieldActive){
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads');
+    } else {
+      iframe.removeAttribute('sandbox');
+    }
+  }
 
   if(btn){
     if(isAdShieldActive){
