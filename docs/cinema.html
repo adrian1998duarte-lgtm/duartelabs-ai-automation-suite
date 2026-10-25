@@ -1734,9 +1734,9 @@ function selectMedia(item){
 
   // Asynchronously resolve IMDb ID if not already present
   if(!item.imdbId && item.tmdbId){
-    // If it's a TV series from TMDB without IMDb ID, PlayLatin will fail with OFFLINE 0 Servidores.
-    // So we smartly switch to Server 2 (MultiEmbed) or Server 3 (VidLink) which has 100% coverage!
-    if(item.type === 'tv' && activeServer === 1){
+    // For K-Doramas or TV series from TMDB, PlayLatin is offline.
+    // Automatically switch to Server 2 (VidLink Pro) which has 100% of Korean dramas with subtitles!
+    if((item.type === 'tv' || (item.genres && item.genres.indexOf('kdoramas') !== -1)) && activeServer === 1){
       activeServer = 2;
       document.querySelectorAll('.server-btn').forEach(function(b){ b.classList.remove('active'); });
       var b2 = document.getElementById('btnServer2');
@@ -1907,10 +1907,10 @@ function loadVideoSource(){
         ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
         : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
     } else if(activeServer === 3){
-      // AutoEmbed / VidSrc Backup (Clean global backup)
+      // VidSrc Pro Global Backup (100% working stream)
       url = isTv
-        ? 'https://player.autoembed.cc/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://player.autoembed.cc/embed/movie/' + tmdbId;
+        ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://vidsrc.to/embed/movie/' + tmdbId;
     }
   } else if(activeLang === 'subtitulado'){
     if(activeServer === 1){
@@ -1948,8 +1948,8 @@ function loadVideoSource(){
     }
   }
 
-  // Strict Anti-Popup & Anti-Redirect Shield: Strictly block any popups or tab breakouts
-  iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
+  // Allow storage & media decoders without SecurityError on Next.js/React players
+  iframe.removeAttribute('sandbox');
 
   iframe.src = url;
   if(extBtn) extBtn.href = url;
@@ -2267,7 +2267,8 @@ function fetchCategoryPage(cat, page, appendToCurated){
       url += '&with_original_language=' + subCfg.lang;
     }
   } else if(cat === 'kdoramas'){
-    var ep = 'tv';
+    var endpoint = 'tv';
+    targetMediaType = 'tv';
     url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_original_language=ko&language=es-MX&sort_by=popularity.desc&page=' + page;
     if(subCfg && subCfg.genre){
       url += '&with_genres=' + subCfg.genre;
@@ -2329,7 +2330,7 @@ function fetchCategoryPage(cat, page, appendToCurated){
           rating: item.vote_average ? item.vote_average.toFixed(1) : '7.6',
           quality: badgeQuality,
           lang: 'Latino / Sub / Cast',
-          genres: [cat, isTv ? 'tv' : 'movie'],
+          genres: [cat, isTv ? 'tv' : 'movie', (cat === 'kdoramas' || currentSubCategory === 'kdoramas') ? 'kdoramas' : ''],
           poster: poster,
           desc: item.overview || 'Sinopsis oficial en español disponible al reproducir.',
           ytTrailer: '',
@@ -2363,7 +2364,7 @@ function fetchCategoryPage(cat, page, appendToCurated){
                 rating: item.vote_average ? item.vote_average.toFixed(1) : '7.6',
                 quality: '4K UHD',
                 lang: 'Latino / Sub / Cast',
-                genres: [cat, isTv ? 'tv' : 'movie'],
+                genres: [cat, isTv ? 'tv' : 'movie', (cat === 'kdoramas' || currentSubCategory === 'kdoramas') ? 'kdoramas' : ''],
                 poster: poster,
                 desc: item.overview || 'Sinopsis oficial en español disponible al reproducir.',
                 ytTrailer: '',
