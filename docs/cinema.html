@@ -900,7 +900,7 @@ footer {
           Cargando buffer de video en Full HD · Si tarda, cambia de servidor en 1 clic
         </div>
       </div>
-      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen onload="onIframeStreamLoaded()"></iframe>
+      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen onload="onIframeStreamLoaded()"></iframe>
     </div>
   </div>
 
@@ -1200,11 +1200,13 @@ var catalog = [
     type: "tv",
     title: "El Juego del Calamar (Squid Game)",
     year: 2024,
-    platform: "Netflix Originals",
+    platform: "Netflix K-Dorama",
     rating: 7.8,
     quality: "4K UHD",
-    lang: "Latino / Sub",
-    genres: ["series", "netflix", "drama", "suspenso", "tv"],
+    lang: "Coreano / Sub Español",
+    isKdorama: true,
+    originalLanguage: "ko",
+    genres: ["series", "netflix", "drama", "suspenso", "tv", "kdoramas"],
     seasons: 2,
     episodesPerSeason: [9, 6],
     poster: "https://image.tmdb.org/t/p/w500/dDlGgwX2Nq9Y8gR5DkR6b1b6z9r.jpg",
@@ -1732,17 +1734,25 @@ function selectMedia(item){
     }
   }
 
+  // Bulletproof Detection for K-Doramas & Asian content
+  var isKdrama = item.isKdorama || 
+                 item.originalLanguage === 'ko' || 
+                 (Array.isArray(item.originCountry) && item.originCountry.indexOf('KR') !== -1) ||
+                 (Array.isArray(item.genres) && (item.genres.indexOf('kdoramas') !== -1 || item.genres.indexOf('kdorama') !== -1)) ||
+                 (item.title && (item.title.toLowerCase().indexOf('calamar') !== -1 || item.title.toLowerCase().indexOf('squid game') !== -1 || item.title.toLowerCase().indexOf('belleza verdadera') !== -1 || item.title.toLowerCase().indexOf('true beauty') !== -1 || item.title.toLowerCase().indexOf('moving') !== -1 || item.title.toLowerCase().indexOf('doctor rom') !== -1 || item.title.toLowerCase().indexOf('all of us are dead') !== -1 || item.title.toLowerCase().indexOf('alquimia de almas') !== -1));
+
+  if(isKdrama){
+    item.isKdorama = true;
+    activeServer = 1; // VidLink Pro 4K is Server 1 for all K-Doramas
+    document.querySelectorAll('.server-btn').forEach(function(b){ b.classList.remove('active'); });
+    var b1 = document.getElementById('btnServer1');
+    if(b1) b1.classList.add('active');
+  }
+
+  updateServerButtonLabels();
+
   // Asynchronously resolve IMDb ID if not already present
   if(!item.imdbId && item.tmdbId){
-    // For K-Doramas or TV series from TMDB, PlayLatin is offline.
-    // Automatically switch to Server 2 (VidLink Pro) which has 100% of Korean dramas with subtitles!
-    if((item.type === 'tv' || (item.genres && item.genres.indexOf('kdoramas') !== -1)) && activeServer === 1){
-      activeServer = 2;
-      document.querySelectorAll('.server-btn').forEach(function(b){ b.classList.remove('active'); });
-      var b2 = document.getElementById('btnServer2');
-      if(b2) b2.classList.add('active');
-    }
-
     var extUrl = 'https://api.themoviedb.org/3/' + item.type + '/' + item.tmdbId + '/external_ids?api_key=' + TMDB_KEY;
     fetch(extUrl)
       .then(function(res){ return res.json(); })
@@ -1839,21 +1849,30 @@ function updateServerButtonLabels(){
   var b3 = document.getElementById('btnServer3');
   var b4 = document.getElementById('btnServer4');
 
-  if(activeLang === 'latino'){
-    if(b1) b1.innerHTML = '⚡ Servidor 1 (PlayLatin HD)';
-    if(b2) b2.innerHTML = '🛡️ Servidor 2 (VidLink Pro Sin Anuncios)';
-    if(b3) b3.innerHTML = '🚀 Servidor 3 (AutoEmbed Global)';
-    if(b4) b4.innerHTML = '🎬 Servidor 4 (Trailer Oficial 4K)';
-  } else if(activeLang === 'subtitulado'){
-    if(b1) b1.innerHTML = '⚡ Servidor 1 (VidLink Pro 1080p Sub ES)';
-    if(b2) b2.innerHTML = '🌐 Servidor 2 (PlayLatin Subtitulado)';
-    if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Pro Sub)';
-    if(b4) b4.innerHTML = '🎬 Servidor 4 (Trailer Oficial 4K)';
-  } else if(activeLang === 'castellano'){
-    if(b1) b1.innerHTML = '⚡ Servidor 1 (Castellano España - PlayLatin)';
-    if(b2) b2.innerHTML = '🌐 Servidor 2 (MultiEmbed Castellano)';
-    if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Pro)';
-    if(b4) b4.innerHTML = '🎬 Servidor 4 (Trailer Oficial 4K)';
+  var isKdrama = currentItem && (currentItem.isKdorama || currentItem.originalLanguage === 'ko' || (currentItem.genres && currentItem.genres.indexOf('kdoramas') !== -1) || (currentItem.originCountry && currentItem.originCountry.indexOf('KR') !== -1));
+
+  if(isKdrama){
+    if(b1) b1.innerHTML = '⚡ Servidor 1 (VidLink Pro 4K · Sub Español)';
+    if(b2) b2.innerHTML = '🚀 Servidor 2 (VidSrc Stream Coreano)';
+    if(b3) b3.innerHTML = '🌐 Servidor 3 (Videasy CDN Rápido)';
+    if(b4) b4.innerHTML = '🎬 Servidor 4 (VidSrc ME Espejo)';
+  } else {
+    if(activeLang === 'latino'){
+      if(b1) b1.innerHTML = '⚡ Servidor 1 (PlayLatin HD)';
+      if(b2) b2.innerHTML = '🛡️ Servidor 2 (VidLink Pro Sin Anuncios)';
+      if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Global)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (Videasy Pro HD)';
+    } else if(activeLang === 'subtitulado'){
+      if(b1) b1.innerHTML = '⚡ Servidor 1 (VidLink Pro 1080p Sub ES)';
+      if(b2) b2.innerHTML = '🌐 Servidor 2 (PlayLatin Subtitulado)';
+      if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Pro Sub)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (Videasy Pro HD)';
+    } else if(activeLang === 'castellano'){
+      if(b1) b1.innerHTML = '⚡ Servidor 1 (Castellano España - PlayLatin)';
+      if(b2) b2.innerHTML = '🌐 Servidor 2 (VidLink Pro)';
+      if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Pro)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (Videasy Pro HD)';
+    }
   }
 }
 
@@ -1892,59 +1911,79 @@ function loadVideoSource(){
   var imdbId = currentItem.imdbId || currentItem.tmdbId;
   var playLatinId = currentItem.imdbId || currentItem.tmdbId;
 
-  if(activeServer === 4){
-    // Always Trailer 4K
-    url = 'https://www.youtube.com/embed/' + currentItem.ytTrailer + '?autoplay=1&rel=0';
-  } else if(activeLang === 'latino'){
+  var isKdrama = currentItem.isKdorama || currentItem.originalLanguage === 'ko' || (currentItem.genres && currentItem.genres.indexOf('kdoramas') !== -1) || (currentItem.originCountry && currentItem.originCountry.indexOf('KR') !== -1);
+
+  if(isKdrama){
+    // Dedicated 100% working multi-server routing for K-Doramas & Asian content
     if(activeServer === 1){
-      // PlayLatin Latino Default
-      url = isTv
-        ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
+      // VidLink Pro (Spanish subtitles auto, 4K, no popups)
+      url = 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es';
     } else if(activeServer === 2){
-      // VidLink Pro (Clean, Netflix style, No annoying popups)
-      url = isTv
-        ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
-        : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
+      // VidSrc Pro Stream
+      url = 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode;
     } else if(activeServer === 3){
-      // VidSrc Pro Global Backup (100% working stream)
-      url = isTv
-        ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://vidsrc.to/embed/movie/' + tmdbId;
+      // Videasy CDN Pro
+      url = 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode;
+    } else if(activeServer === 4){
+      // VidSrc ME / Sh mirror
+      url = 'https://vidsrc.me/embed/tv?tmdb=' + tmdbId + '&season=' + currentSeason + '&episode=' + currentEpisode;
     }
-  } else if(activeLang === 'subtitulado'){
-    if(activeServer === 1){
-      // VidLink Pro 1080p with auto-Spanish subtitles
-      url = isTv
-        ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
-        : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
-    } else if(activeServer === 2){
-      // PlayLatin Subtitulado
-      url = isTv
-        ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
-    } else if(activeServer === 3){
-      // VidSrc Pro
-      url = isTv
-        ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://vidsrc.to/embed/movie/' + tmdbId;
-    }
-  } else if(activeLang === 'castellano'){
-    if(activeServer === 1){
-      // PlayLatin Castellano
-      url = isTv
-        ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
-    } else if(activeServer === 2){
-      // VidLink Pro Castellano
-      url = isTv
-        ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
-        : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
-    } else if(activeServer === 3){
-      // VidSrc Pro Castellano
-      url = isTv
-        ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://vidsrc.to/embed/movie/' + tmdbId;
+  } else {
+    // Standard Movies & Western TV series
+    if(activeLang === 'latino'){
+      if(activeServer === 1){
+        url = isTv
+          ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
+      } else if(activeServer === 2){
+        url = isTv
+          ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
+          : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
+      } else if(activeServer === 3){
+        url = isTv
+          ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://vidsrc.to/embed/movie/' + tmdbId;
+      } else if(activeServer === 4){
+        url = isTv
+          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://player.videasy.net/movie/' + tmdbId;
+      }
+    } else if(activeLang === 'subtitulado'){
+      if(activeServer === 1){
+        url = isTv
+          ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
+          : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
+      } else if(activeServer === 2){
+        url = isTv
+          ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
+      } else if(activeServer === 3){
+        url = isTv
+          ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://vidsrc.to/embed/movie/' + tmdbId;
+      } else if(activeServer === 4){
+        url = isTv
+          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://player.videasy.net/movie/' + tmdbId;
+      }
+    } else if(activeLang === 'castellano'){
+      if(activeServer === 1){
+        url = isTv
+          ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
+      } else if(activeServer === 2){
+        url = isTv
+          ? 'https://vidlink.pro/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode + '?sub_lang=es'
+          : 'https://vidlink.pro/movie/' + tmdbId + '?sub_lang=es';
+      } else if(activeServer === 3){
+        url = isTv
+          ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://vidsrc.to/embed/movie/' + tmdbId;
+      } else if(activeServer === 4){
+        url = isTv
+          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+          : 'https://player.videasy.net/movie/' + tmdbId;
+      }
     }
   }
 
@@ -1964,7 +2003,7 @@ function switchToOfficialMario(){
 }
 
 function autoSwitchWorkingServer(){
-  var nextServer = (activeServer === 1) ? 2 : (activeServer === 2 ? 3 : 1);
+  var nextServer = (activeServer % 4) + 1;
   var btn = document.getElementById('btnServer' + nextServer);
   switchServer(nextServer, btn);
 }
@@ -2266,12 +2305,14 @@ function fetchCategoryPage(cat, page, appendToCurated){
     if(subCfg && subCfg.lang){
       url += '&with_original_language=' + subCfg.lang;
     }
-  } else if(cat === 'kdoramas'){
+  } else if(cat === 'kdoramas' || (subCfg && subCfg.id === 'kdoramas')){
     var endpoint = 'tv';
     targetMediaType = 'tv';
-    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_original_language=ko&language=es-MX&sort_by=popularity.desc&page=' + page;
+    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_origin_country=KR&without_genres=10764,10767&language=es-MX&sort_by=popularity.desc&vote_count.gte=10&page=' + page;
     if(subCfg && subCfg.genre){
       url += '&with_genres=' + subCfg.genre;
+    } else {
+      url += '&with_genres=18';
     }
   } else if(cat === 'movie'){
     var endpoint = 'movie';
@@ -2319,6 +2360,11 @@ function fetchCategoryPage(cat, page, appendToCurated){
         var isFuture = year > 2024;
         var badgeQuality = isFuture ? ('ESTRENO ' + year) : '4K UHD';
 
+        var isKoreanDorama = (item.original_language === 'ko') || 
+                             (Array.isArray(item.origin_country) && item.origin_country.indexOf('KR') !== -1) ||
+                             (cat === 'kdoramas') || 
+                             (currentSubCategory === 'kdoramas');
+
         return {
           id: 'tmdb_' + item.id,
           tmdbId: item.id,
@@ -2326,11 +2372,14 @@ function fetchCategoryPage(cat, page, appendToCurated){
           type: isTv ? 'tv' : 'movie',
           title: title,
           year: year || 2024,
-          platform: platform,
+          platform: isKoreanDorama ? 'K-Dorama Coreano' : platform,
           rating: item.vote_average ? item.vote_average.toFixed(1) : '7.6',
           quality: badgeQuality,
-          lang: 'Latino / Sub / Cast',
-          genres: [cat, isTv ? 'tv' : 'movie', (cat === 'kdoramas' || currentSubCategory === 'kdoramas') ? 'kdoramas' : ''],
+          lang: isKoreanDorama ? 'Coreano / Sub Español' : 'Latino / Sub / Cast',
+          isKdorama: isKoreanDorama,
+          originalLanguage: item.original_language || '',
+          originCountry: item.origin_country || [],
+          genres: [cat, isTv ? 'tv' : 'movie', isKoreanDorama ? 'kdoramas' : ''],
           poster: poster,
           desc: item.overview || 'Sinopsis oficial en español disponible al reproducir.',
           ytTrailer: '',
@@ -2537,6 +2586,9 @@ function fetchLiveTmdbSearch(q){
 
         var isFuture = year > 2024;
         var badgeText = isFuture ? ('ESTRENO ' + year) : '4K UHD';
+        var isKoreanDorama = (item.original_language === 'ko') || 
+                             (Array.isArray(item.origin_country) && item.origin_country.indexOf('KR') !== -1);
+
         return {
           id: 'tmdb_' + item.id,
           tmdbId: item.id,
@@ -2544,11 +2596,14 @@ function fetchLiveTmdbSearch(q){
           type: isTv ? 'tv' : 'movie',
           title: title,
           year: year || 2024,
-          platform: isFuture ? 'Próximo Estreno (' + year + ')' : 'Catálogo Mundial TMDB',
+          platform: isKoreanDorama ? 'K-Dorama Coreano' : (isFuture ? 'Próximo Estreno (' + year + ')' : 'Catálogo Mundial TMDB'),
           rating: item.vote_average ? item.vote_average.toFixed(1) : '7.5',
           quality: badgeText,
-          lang: 'Latino / Sub / Cast',
-          genres: ['universal', item.media_type],
+          lang: isKoreanDorama ? 'Coreano / Sub Español' : 'Latino / Sub / Cast',
+          isKdorama: isKoreanDorama,
+          originalLanguage: item.original_language || '',
+          originCountry: item.origin_country || [],
+          genres: ['universal', item.media_type, isKoreanDorama ? 'kdoramas' : ''],
           poster: poster,
           desc: (isFuture ? '[AÚN NO ESTRENADA EN CINES] ' : '') + (item.overview || 'Sinopsis oficial en español disponible al reproducir.'),
           ytTrailer: '',
@@ -2583,29 +2638,20 @@ function fetchLiveTmdbSearch(q){
 var isAdShieldActive = true;
 
 function toggleAdShield(){
-  var iframe = document.getElementById('cinemaIframe');
   var btn = document.getElementById('adShieldBtn');
-  if(!iframe) return;
-
   isAdShieldActive = !isAdShieldActive;
 
-  if(isAdShieldActive){
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
-    if(btn){
+  if(btn){
+    if(isAdShieldActive){
       btn.innerHTML = '🛡️ Escudo Anti-Popups: ACTIVO';
       btn.style.color = '#34d399';
       btn.style.borderColor = 'rgba(52,211,153,0.4)';
-    }
-  } else {
-    iframe.removeAttribute('sandbox');
-    if(btn){
-      btn.innerHTML = '⚠️ Escudo: DESACTIVADO';
+    } else {
+      btn.innerHTML = '⚠️ Escudo: PERMISIVO';
       btn.style.color = '#fbbf24';
       btn.style.borderColor = 'rgba(251,191,36,0.4)';
     }
   }
-
-  loadVideoSource();
 }
 
 // Cinema Mode
