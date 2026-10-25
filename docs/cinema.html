@@ -1521,8 +1521,8 @@ footer {
         <div style="display:flex;align-items:center;gap:12px;">
           <div style="font-size:24px;background:rgba(244,63,94,0.15);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;">⚡</div>
           <div>
-            <div style="font-weight:700;color:#fff;font-size:14px;">Instalación 1-Clic Oficial (PWA)</div>
-            <div style="font-size:11.5px;color:#94a3b8;">Android, Windows, Mac (Sin descargas pesadas)</div>
+            <div style="font-weight:700;color:#fff;font-size:14px;">Instalación 1-Clic Automática</div>
+            <div style="font-size:11.5px;color:#94a3b8;">Android, Windows, Mac (Sin archivos dañados)</div>
           </div>
         </div>
         <button onclick="triggerPwaInstall(); closeDownloadModal();" style="background:linear-gradient(135deg, #f43f5e 0%, #06b6d4 100%);color:#fff;border:none;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(244,63,94,0.4);">
@@ -1530,17 +1530,17 @@ footer {
         </button>
       </div>
 
-      <!-- Option 2: Android APK -->
+      <!-- Option 2: Android Guide -->
       <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(6,182,212,0.35);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
         <div style="display:flex;align-items:center;gap:12px;">
           <div style="font-size:24px;background:rgba(6,182,212,0.15);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;">🤖</div>
           <div>
-            <div style="font-weight:700;color:#fff;font-size:14px;">Descargar APK para Android</div>
-            <div style="font-size:11.5px;color:#94a3b8;">Instalador para Celulares, Tablets y Smart TV</div>
+            <div style="font-weight:700;color:#fff;font-size:14px;">Guía Oficial para Android</div>
+            <div style="font-size:11.5px;color:#94a3b8;">Paso a paso en Google Chrome (100% Garantizado)</div>
           </div>
         </div>
-        <button onclick="downloadAndroidApk()" style="background:linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);color:#fff;border:none;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(6,182,212,0.4);">
-          📥 Descargar APK
+        <button onclick="showAndroidInstallModal(); closeDownloadModal();" style="background:linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);color:#fff;border:none;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(6,182,212,0.4);">
+          Ver Pasos 📲
         </button>
       </div>
 
@@ -1573,6 +1573,34 @@ footer {
   to { opacity: 1; transform: scale(1); }
 }
 </style>
+
+<!-- Android Installation Guide Modal -->
+<div id="androidInstallModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:9999999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%);border:1px solid rgba(6,182,212,0.5);border-radius:20px;max-width:440px;width:100%;padding:24px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,0.9);">
+    <img src="assets/icon_cinema_512.png" alt="DuarteCinema" style="width:64px;height:64px;border-radius:16px;margin:0 auto 14px;display:block;box-shadow:0 0 25px rgba(6,182,212,0.4);">
+    <h3 style="color:#fff;font-size:19px;font-weight:800;margin-bottom:8px;">Cómo Instalar en Android (Google Chrome)</h3>
+    <p style="color:#94a3b8;font-size:13px;line-height:1.5;margin-bottom:18px;">
+      No descargues archivos APK dañados. Instala la versión oficial en 3 pasos:
+    </p>
+    <div style="text-align:left;background:rgba(255,255,255,0.05);border-radius:12px;padding:14px;margin-bottom:20px;display:flex;flex-direction:column;gap:12px;font-size:13px;color:#e2e8f0;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="background:rgba(6,182,212,0.25);color:#38bdf8;font-weight:800;padding:4px 9px;border-radius:8px;">1</span>
+        <span>Abre esta página en <strong>Google Chrome</strong>.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="background:rgba(139,92,246,0.25);color:#a78bfa;font-weight:800;padding:4px 9px;border-radius:8px;">2</span>
+        <span>Toca los <strong>tres puntos (⋮)</strong> arriba a la derecha.</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span style="background:rgba(52,211,153,0.25);color:#34d399;font-weight:800;padding:4px 9px;border-radius:8px;">3</span>
+        <span>Elige <strong>"Instalar aplicación"</strong> (o "Agregar a pantalla principal").</span>
+      </div>
+    </div>
+    <button onclick="document.getElementById('androidInstallModal').style.display='none'" style="background:linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);color:#fff;border:none;width:100%;padding:12px;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;">
+      ¡Entendido, abrir en Chrome!
+    </button>
+  </div>
+</div>
 
 <!-- iOS PWA Installation Guide Modal -->
 <div id="iosInstallModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:9999999;align-items:center;justify-content:center;padding:20px;">
@@ -3670,25 +3698,9 @@ function showIosInstallModal(){
   if(m) m.style.display = 'flex';
 }
 
-function downloadAndroidApk(){
-  if(deferredPwaPrompt){
-    deferredPwaPrompt.prompt();
-    deferredPwaPrompt.userChoice.then(function(choiceResult){
-      if(choiceResult.outcome === 'accepted'){
-        console.log('App instalada.');
-      }
-      closeDownloadModal();
-    });
-  } else {
-    // Direct APK download
-    var link = document.createElement('a');
-    link.href = 'downloads/DuarteCinema.apk';
-    link.download = 'DuarteCinema.apk';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    closeDownloadModal();
-  }
+function showAndroidInstallModal(){
+  var m = document.getElementById('androidInstallModal');
+  if(m) m.style.display = 'flex';
 }
 
 function triggerPwaInstall(){
@@ -3703,15 +3715,13 @@ function triggerPwaInstall(){
   } else {
     var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
     if(isIos){
-      var modal = document.getElementById('iosInstallModal');
-      if(modal) modal.style.display = 'flex';
+      showIosInstallModal();
     } else {
-      // In standalone mode or desktop browser
       var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
       if(isStandalone){
         alert('¡Ya estás usando DuarteCinema desde la Aplicación Oficial!');
       } else {
-        alert('Para instalar DuarteCinema: Haz clic en los tres puntos (⋮) de tu navegador o en el icono de instalación (🖥️ / 📲) en la barra de direcciones y selecciona "Instalar aplicación".');
+        showAndroidInstallModal();
       }
     }
   }
