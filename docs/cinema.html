@@ -1714,6 +1714,13 @@ function loadVideoSource(){
     }
   }
 
+  // Intelligent Sandbox Defender: MultiEmbed blocks playback if sandboxed
+  if(url.indexOf('multiembed.mov') !== -1){
+    iframe.removeAttribute('sandbox');
+  } else if(isAdShieldActive){
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation');
+  }
+
   iframe.src = url;
   if(extBtn) extBtn.href = url;
 }
