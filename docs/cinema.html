@@ -3103,10 +3103,30 @@ function fetchLiveTmdbSearch(q){
   }
   if(countEl) countEl.innerText = 'Consultando base de datos mundial...';
 
-  var url = 'https://api.themoviedb.org/3/search/multi?api_key=' + TMDB_KEY + '&query=' + encodeURIComponent(q) + '&language=es-MX&include_adult=false';
-  
-  fetch(url)
-    .then(function(res){ return res.json(); })
+  var cleanQ = (q || '').trim();
+  var isPureYear = /^(19\d{2}|20\d{2})$/.test(cleanQ);
+
+  var searchPromise;
+  if(isPureYear){
+    var yNum = parseInt(cleanQ, 10);
+    var mUrl = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&primary_release_year=' + yNum + '&sort_by=popularity.desc&language=es-MX&page=1';
+    var tUrl = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&first_air_date_year=' + yNum + '&sort_by=popularity.desc&language=es-MX&page=1';
+    searchPromise = Promise.all([
+      fetch(mUrl).then(function(r){ return r.json(); }),
+      fetch(tUrl).then(function(r){ return r.json(); })
+    ]).then(function(resps){
+      var raw = [];
+      (resps[0].results || []).forEach(function(x){ x.media_type = 'movie'; raw.push(x); });
+      (resps[1].results || []).forEach(function(x){ x.media_type = 'tv'; raw.push(x); });
+      raw.sort(function(a,b){ return (b.popularity || 0) - (a.popularity || 0); });
+      return { results: raw };
+    });
+  } else {
+    var url = 'https://api.themoviedb.org/3/search/multi?api_key=' + TMDB_KEY + '&query=' + encodeURIComponent(cleanQ) + '&language=es-MX&include_adult=false';
+    searchPromise = fetch(url).then(function(res){ return res.json(); });
+  }
+
+  searchPromise
     .then(function(data){
       var raw = data.results || [];
       var valid = raw.filter(function(item){
