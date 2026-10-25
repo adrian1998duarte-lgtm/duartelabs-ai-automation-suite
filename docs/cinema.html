@@ -762,6 +762,17 @@ footer {
       </div>
     </div>
 
+        <!-- Unreleased Movie Warning Banner -->
+    <div id="unreleasedWarningBanner" style="display:none;background:linear-gradient(135deg,rgba(239,68,68,0.2) 0%,rgba(245,158,11,0.2) 100%);border-bottom:1px solid rgba(239,68,68,0.4);padding:10px 20px;color:#fecaca;font-size:12.5px;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span style="font-size:18px;">⚠️</span>
+        <span id="unreleasedWarningText">Esta película aún no ha sido estrenada oficialmente en cines. Los servidores externos no disponen del video oficial y pueden mostrar contenido de prueba.</span>
+      </div>
+      <button id="unreleasedSwitchBtn" onclick="switchToOfficialMario()" class="nav-btn" style="background:#10b981;color:#fff;border-color:#34d399;font-weight:700;padding:5px 14px;font-size:12px;cursor:pointer;">
+        🍄 Ver "Super Mario Bros (2023)" Oficial 4K
+      </button>
+    </div>
+
     <!-- Series Season & Episode Bar (Only shows when type is 'tv') -->
     <div class="series-episodes-bar" id="seriesEpisodesBar">
       <div style="display:flex;align-items:center;gap:8px;">
@@ -1163,7 +1174,25 @@ var catalog = [
     desc: "Riley entra en la adolescencia y el cuartel general sufre una repentina demolición para dar paso a nuevas emociones: Ansiedad, Envidia y Vergüenza.",
     ytTrailer: "LEjhY15eCx0"
   },
-  // 16. GLADIADOR 2
+    // 16. SUPER MARIO BROS (2023)
+  {
+    id: "super_mario_bros_2023",
+    tmdbId: 502356,
+    imdbId: "tt6718170",
+    type: "movie",
+    title: "Super Mario Bros. La Película (2023)",
+    year: 2023,
+    platform: "Universal / Nintendo",
+    rating: 7.7,
+    quality: "4K UHD",
+    lang: "Latino / Sub / Cast",
+    genres: ["animacion", "aventura", "comedia", "movie"],
+    poster: "https://image.tmdb.org/t/p/w500/zNKs1T0VZuJiVuhuL5GSCNkGdxf.jpg",
+    backdrop: "https://image.tmdb.org/t/p/original/9n2tJBplPbgR2ca05hS5CKXwP2c.jpg",
+    desc: "Mientras reparan una tubería en Brooklyn, los plomeros Mario y su hermano Luigi son transportados a un mundo mágico. Al ser separados, Mario inicia una épica odisea para rescatar a Luigi con la ayuda de la Princesa Peach, Toad y Donkey Kong enfrentando al temible Bowser.",
+    ytTrailer: "RjGf3iL9bB0"
+  },
+  // 17. GLADIADOR 2
   {
     id: "gladiator_2",
     tmdbId: 558449,
@@ -1551,6 +1580,30 @@ function selectMedia(item){
     if(epBar) epBar.classList.remove('active');
   }
 
+  // Check for unreleased titles or Mario Galaxy
+  var warnBanner = document.getElementById('unreleasedWarningBanner');
+  var warnText = document.getElementById('unreleasedWarningText');
+  var warnBtn = document.getElementById('unreleasedSwitchBtn');
+  var isFuture = item.year && item.year > 2024;
+  var isMarioGalaxy = item.title && item.title.toLowerCase().indexOf('mario galaxy') !== -1;
+
+  if(warnBanner){
+    if(isMarioGalaxy || (isFuture && item.tmdbId === 1226863)){
+      warnBanner.style.display = 'flex';
+      if(warnText) warnText.innerHTML = '⚠️ <strong>"Super Mario Galaxy"</strong> aún no se estrena en cines (fecha tentativa: 2026). Por esa razón los servidores externos no tienen la película y alojan parodias o videos de prueba (como Baby Yoda / The Mandalorian).';
+      if(warnBtn) {
+        warnBtn.style.display = 'inline-flex';
+        warnBtn.innerHTML = '🍄 Ver "Super Mario Bros (2023)" Película Oficial 4K';
+      }
+    } else if(isFuture){
+      warnBanner.style.display = 'flex';
+      if(warnText) warnText.innerHTML = '⚠️ <strong>"' + item.title + '"</strong> está anunciada para ' + item.year + ' y aún no llega a cines ni streaming. Los servidores externos podrían mostrar trailers o contenido no verificado.';
+      if(warnBtn) warnBtn.style.display = 'none';
+    } else {
+      warnBanner.style.display = 'none';
+    }
+  }
+
   // Asynchronously resolve IMDb ID if not already present
   if(!item.imdbId && item.tmdbId){
     var extUrl = 'https://api.themoviedb.org/3/' + item.type + '/' + item.tmdbId + '/external_ids?api_key=' + TMDB_KEY;
@@ -1695,7 +1748,8 @@ function loadVideoSource(){
   var url = '';
   var isTv = currentItem.type === 'tv';
   var tmdbId = currentItem.tmdbId;
-  var imdbId = currentItem.imdbId || 'tt6263850';
+  var imdbId = currentItem.imdbId || currentItem.tmdbId;
+  var playLatinId = currentItem.imdbId || currentItem.tmdbId;
 
   if(activeServer === 4){
     // Always Trailer 4K
@@ -1704,8 +1758,8 @@ function loadVideoSource(){
     if(activeServer === 1){
       // PlayLatin Latino Default
       url = isTv
-        ? 'https://playlatinsrc.co/custom/serial/' + imdbId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://playlatinsrc.co/embed/movie/' + imdbId;
+        ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
     } else if(activeServer === 2){
       // MultiEmbed Latino
       url = isTv
@@ -1726,8 +1780,8 @@ function loadVideoSource(){
     } else if(activeServer === 2){
       // PlayLatin Subtitulado
       url = isTv
-        ? 'https://playlatinsrc.co/custom/serial/' + imdbId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://playlatinsrc.co/embed/movie/' + imdbId;
+        ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
     } else if(activeServer === 3){
       // VidSrc Pro
       url = isTv
@@ -1738,8 +1792,8 @@ function loadVideoSource(){
     if(activeServer === 1){
       // PlayLatin Castellano
       url = isTv
-        ? 'https://playlatinsrc.co/custom/serial/' + imdbId + '/' + currentSeason + '/' + currentEpisode
-        : 'https://playlatinsrc.co/embed/movie/' + imdbId;
+        ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
     } else if(activeServer === 2){
       // MultiEmbed Castellano
       url = isTv
@@ -1762,6 +1816,14 @@ function loadVideoSource(){
 
   iframe.src = url;
   if(extBtn) extBtn.href = url;
+}
+
+
+function switchToOfficialMario(){
+  var officialMario = catalog.find(function(m){ return m.id === 'super_mario_bros_2023'; });
+  if(officialMario){
+    selectMedia(officialMario);
+  }
 }
 
 function switchServer(serverNum, btn){
@@ -2095,6 +2157,8 @@ function fetchLiveTmdbSearch(q){
           ? 'https://image.tmdb.org/t/p/w500' + item.poster_path 
           : (item.backdrop_path ? 'https://image.tmdb.org/t/p/w500' + item.backdrop_path : 'assets/brand_avatar.jpg');
 
+        var isFuture = year > 2024;
+        var badgeText = isFuture ? ('ESTRENO ' + year) : '4K UHD';
         return {
           id: 'tmdb_' + item.id,
           tmdbId: item.id,
@@ -2102,19 +2166,25 @@ function fetchLiveTmdbSearch(q){
           type: isTv ? 'tv' : 'movie',
           title: title,
           year: year || 2024,
-          platform: 'Catálogo Mundial TMDB',
+          platform: isFuture ? 'Próximo Estreno (' + year + ')' : 'Catálogo Mundial TMDB',
           rating: item.vote_average ? item.vote_average.toFixed(1) : '7.5',
-          quality: '4K UHD',
+          quality: badgeText,
           lang: 'Latino / Sub / Cast',
           genres: ['universal', item.media_type],
           poster: poster,
-          desc: item.overview || 'Sinopsis oficial en español disponible al reproducir.',
+          desc: (isFuture ? '[AÚN NO ESTRENADA EN CINES] ' : '') + (item.overview || 'Sinopsis oficial en español disponible al reproducir.'),
           ytTrailer: '',
           seasons: isTv ? 1 : null,
           episodesPerSeason: isTv ? [10] : null
         };
       });
 
+      if(q.toLowerCase().indexOf('mario') !== -1){
+        var officialMario = catalog.find(function(m){ return m.id === 'super_mario_bros_2023'; });
+        if(officialMario && !mapped.some(function(x){ return x.tmdbId === 502356; })){
+          mapped.unshift(officialMario);
+        }
+      }
       renderCatalog(mapped, false);
       if(countEl) countEl.innerText = mapped.length + ' resultados mundiales encontrados';
     })
