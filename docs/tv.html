@@ -166,7 +166,8 @@
       width: 100%;
       background: #000;
       aspect-ratio: 16 / 9;
-      max-height: 72vh;
+      max-height: 78vh;
+      min-height: 460px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -1306,16 +1307,21 @@
 
     // Fullscreen & PiP
     function toggleFullscreen(){
-      var wrapper = document.getElementById('videoWrapper') || document.getElementById('playerStage');
-      if(!document.fullscreenElement){
-        if(wrapper.requestFullscreen){
-          wrapper.requestFullscreen();
-        } else if(wrapper.webkitRequestFullscreen){
-          wrapper.webkitRequestFullscreen();
+      var iframe = document.getElementById('tvIframe');
+      var isIframeActive = iframe && iframe.style.display !== 'none';
+      var targetElement = isIframeActive ? iframe : (document.getElementById('videoWrapper') || document.getElementById('playerStage'));
+
+      if(!document.fullscreenElement && !document.webkitFullscreenElement){
+        if(targetElement.requestFullscreen){
+          targetElement.requestFullscreen();
+        } else if(targetElement.webkitRequestFullscreen){
+          targetElement.webkitRequestFullscreen();
         }
       } else {
         if(document.exitFullscreen){
           document.exitFullscreen();
+        } else if(document.webkitExitFullscreen){
+          document.webkitExitFullscreen();
         }
       }
     }
@@ -1775,11 +1781,20 @@
             var border = sIdx === 0 ? '1px solid rgba(244,63,94,0.55)' : '1px solid rgba(255,255,255,0.14)';
             var color = sIdx === 0 ? '#fff' : '#cbd5e1';
 
+            var directPopoutUrl = s.url;
+            if(s.url.includes('?r=') || s.url.includes('&r=')){
+              try {
+                var u = new URL(s.url);
+                var b = u.searchParams.get('r');
+                if(b) directPopoutUrl = atob(b);
+              } catch(e){}
+            }
+
             html += '<div style="display: inline-flex; align-items: center; background: ' + btnBg + '; border: ' + border + '; border-radius: 8px; overflow: hidden;">' +
               '<button onclick="playMatchOption(\'' + escapeHtml(m.desc) + '\', \'' + escapeHtml(s.name) + '\', \'' + s.url + '\')" style="background: none; border: none; color: ' + color + '; font-size: 11.5px; font-weight: 700; padding: 6px 9px; cursor: pointer;" title="Ver aquí en DuarteTV">' +
                 '⚡ ' + escapeHtml(s.name) +
               '</button>' +
-              '<a href="' + s.url + '" target="_blank" rel="noopener noreferrer" style="border-left: 1px solid rgba(255,255,255,0.15); color: #94a3b8; padding: 6px 7px; font-size: 11px; text-decoration: none;" title="Abrir transmisión directa en nueva pestaña">↗</a>' +
+              '<a href="' + directPopoutUrl + '" target="_blank" rel="noopener noreferrer" style="border-left: 1px solid rgba(255,255,255,0.15); color: #94a3b8; padding: 6px 7px; font-size: 11px; text-decoration: none;" title="Abrir transmisión pura en nueva pestaña">↗</a>' +
             '</div>';
           });
         }
@@ -1812,10 +1827,24 @@
       video.pause();
       video.style.display = 'none';
 
-      iframe.style.display = 'block';
-      iframe.src = streamUrl;
+      // Decode direct player URL to eliminate white Pelota Libre header and prevent volume/controls clipping
+      var targetUrl = streamUrl;
+      if(streamUrl.includes('?r=') || streamUrl.includes('&r=')){
+        try {
+          var uObj = new URL(streamUrl);
+          var b64Param = uObj.searchParams.get('r');
+          if(b64Param){
+            targetUrl = atob(b64Param);
+          }
+        } catch(e){
+          targetUrl = streamUrl;
+        }
+      }
 
-      // Scroll to player
+      iframe.style.display = 'block';
+      iframe.src = targetUrl;
+
+      // Scroll to player smoothly
       var stage = document.getElementById('playerStage');
       if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
