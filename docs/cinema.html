@@ -819,6 +819,15 @@ footer {
     <!-- Populated dynamically via JS -->
   </div>
 
+  <!-- Load More / Infinite Pagination Bar -->
+  <div class="load-more-wrap" id="loadMoreWrap" style="text-align:center;margin:35px 0 55px;">
+    <button id="loadMoreBtn" onclick="loadMoreContent()" style="background:linear-gradient(135deg, rgba(244,63,94,0.18) 0%, rgba(6,182,212,0.18) 100%);border:1px solid rgba(244,63,94,0.45);color:#fff;padding:14px 36px;border-radius:14px;font-size:15px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:10px;transition:all 0.25s cubic-bezier(0.16,1,0.3,1);box-shadow:0 8px 25px rgba(0,0,0,0.45);">
+      <span id="loadMoreIcon" style="font-size:18px;">➕</span>
+      <span id="loadMoreLabel">Cargar Más Películas y Series</span>
+      <span id="loadMoreBadge" style="font-size:11px;background:rgba(255,255,255,0.15);padding:3px 9px;border-radius:999px;font-weight:800;">Pág. <span id="currentPageSpan">1</span></span>
+    </button>
+  </div>
+
   <!-- Legal DMCA Notice -->
   <div class="dmca-disclaimer">
     <strong>Aviso Legal &amp; Exención de Responsabilidad DMCA:</strong> DuarteCinema es una interfaz de catálogo desarrollada con fines de investigación que se conecta a la API abierta de The Movie Database (TMDB). Este sitio web <strong>no aloja ni sube ningún archivo multimedia</strong> a sus servidores. Todos los reproductores de streaming son proporcionados por proveedores de terceros independientes (VidSrc, MultiEmbed). Para cualquier reclamación de derechos de autor, favor dirigirse al proveedor de origen del archivo.
@@ -1715,27 +1724,92 @@ function switchServer(serverNum, btn){
 
 
 // ==========================================
-// UNIVERSAL TMDB API SEARCH & TRENDING ENGINE
+// UNIVERSAL TMDB API SEARCH, DISCOVERY & INFINITE PAGINATION
 // ==========================================
 var TMDB_KEY = '844dba0bfd8f3a4f3799f6130ef9e335';
 var searchDebounceTimer = null;
+var currentCategory = 'all'; // 'all' | 'trending' | 'movie' | 'tv' | 'netflix' | 'hbo'
+var currentPage = 1;
+var isFetchingMore = false;
+var activeItemsList = []; // Array of currently displayed titles
+
+function renderCatalog(items, append){
+  var grid = document.getElementById('catalogGrid');
+  var countEl = document.getElementById('resultsCount');
+  if(!grid) return;
+
+  if(!append){
+    grid.innerHTML = '';
+  }
+
+  if(countEl && !append){
+    countEl.innerText = items.length;
+  }
+
+  items.forEach(function(m){
+    // Avoid duplicates
+    if(append && document.getElementById('card_' + m.id)) return;
+
+    var card = document.createElement('div');
+    card.className = 'poster-card';
+    card.id = 'card_' + m.id;
+    card.onclick = function(){ selectMedia(m); };
+
+    var typeBadge = m.type === 'tv' ? 'SERIE' : 'PELÍCULA';
+
+    card.innerHTML = `
+      <div class="poster-img-wrap">
+        <img class="poster-img" src="${m.poster}" alt="${m.title}" loading="lazy">
+        <div class="poster-badges-top">
+          <span class="badge-quality">${m.quality}</span>
+          <span class="badge-score">⭐ ${m.rating}</span>
+        </div>
+        <div class="poster-play-overlay">
+          <div class="play-circle-icon"></div>
+        </div>
+      </div>
+      <div class="poster-info">
+        <div class="poster-title" title="${m.title}">${m.title}</div>
+        <div class="poster-sub">
+          <span>${m.year}</span>
+          <span style="color:#34d399;font-weight:700;">🇲🇽 🇺🇸 🇪🇸</span>
+          <span style="color:${m.type === 'tv' ? '#a78bfa' : '#38bdf8'};font-weight:700;">${typeBadge}</span>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
 
 function filterCatalog(cat, btn){
   document.querySelectorAll('.catalog-pill').forEach(function(b){ b.classList.remove('active'); });
   if(btn) btn.classList.add('active');
 
+  currentCategory = cat;
+  currentPage = 1;
+
+  var loadWrap = document.getElementById('loadMoreWrap');
+  if(loadWrap) loadWrap.style.display = 'block';
+  updatePageBadge(1);
+
   var countEl = document.getElementById('resultsCount');
+  var searchInput = document.getElementById('catalogSearchInput');
+  if(searchInput) searchInput.value = '';
 
   if(cat === 'all'){
-    renderCatalog(catalog);
-    if(countEl) countEl.innerText = catalog.length;
-  } else if(cat === 'movie' || cat === 'tv'){
-    var filtered = catalog.filter(function(m){ return m.type === cat; });
-    renderCatalog(filtered);
-    if(countEl) countEl.innerText = filtered.length;
+    // Show curated list + page 1 of trending
+    activeItemsList = catalog.slice();
+    renderCatalog(activeItemsList, false);
+    if(countEl) countEl.innerText = activeItemsList.length;
+    fetchCategoryPage('all', 1, true);
+  } else if(cat === 'movie' || cat === 'tv' || cat === 'netflix' || cat === 'hbo'){
+    if(countEl) countEl.innerText = 'Cargando catálogo mundial de ' + cat + '...';
+    activeItemsList = [];
+    fetchCategoryPage(cat, 1, false);
   } else {
     var filtered = catalog.filter(function(m){ return m.genres.indexOf(cat) !== -1; });
-    renderCatalog(filtered);
+    activeItemsList = filtered;
+    renderCatalog(filtered, false);
     if(countEl) countEl.innerText = filtered.length;
   }
 }
@@ -1744,20 +1818,57 @@ function loadTrendingToday(btn){
   document.querySelectorAll('.catalog-pill').forEach(function(b){ b.classList.remove('active'); });
   if(btn) btn.classList.add('active');
 
+  currentCategory = 'trending';
+  currentPage = 1;
+
+  var loadWrap = document.getElementById('loadMoreWrap');
+  if(loadWrap) loadWrap.style.display = 'block';
+  updatePageBadge(1);
+
   var countEl = document.getElementById('resultsCount');
   if(countEl) countEl.innerText = 'Cargando tendencias mundiales...';
 
-  var url = 'https://api.themoviedb.org/3/trending/all/day?api_key=' + TMDB_KEY + '&language=es-MX';
+  activeItemsList = [];
+  fetchCategoryPage('trending', 1, false);
+}
+
+function fetchCategoryPage(cat, page, appendToCurated){
+  var url = '';
+  if(cat === 'all' || cat === 'trending'){
+    url = 'https://api.themoviedb.org/3/trending/all/week?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+  } else if(cat === 'movie'){
+    url = 'https://api.themoviedb.org/3/movie/popular?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+  } else if(cat === 'tv'){
+    url = 'https://api.themoviedb.org/3/tv/popular?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+  } else if(cat === 'netflix'){
+    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_networks=213&language=es-MX&page=' + page + '&sort_by=popularity.desc';
+  } else if(cat === 'hbo'){
+    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&with_networks=49&language=es-MX&page=' + page + '&sort_by=popularity.desc';
+  }
+
   fetch(url)
     .then(function(res){ return res.json(); })
     .then(function(data){
       var raw = data.results || [];
-      var valid = raw.filter(function(i){ return (i.media_type === 'movie' || i.media_type === 'tv') && i.poster_path; });
+      var valid = raw.filter(function(i){
+        return (i.media_type === 'movie' || i.media_type === 'tv' || cat === 'movie' || cat === 'tv' || cat === 'netflix' || cat === 'hbo') && (i.poster_path || i.backdrop_path);
+      });
+
       var mapped = valid.map(function(item){
-        var isTv = item.media_type === 'tv';
+        var isTv = (cat === 'tv' || cat === 'netflix' || cat === 'hbo') ? true : (item.media_type === 'tv');
         var title = isTv ? (item.name || item.original_name) : (item.title || item.original_title);
         var date = isTv ? (item.first_air_date || '') : (item.release_date || '');
         var year = date ? parseInt(date.substring(0, 4), 10) : 2024;
+        var poster = item.poster_path 
+          ? 'https://image.tmdb.org/t/p/w500' + item.poster_path 
+          : (item.backdrop_path ? 'https://image.tmdb.org/t/p/w500' + item.backdrop_path : 'assets/brand_avatar.jpg');
+
+        var platform = 'Mundial TMDB';
+        if(cat === 'netflix') platform = 'Netflix Original';
+        else if(cat === 'hbo') platform = 'HBO Max';
+        else if(cat === 'movie') platform = 'Cine HD';
+        else if(cat === 'tv') platform = 'Serie TV';
+
         return {
           id: 'tmdb_' + item.id,
           tmdbId: item.id,
@@ -1765,45 +1876,106 @@ function loadTrendingToday(btn){
           type: isTv ? 'tv' : 'movie',
           title: title,
           year: year || 2024,
-          platform: 'Tendencia Mundial TMDB',
-          rating: item.vote_average ? item.vote_average.toFixed(1) : '7.8',
+          platform: platform,
+          rating: item.vote_average ? item.vote_average.toFixed(1) : '7.6',
           quality: '4K UHD',
           lang: 'Latino / Sub / Cast',
-          genres: ['tendencia', item.media_type],
-          poster: 'https://image.tmdb.org/t/p/w500' + item.poster_path,
-          desc: item.overview || 'Sinopsis disponible al reproducir.',
+          genres: [cat, isTv ? 'tv' : 'movie'],
+          poster: poster,
+          desc: item.overview || 'Sinopsis oficial en español disponible al reproducir.',
           ytTrailer: '',
           seasons: isTv ? 1 : null,
           episodesPerSeason: isTv ? [10] : null
         };
       });
-      renderCatalog(mapped);
-      if(countEl) countEl.innerText = mapped.length + ' tendencias de hoy';
+
+      if(appendToCurated){
+        // Append new items to activeItemsList avoiding duplicate tmdbIds
+        mapped.forEach(function(m){
+          var exists = activeItemsList.some(function(cur){ return cur.tmdbId === m.tmdbId; });
+          if(!exists){
+            activeItemsList.push(m);
+          }
+        });
+        renderCatalog(activeItemsList, false);
+      } else {
+        if(page === 1){
+          activeItemsList = mapped;
+          renderCatalog(activeItemsList, false);
+        } else {
+          mapped.forEach(function(m){
+            var exists = activeItemsList.some(function(cur){ return cur.tmdbId === m.tmdbId; });
+            if(!exists){
+              activeItemsList.push(m);
+            }
+          });
+          renderCatalog(mapped, true);
+        }
+      }
+
+      var countEl = document.getElementById('resultsCount');
+      if(countEl) countEl.innerText = activeItemsList.length;
+      resetLoadMoreButtonState();
     })
-    .catch(function(e){
-      renderCatalog(catalog);
+    .catch(function(err){
+      console.warn('Error fetching category page:', err);
+      resetLoadMoreButtonState();
     });
+}
+
+function loadMoreContent(){
+  if(isFetchingMore) return;
+  isFetchingMore = true;
+  currentPage++;
+  updatePageBadge(currentPage);
+
+  var btn = document.getElementById('loadMoreBtn');
+  var label = document.getElementById('loadMoreLabel');
+  var icon = document.getElementById('loadMoreIcon');
+  if(label) label.innerText = 'Cargando más títulos de TMDB...';
+  if(icon) icon.innerText = '⏳';
+
+  fetchCategoryPage(currentCategory, currentPage, false);
+}
+
+function resetLoadMoreButtonState(){
+  isFetchingMore = false;
+  var label = document.getElementById('loadMoreLabel');
+  var icon = document.getElementById('loadMoreIcon');
+  if(label) label.innerText = 'Cargar Más Películas y Series';
+  if(icon) icon.innerText = '➕';
+}
+
+function updatePageBadge(pg){
+  var span = document.getElementById('currentPageSpan');
+  if(span) span.innerText = pg;
 }
 
 function onSearchInput(query){
   clearTimeout(searchDebounceTimer);
   var q = (query || '').trim();
 
+  var loadWrap = document.getElementById('loadMoreWrap');
+
   if(!q){
-    renderCatalog(catalog);
+    if(loadWrap) loadWrap.style.display = 'block';
+    renderCatalog(activeItemsList, false);
     var countEl = document.getElementById('resultsCount');
-    if(countEl) countEl.innerText = catalog.length;
+    if(countEl) countEl.innerText = activeItemsList.length;
     return;
   }
 
+  if(loadWrap) loadWrap.style.display = 'none';
+
   // Instant local check
-  var localMatches = catalog.filter(function(m){
+  var localMatches = activeItemsList.filter(function(m){
     return m.title.toLowerCase().indexOf(q.toLowerCase()) !== -1 ||
            String(m.year).indexOf(q) !== -1 ||
            m.platform.toLowerCase().indexOf(q.toLowerCase()) !== -1;
   });
+
   if(localMatches.length > 0 && q.length < 3){
-    renderCatalog(localMatches);
+    renderCatalog(localMatches, false);
     var countEl = document.getElementById('resultsCount');
     if(countEl) countEl.innerText = localMatches.length + ' (locales)';
   }
@@ -1815,11 +1987,30 @@ function onSearchInput(query){
 
     searchDebounceTimer = setTimeout(function(){
       fetchLiveTmdbSearch(q);
-    }, 320);
+    }, 280);
+  }
+}
+
+function triggerUniversalSearch(){
+  var input = document.getElementById('catalogSearchInput');
+  if(!input) return;
+  var q = (input.value || '').trim();
+  if(q){
+    fetchLiveTmdbSearch(q);
   }
 }
 
 function fetchLiveTmdbSearch(q){
+  var grid = document.getElementById('catalogGrid');
+  var countEl = document.getElementById('resultsCount');
+  var loadWrap = document.getElementById('loadMoreWrap');
+  if(loadWrap) loadWrap.style.display = 'none';
+
+  if(grid){
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:#38bdf8;font-size:15px;background:rgba(15,23,42,0.6);border-radius:16px;border:1px dashed rgba(6,182,212,0.3);"><div style="font-size:30px;margin-bottom:8px;">⏳</div>Buscando "<strong>' + q + '</strong>" en la base de datos mundial de TMDB (500,000+ títulos)...</div>';
+  }
+  if(countEl) countEl.innerText = 'Consultando base de datos mundial...';
+
   var url = 'https://api.themoviedb.org/3/search/multi?api_key=' + TMDB_KEY + '&query=' + encodeURIComponent(q) + '&language=es-MX&include_adult=false';
   
   fetch(url)
@@ -1831,12 +2022,18 @@ function fetchLiveTmdbSearch(q){
       });
 
       if(valid.length === 0){
-        var localMatches = catalog.filter(function(m){
+        var localMatches = activeItemsList.filter(function(m){
           return m.title.toLowerCase().indexOf(q.toLowerCase()) !== -1;
         });
-        renderCatalog(localMatches);
-        var countEl = document.getElementById('resultsCount');
-        if(countEl) countEl.innerText = localMatches.length + ' encontrados';
+        if(localMatches.length > 0){
+          renderCatalog(localMatches, false);
+          if(countEl) countEl.innerText = localMatches.length + ' encontrados';
+        } else {
+          if(grid){
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:50px 20px;color:#94a3b8;font-size:14px;background:rgba(15,23,42,0.6);border-radius:16px;"><div style="font-size:28px;margin-bottom:8px;">🔍</div>No se encontraron resultados para "<strong>' + q + '</strong>". Intenta con otro término o revisa la ortografía.</div>';
+          }
+          if(countEl) countEl.innerText = '0 resultados';
+        }
         return;
       }
 
@@ -1852,7 +2049,7 @@ function fetchLiveTmdbSearch(q){
         return {
           id: 'tmdb_' + item.id,
           tmdbId: item.id,
-          imdbId: null, // Will resolve automatically on select
+          imdbId: null,
           type: isTv ? 'tv' : 'movie',
           title: title,
           year: year || 2024,
@@ -1869,16 +2066,15 @@ function fetchLiveTmdbSearch(q){
         };
       });
 
-      renderCatalog(mapped);
-      var countEl = document.getElementById('resultsCount');
-      if(countEl) countEl.innerText = mapped.length + ' resultados mundiales';
+      renderCatalog(mapped, false);
+      if(countEl) countEl.innerText = mapped.length + ' resultados mundiales encontrados';
     })
     .catch(function(err){
       console.warn('TMDB live search error, fallback:', err);
-      var localMatches = catalog.filter(function(m){
+      var localMatches = activeItemsList.filter(function(m){
         return m.title.toLowerCase().indexOf(q.toLowerCase()) !== -1;
       });
-      renderCatalog(localMatches);
+      renderCatalog(localMatches, false);
     });
 }
 
@@ -1963,8 +2159,11 @@ function setRadioVolume(val){
 
 // Initial Boot
 document.addEventListener('DOMContentLoaded', function(){
-  renderCatalog(catalog);
+  activeItemsList = catalog.slice();
+  renderCatalog(activeItemsList, false);
   selectMedia(catalog[0]);
+  // Auto-fetch top trending titles to expand grid beyond 50+ movies on start
+  fetchCategoryPage('all', 1, true);
 });
 </script>
 </body>
