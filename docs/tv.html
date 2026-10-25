@@ -1773,8 +1773,10 @@
         return;
       }
 
+      currentRenderedMatches = list;
+
       var html = '';
-      list.forEach(function(m){
+      list.forEach(function(m, mIdx){
         var isLive = m.status === 'live';
         var isFinished = m.status === 'finished';
         var isElClasico = m.desc.toLowerCase().includes('barcelona') && m.desc.toLowerCase().includes('real madrid');
@@ -1809,15 +1811,15 @@
               try {
                 var u = new URL(s.url);
                 var b = u.searchParams.get('r');
-                if(b) directPopoutUrl = atob(b);
+                if(b) directPopoutUrl = atob(b).trim();
               } catch(e){}
             }
 
             html += '<div style="display: inline-flex; align-items: center; background: ' + btnBg + '; border: ' + border + '; border-radius: 8px; overflow: hidden;">' +
-              '<button onclick="playMatchOption(\'' + escapeHtml(m.desc) + '\', \'' + escapeHtml(s.name) + '\', \'' + s.url + '\')" style="background: none; border: none; color: ' + color + '; font-size: 11.5px; font-weight: 700; padding: 6px 9px; cursor: pointer;" title="Ver aquí en DuarteTV">' +
+              '<button onclick="playMatchByIndex(' + mIdx + ', ' + sIdx + ')" style="background: none; border: none; color: ' + color + '; font-size: 11.5px; font-weight: 700; padding: 6px 9px; cursor: pointer;" title="Ver aquí en DuarteTV">' +
                 '⚡ ' + escapeHtml(s.name) +
               '</button>' +
-              '<a href="' + directPopoutUrl + '" target="_blank" rel="noopener noreferrer" style="border-left: 1px solid rgba(255,255,255,0.15); color: #94a3b8; padding: 6px 7px; font-size: 11px; text-decoration: none;" title="Abrir transmisión pura en nueva pestaña">↗</a>' +
+              '<a href="' + directPopoutUrl + '" target="_blank" rel="noopener noreferrer" style="border-left: 1px solid rgba(255,255,255,0.15); color: #94a3b8; padding: 6px 7px; font-size: 11px; text-decoration: none;" title="Abrir transmisión pura en nueva pestaña (útil si tienes AdBlock en PC)">↗</a>' +
             '</div>';
           });
         }
@@ -1830,6 +1832,14 @@
 
     function filterLiveAgenda(){
       renderLiveAgenda();
+    }
+
+    function playMatchByIndex(mIdx, sIdx){
+      var m = currentRenderedMatches && currentRenderedMatches[mIdx];
+      if(!m) return;
+      var s = m.servers && m.servers[sIdx];
+      if(!s) return;
+      playMatchOption(m.desc, s.name, s.url);
     }
 
     function playMatchOption(matchTitle, serverName, streamUrl){
@@ -1857,7 +1867,7 @@
           var uObj = new URL(streamUrl);
           var b64Param = uObj.searchParams.get('r');
           if(b64Param){
-            targetUrl = atob(b64Param);
+            targetUrl = atob(b64Param).trim();
           }
         } catch(e){
           targetUrl = streamUrl;
@@ -1971,7 +1981,12 @@ var currentMatchData = null;
 
     function escapeHtml(str){
       if(!str) return '';
-      return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
     }
   </script>
 </body>
