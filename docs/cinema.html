@@ -1122,8 +1122,8 @@ footer {
       <div>Duarte<span>Cinema</span> <span style="font-size:11px;background:rgba(244,63,94,0.18);color:#f43f5e;border:1px solid rgba(244,63,94,0.35);padding:2px 7px;border-radius:999px;margin-left:6px;">PRO</span></div>
     </a>
     <div class="nav-actions">
-      <button id="pwaInstallBtn" onclick="triggerPwaInstall()" class="nav-btn" style="background:linear-gradient(135deg, rgba(244,63,94,0.35) 0%, rgba(6,182,212,0.35) 100%);border:1px solid rgba(244,63,94,0.65);color:#fff;font-weight:700;box-shadow:0 0 16px rgba(244,63,94,0.4);cursor:pointer;display:inline-flex;align-items:center;gap:6px;" title="Instala DuarteCinema como App en tu teléfono o PC">
-        📲 <span>Instalar App</span>
+      <button id="pwaHeaderBtn" onclick="openDownloadModal()" class="nav-btn" style="background:linear-gradient(135deg, rgba(244,63,94,0.38) 0%, rgba(6,182,212,0.38) 100%);border:1px solid rgba(244,63,94,0.75);color:#fff;font-weight:800;box-shadow:0 0 16px rgba(244,63,94,0.45);cursor:pointer;display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:10px;" title="Descargar o instalar DuarteCinema App en tu teléfono o PC">
+        📥 <span>Descargar App</span>
       </button>
       <a href="arcade.html" class="nav-btn" style="color: #38bdf8; border-color: rgba(6,182,212,0.4);">
         🕹️ <span>DuarteArcade</span>
@@ -1494,6 +1494,103 @@ footer {
 <!-- ==========================================
      PWA INSTALL PROMOTION BANNER & IOS MODAL
      ========================================== -->
+
+<!-- ==========================================
+     STATIC FLOATING DOWNLOAD BUTTON (FAB)
+     ========================================== -->
+<div id="staticDownloadFab" onclick="openDownloadModal()" style="position:fixed;bottom:24px;right:24px;z-index:99998;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg, #f43f5e 0%, #06b6d4 100%);color:#fff;padding:12px 22px;border-radius:999px;font-weight:800;font-size:13.5px;cursor:pointer;box-shadow:0 8px 30px rgba(244,63,94,0.55), 0 0 20px rgba(6,182,212,0.45);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s;border:1.5px solid rgba(255,255,255,0.3);letter-spacing:0.3px;">
+  <span style="font-size:18px;">📥</span>
+  <span>Descargar App</span>
+</div>
+
+<!-- ==========================================
+     CENTRO OFICIAL DE DESCARGAS MODAL
+     ========================================== -->
+<div id="downloadCenterModal" onclick="if(event.target === this) closeDownloadModal();" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:9999999;align-items:center;justify-content:center;padding:20px;">
+  <div style="background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%);border:1.5px solid rgba(244,63,94,0.5);border-radius:24px;max-width:520px;width:100%;padding:28px 24px;box-shadow:0 25px 60px rgba(0,0,0,0.95), 0 0 35px rgba(244,63,94,0.3);position:relative;animation:modalScaleUp 0.25s cubic-bezier(0.16,1,0.3,1);">
+    
+    <!-- Close Button -->
+    <button onclick="closeDownloadModal()" style="position:absolute;top:16px;right:18px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#94a3b8;width:34px;height:34px;border-radius:50%;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;" title="Cerrar">✕</button>
+
+    <div style="text-align:center;margin-bottom:22px;">
+      <img src="assets/icon_cinema.png" alt="DuarteCinema Icon" style="width:72px;height:72px;border-radius:18px;margin:0 auto 12px;display:block;box-shadow:0 0 30px rgba(244,63,94,0.45);border:1.5px solid rgba(255,255,255,0.2);">
+      <h2 style="color:#fff;font-size:22px;font-weight:800;font-family:'Space Grotesk',sans-serif;margin-bottom:4px;">Centro Oficial de Descargas</h2>
+      <p style="color:#94a3b8;font-size:13px;">Instala DuarteCinema Pro en tu Celular, Smart TV o Computadora</p>
+    </div>
+
+    <!-- Download Options Grid -->
+    <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:20px;">
+      
+      <!-- Option 1: PWA Instant Install (Android & PC) -->
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(244,63,94,0.35);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:24px;background:rgba(244,63,94,0.15);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;">⚡</div>
+          <div>
+            <div style="font-weight:700;color:#fff;font-size:14px;">Instalación 1-Clic Oficial (PWA)</div>
+            <div style="font-size:11.5px;color:#94a3b8;">Android, Windows, Mac (Sin descargas pesadas)</div>
+          </div>
+        </div>
+        <button onclick="triggerPwaInstall(); closeDownloadModal();" style="background:linear-gradient(135deg, #f43f5e 0%, #06b6d4 100%);color:#fff;border:none;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(244,63,94,0.4);">
+          Instalar Ahora
+        </button>
+      </div>
+
+      <!-- Option 2: Android APK -->
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(6,182,212,0.35);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:24px;background:rgba(6,182,212,0.15);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;">🤖</div>
+          <div>
+            <div style="font-weight:700;color:#fff;font-size:14px;">Descargar APK para Android</div>
+            <div style="font-size:11.5px;color:#94a3b8;">Instalador para Celulares, Tablets y Smart TV</div>
+          </div>
+        </div>
+        <button onclick="downloadAndroidApk()" style="background:linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);color:#fff;border:none;font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(6,182,212,0.4);">
+          📥 Descargar APK
+        </button>
+      </div>
+
+      <!-- Option 3: iOS iPhone / iPad Guide -->
+      <div style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.1);border-radius:14px;padding:14px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="font-size:24px;background:rgba(255,255,255,0.08);width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;">🍎</div>
+          <div>
+            <div style="font-weight:700;color:#fff;font-size:14px;">Apple iPhone / iPad</div>
+            <div style="font-size:11.5px;color:#94a3b8;">Compartir ⎋ ➔ Agregar al inicio ➕</div>
+          </div>
+        </div>
+        <button onclick="showIosInstallModal(); closeDownloadModal();" style="background:rgba(255,255,255,0.1);color:#fff;border:1px solid rgba(255,255,255,0.2);font-weight:700;font-size:12.5px;padding:8px 18px;border-radius:10px;cursor:pointer;white-space:nowrap;">
+          Ver Guía
+        </button>
+      </div>
+
+    </div>
+
+    <div style="text-align:center;font-size:11.5px;color:#64748b;">
+      🔒 100% Seguro · Sin virus ni malware · Reproducción nítida en Full HD
+    </div>
+
+  </div>
+</div>
+
+<style>
+#staticDownloadFab:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 12px 35px rgba(244,63,94,0.7), 0 0 25px rgba(6,182,212,0.6);
+}
+@keyframes modalScaleUp {
+  from { opacity: 0; transform: scale(0.92); }
+  to { opacity: 1; transform: scale(1); }
+}
+@media (max-width: 500px) {
+  #staticDownloadFab {
+    bottom: 16px;
+    right: 16px;
+    padding: 10px 16px;
+    font-size: 12.5px;
+  }
+}
+</style>
+
 <div id="pwaFloatingBanner" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999999;width:calc(100% - 32px);max-width:560px;background:linear-gradient(135deg, rgba(15,23,42,0.96) 0%, rgba(30,41,59,0.94) 100%);backdrop-filter:blur(20px);border:1.5px solid rgba(244,63,94,0.5);border-radius:18px;padding:14px 18px;box-shadow:0 14px 40px rgba(0,0,0,0.8), 0 0 30px rgba(244,63,94,0.3);align-items:center;justify-content:space-between;gap:14px;animation:slideUpBanner 0.35s cubic-bezier(0.16,1,0.3,1);">
   <div style="display:flex;align-items:center;gap:12px;">
     <img src="assets/icon_cinema.png" alt="DuarteCinema Icon" style="width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);box-shadow:0 0 15px rgba(244,63,94,0.4);">
@@ -3602,6 +3699,42 @@ window.addEventListener('appinstalled', function(){
   var banner = document.getElementById('pwaFloatingBanner');
   if(banner) banner.style.display = 'none';
 });
+
+function openDownloadModal(){
+  var m = document.getElementById('downloadCenterModal');
+  if(m) m.style.display = 'flex';
+}
+
+function closeDownloadModal(){
+  var m = document.getElementById('downloadCenterModal');
+  if(m) m.style.display = 'none';
+}
+
+function showIosInstallModal(){
+  var m = document.getElementById('iosInstallModal');
+  if(m) m.style.display = 'flex';
+}
+
+function downloadAndroidApk(){
+  if(deferredPwaPrompt){
+    deferredPwaPrompt.prompt();
+    deferredPwaPrompt.userChoice.then(function(choiceResult){
+      if(choiceResult.outcome === 'accepted'){
+        console.log('App instalada.');
+      }
+      closeDownloadModal();
+    });
+  } else {
+    // Direct APK download
+    var link = document.createElement('a');
+    link.href = 'downloads/DuarteCinema.apk';
+    link.download = 'DuarteCinema.apk';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    closeDownloadModal();
+  }
+}
 
 function triggerPwaInstall(){
   if(deferredPwaPrompt){
