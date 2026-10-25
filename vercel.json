@@ -1,0 +1,8 @@
+{
+  "cleanUrls": true,
+  "rewrites": [
+    { "source": "/", "destination": "/docs/cinema.html" },
+    { "source": "/cinema", "destination": "/docs/cinema.html" },
+    { "source": "/arcade", "destination": "/docs/arcade.html" }
+  ]
+}
