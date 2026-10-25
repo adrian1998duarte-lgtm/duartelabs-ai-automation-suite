@@ -900,7 +900,7 @@ footer {
           Cargando buffer de video en Full HD · Si tarda, cambia de servidor en 1 clic
         </div>
       </div>
-      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen onload="onIframeStreamLoaded()"></iframe>
+      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen onload="onIframeStreamLoaded()"></iframe>
     </div>
   </div>
 
@@ -1986,12 +1986,8 @@ function loadVideoSource(){
     }
   }
 
-  // Enforce Anti-Popup Sandbox: Completely blocks window.open, ads, and new tabs!
-  if(isAdShieldActive){
-    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads');
-  } else {
-    iframe.removeAttribute('sandbox');
-  }
+  // DO NOT use sandbox attribute because external streaming players (VidSrc, Videasy) actively block playback with "Playback blocked: This player cannot be loaded inside a restricted (sandboxed) frame"
+  iframe.removeAttribute('sandbox');
 
   iframe.src = url;
   if(extBtn) extBtn.href = url;
@@ -2645,11 +2641,7 @@ function toggleAdShield(){
   isAdShieldActive = !isAdShieldActive;
 
   if(iframe){
-    if(isAdShieldActive){
-      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads');
-    } else {
-      iframe.removeAttribute('sandbox');
-    }
+    iframe.removeAttribute('sandbox');
   }
 
   if(btn){
