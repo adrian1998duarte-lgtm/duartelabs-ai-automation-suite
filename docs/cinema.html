@@ -1496,14 +1496,6 @@ footer {
      ========================================== -->
 
 <!-- ==========================================
-     STATIC FLOATING DOWNLOAD BUTTON (FAB)
-     ========================================== -->
-<div id="staticDownloadFab" onclick="openDownloadModal()" style="position:fixed;bottom:24px;right:24px;z-index:99998;display:flex;align-items:center;gap:8px;background:linear-gradient(135deg, #f43f5e 0%, #06b6d4 100%);color:#fff;padding:12px 22px;border-radius:999px;font-weight:800;font-size:13.5px;cursor:pointer;box-shadow:0 8px 30px rgba(244,63,94,0.55), 0 0 20px rgba(6,182,212,0.45);transition:transform 0.25s cubic-bezier(0.16,1,0.3,1), box-shadow 0.25s;border:1.5px solid rgba(255,255,255,0.3);letter-spacing:0.3px;">
-  <span style="font-size:18px;">📥</span>
-  <span>Descargar App</span>
-</div>
-
-<!-- ==========================================
      CENTRO OFICIAL DE DESCARGAS MODAL
      ========================================== -->
 <div id="downloadCenterModal" onclick="if(event.target === this) closeDownloadModal();" style="display:none;position:fixed;inset:0;background:rgba(2,6,23,0.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);z-index:9999999;align-items:center;justify-content:center;padding:20px;">
@@ -1573,41 +1565,11 @@ footer {
 </div>
 
 <style>
-#staticDownloadFab:hover {
-  transform: translateY(-3px) scale(1.04);
-  box-shadow: 0 12px 35px rgba(244,63,94,0.7), 0 0 25px rgba(6,182,212,0.6);
-}
 @keyframes modalScaleUp {
   from { opacity: 0; transform: scale(0.92); }
   to { opacity: 1; transform: scale(1); }
 }
-@media (max-width: 500px) {
-  #staticDownloadFab {
-    bottom: 16px;
-    right: 16px;
-    padding: 10px 16px;
-    font-size: 12.5px;
-  }
-}
 </style>
-
-<div id="pwaFloatingBanner" style="display:none;position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:999999;width:calc(100% - 32px);max-width:560px;background:linear-gradient(135deg, rgba(15,23,42,0.96) 0%, rgba(30,41,59,0.94) 100%);backdrop-filter:blur(20px);border:1.5px solid rgba(244,63,94,0.5);border-radius:18px;padding:14px 18px;box-shadow:0 14px 40px rgba(0,0,0,0.8), 0 0 30px rgba(244,63,94,0.3);align-items:center;justify-content:space-between;gap:14px;animation:slideUpBanner 0.35s cubic-bezier(0.16,1,0.3,1);">
-  <div style="display:flex;align-items:center;gap:12px;">
-    <img src="assets/icon_cinema.png" alt="DuarteCinema Icon" style="width:44px;height:44px;border-radius:12px;border:1px solid rgba(255,255,255,0.2);box-shadow:0 0 15px rgba(244,63,94,0.4);">
-    <div>
-      <div style="font-weight:800;font-size:14.5px;color:#fff;">Instala DuarteCinema Pro</div>
-      <div style="font-size:12px;color:#94a3b8;">Ver a pantalla completa sin barra de navegador como Netflix</div>
-    </div>
-  </div>
-  <div style="display:flex;align-items:center;gap:8px;">
-    <button onclick="triggerPwaInstall()" style="background:linear-gradient(135deg, #f43f5e 0%, #06b6d4 100%);border:none;color:#fff;font-weight:700;font-size:13px;padding:8px 16px;border-radius:10px;cursor:pointer;white-space:nowrap;box-shadow:0 4px 15px rgba(244,63,94,0.4);">
-      Instalar
-    </button>
-    <button onclick="dismissPwaBanner()" style="background:none;border:none;color:#64748b;font-size:18px;cursor:pointer;padding:4px;" title="Cerrar aviso">
-      ✕
-    </button>
-  </div>
-</div>
 
 <!-- iOS PWA Installation Guide Modal -->
 <div id="iosInstallModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);z-index:9999999;align-items:center;justify-content:center;padding:20px;">
@@ -3676,28 +3638,17 @@ var deferredPwaPrompt = null;
 window.addEventListener('beforeinstallprompt', function(e){
   e.preventDefault();
   deferredPwaPrompt = e;
-  
-  var btn = document.getElementById('pwaInstallBtn');
-  if(btn) btn.style.display = 'inline-flex';
-
-  var banner = document.getElementById('pwaFloatingBanner');
-  if(banner && !localStorage.getItem('pwaBannerDismissed')){
-    setTimeout(function(){ banner.style.display = 'flex'; }, 3000);
-  }
 });
 
 window.addEventListener('appinstalled', function(){
   console.log('🎉 [DuarteCinema PWA] Aplicación instalada con éxito en el sistema!');
   deferredPwaPrompt = null;
-  var btn = document.getElementById('pwaInstallBtn');
+  var btn = document.getElementById('pwaHeaderBtn');
   if(btn){
     btn.innerHTML = '✅ <span>App Instalada</span>';
     btn.style.borderColor = 'rgba(52,211,153,0.5)';
     btn.style.color = '#34d399';
-    btn.onclick = function(){ alert('¡DuarteCinema ya está instalada como aplicación nativa en tu dispositivo!'); };
   }
-  var banner = document.getElementById('pwaFloatingBanner');
-  if(banner) banner.style.display = 'none';
 });
 
 function openDownloadModal(){
@@ -3744,8 +3695,6 @@ function triggerPwaInstall(){
         console.log('El usuario aceptó instalar la app DuarteCinema');
       }
       deferredPwaPrompt = null;
-      var banner = document.getElementById('pwaFloatingBanner');
-      if(banner) banner.style.display = 'none';
     });
   } else {
     var isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
@@ -3762,12 +3711,6 @@ function triggerPwaInstall(){
       }
     }
   }
-}
-
-function dismissPwaBanner(){
-  var banner = document.getElementById('pwaFloatingBanner');
-  if(banner) banner.style.display = 'none';
-  localStorage.setItem('pwaBannerDismissed', 'true');
 }
 
 // Show Install button on iOS devices automatically
