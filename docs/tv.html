@@ -755,13 +755,28 @@
         </div>
 
         <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <input type="text" id="matchSearchInput" placeholder="Buscar partido (Madrid, Boca, Milan...)" oninput="filterLiveAgenda()" style="background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 7px 14px; border-radius: 10px; font-size: 13px; outline: none; width: 230px;">
-          <button onclick="fetchLiveAgenda()" class="ctrl-btn" style="padding: 7px 12px; font-size: 12.5px;">
-            🔄 Actualizar
+          <div style="display: flex; gap: 6px; background: rgba(2,6,23,0.6); padding: 3px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+            <button id="agendaFilterLive" onclick="setAgendaStatusFilter('live', this)" style="background: rgba(244,63,94,0.3); border: 1px solid rgba(244,63,94,0.6); color: #fff; font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
+              🔴 En Juego (<span id="countLiveBadge">0</span>)
+            </button>
+            <button id="agendaFilterUpcoming" onclick="setAgendaStatusFilter('upcoming', this)" style="background: none; border: none; color: #94a3b8; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
+              ⏰ Próximos (<span id="countUpcomingBadge">0</span>)
+            </button>
+            <button id="agendaFilterAll" onclick="setAgendaStatusFilter('all', this)" style="background: none; border: none; color: #94a3b8; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
+              🌟 Todos
+            </button>
+          </div>
+
+          <input type="text" id="matchSearchInput" placeholder="Buscar equipo o liga..." oninput="filterLiveAgenda()" style="background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 12px; border-radius: 10px; font-size: 12.5px; outline: none; width: 180px;">
+          
+          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: #94a3b8; cursor: pointer;">
+            <input type="checkbox" id="hideFinishedCheckbox" checked onchange="renderLiveAgenda()">
+            <span>Ocultar finalizados</span>
+          </label>
+
+          <button onclick="fetchLiveAgenda()" class="ctrl-btn" style="padding: 6px 10px; font-size: 12px;">
+            🔄
           </button>
-          <span style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-size: 11.5px; font-weight: 700; padding: 5px 12px; border-radius: 999px;">
-            🛡️ Escudo Anti-Publicidad
-          </span>
         </div>
       </div>
 
@@ -1560,17 +1575,87 @@
     // Match Center Functions
     
     // ==========================================
-    // DYNAMIC LIVE AGENDA ENGINE (FÚTBOL LIBRE / ROJA DIRECTA)
+    // DYNAMIC LIVE AGENDA ENGINE (ORDENADO POR HORA & ESTADO)
     // ==========================================
     var liveAgendaMatches = [];
+    var currentAgendaStatusFilter = 'all'; // 'live', 'upcoming', 'all'
 
     document.addEventListener('DOMContentLoaded', function(){
       fetchLiveAgenda();
+      // Auto-refresh match status every 60 seconds
+      setInterval(function(){
+        recalculateMatchStatuses();
+        renderLiveAgenda();
+      }, 60000);
     });
+
+    function setAgendaStatusFilter(status, btn){
+      currentAgendaStatusFilter = status;
+      var buttons = ['Live', 'Upcoming', 'All'];
+      buttons.forEach(function(b){
+        var el = document.getElementById('agendaFilter' + b);
+        if(el){
+          el.style.background = 'none';
+          el.style.border = 'none';
+          el.style.color = '#94a3b8';
+        }
+      });
+      if(btn){
+        btn.style.background = status === 'live' ? 'rgba(244,63,94,0.3)' : 'rgba(139,92,246,0.3)';
+        btn.style.border = status === 'live' ? '1px solid rgba(244,63,94,0.6)' : '1px solid rgba(139,92,246,0.6)';
+        btn.style.color = '#fff';
+      }
+      renderLiveAgenda();
+    }
+
+    function recalculateMatchStatuses(){
+      var nowUtc = Date.now();
+      liveAgendaMatches.forEach(function(m){
+        var diffMinutes = Math.round((m.matchDate.getTime() - nowUtc) / (60 * 1000));
+        m.diffMinutes = diffMinutes;
+
+        if (diffMinutes <= 15 && diffMinutes >= -125) {
+          m.status = 'live';
+          m.statusLabel = '🔴 EN JUEGO';
+        } else if (diffMinutes < -125) {
+          m.status = 'finished';
+          m.statusLabel = '🏁 FINALIZADO';
+        } else {
+          m.status = 'upcoming';
+          if (diffMinutes < 60) {
+            m.statusLabel = '⏰ En ' + diffMinutes + ' min';
+          } else {
+            m.statusLabel = '⏰ ' + m.localTimeStr;
+          }
+        }
+      });
+
+      // Sort: 1) LIVE matches first, 2) UPCOMING soonest first, 3) FINISHED last
+      liveAgendaMatches.sort(function(a, b){
+        var score = function(m){
+          if(m.status === 'live') return 1;
+          if(m.status === 'upcoming') return 2;
+          return 3;
+        };
+        if(score(a) !== score(b)) return score(a) - score(b);
+        return a.matchDate.getTime() - b.matchDate.getTime();
+      });
+
+      // Update counters
+      var liveCount = liveAgendaMatches.filter(function(m){ return m.status === 'live'; }).length;
+      var upcomingCount = liveAgendaMatches.filter(function(m){ return m.status === 'upcoming'; }).length;
+      
+      var countLiveEl = document.getElementById('countLiveBadge');
+      var countUpcomingEl = document.getElementById('countUpcomingBadge');
+      var liveMatchesCountEl = document.getElementById('liveMatchesCount');
+
+      if(countLiveEl) countLiveEl.textContent = liveCount;
+      if(countUpcomingEl) countUpcomingEl.textContent = upcomingCount;
+      if(liveMatchesCountEl) liveMatchesCountEl.textContent = liveCount + ' En Juego · ' + upcomingCount + ' Próximos';
+    }
 
     function fetchLiveAgenda(){
       var container = document.getElementById('liveMatchesGrid');
-      var countBadge = document.getElementById('liveMatchesCount');
 
       fetch('https://api.wqxag.com/diaries.json')
         .then(function(res){
@@ -1582,12 +1667,21 @@
             throw new Error('Formato no válido');
           }
 
+          var nowUtc = Date.now();
+          var todayStr = new Date().toISOString().substring(0, 10);
+
           liveAgendaMatches = json.data.map(function(item){
             var attr = item.attributes || {};
             var desc = (attr.diary_description || 'Partido').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
-            var hour = (attr.diary_hour || '00:00').substring(0, 5);
+            var rawHour = (attr.diary_hour || '00:00:00').substring(0, 8);
+            var dateStr = attr.date_diary || todayStr;
             var country = attr.country && attr.country.data && attr.country.data.attributes ? attr.country.data.attributes.name : 'Deportes';
             var embeds = (attr.embeds && attr.embeds.data) || [];
+
+            // Raw hour is America/Lima (UTC-5). Build ISO string with -05:00 offset to convert to user's exact local browser time
+            var matchIso = dateStr + 'T' + rawHour + '-05:00';
+            var matchDate = new Date(matchIso);
+            var localTimeStr = matchDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
 
             var servers = embeds.map(function(e){
               var eAttr = e.attributes || {};
@@ -1605,13 +1699,14 @@
             return {
               id: item.id,
               desc: desc,
-              hour: hour,
               country: country,
+              matchDate: matchDate,
+              localTimeStr: localTimeStr,
               servers: servers
             };
           });
 
-          if(countBadge) countBadge.textContent = liveAgendaMatches.length + ' Partidos Hoy';
+          recalculateMatchStatuses();
           renderLiveAgenda();
         })
         .catch(function(err){
@@ -1629,35 +1724,51 @@
       if(!container) return;
 
       var q = (document.getElementById('matchSearchInput') ? document.getElementById('matchSearchInput').value : '').toLowerCase().trim();
+      var hideFinished = document.getElementById('hideFinishedCheckbox') ? document.getElementById('hideFinishedCheckbox').checked : true;
 
       var list = liveAgendaMatches.filter(function(m){
+        // Status tab filter
+        if(currentAgendaStatusFilter === 'live' && m.status !== 'live') return false;
+        if(currentAgendaStatusFilter === 'upcoming' && m.status !== 'upcoming') return false;
+        
+        // Hide finished matches if checkbox is active
+        if(hideFinished && m.status === 'finished') return false;
+
+        // Text Search Query
         if(!q) return true;
         return m.desc.toLowerCase().includes(q) || m.country.toLowerCase().includes(q);
       });
 
       if(list.length === 0){
-        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 25px; color: #64748b;">No se encontraron partidos para "' + escapeHtml(q) + '"</div>';
+        container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #64748b;">No hay partidos en esta categoría en este momento.</div>';
         return;
       }
 
       var html = '';
       list.forEach(function(m){
-        var isMajor = m.desc.toLowerCase().includes('barcelona') || m.desc.toLowerCase().includes('real madrid') || m.desc.toLowerCase().includes('milan') || m.desc.toLowerCase().includes('bayern') || m.desc.toLowerCase().includes('boca') || m.desc.toLowerCase().includes('champions');
-        
-        var borderColor = isMajor ? 'rgba(244, 63, 94, 0.45)' : 'rgba(255, 255, 255, 0.1)';
-        var badgeColor = isMajor ? 'rgba(244, 63, 94, 0.2)' : 'rgba(255, 255, 255, 0.08)';
-        var badgeText = isMajor ? '#f43f5e' : '#94a3b8';
+        var isLive = m.status === 'live';
+        var isFinished = m.status === 'finished';
+        var isElClasico = m.desc.toLowerCase().includes('barcelona') && m.desc.toLowerCase().includes('real madrid');
 
-        html += '<div style="background: rgba(2, 6, 23, 0.7); border: 1px solid ' + borderColor + '; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px;">' +
+        // Card Styling
+        var borderColor = isLive ? 'rgba(244, 63, 94, 0.6)' : isElClasico ? 'rgba(139, 92, 246, 0.5)' : 'rgba(255, 255, 255, 0.1)';
+        var cardBg = isLive ? 'linear-gradient(135deg, rgba(244,63,94,0.1) 0%, rgba(2,6,23,0.85) 100%)' : 'rgba(2, 6, 23, 0.7)';
+        var badgeBg = isLive ? 'rgba(244, 63, 94, 0.25)' : 'rgba(245, 158, 11, 0.15)';
+        var badgeColor = isLive ? '#f43f5e' : '#f59e0b';
+
+        html += '<div style="background: ' + cardBg + '; border: 1.5px solid ' + borderColor + '; border-radius: 14px; padding: 14px; display: flex; flex-direction: column; gap: 10px; position: relative;">' +
           '<div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">' +
-            '<span style="font-size: 11px; font-weight: 800; background: ' + badgeColor + '; color: ' + badgeText + '; padding: 2px 8px; border-radius: 6px;">' + escapeHtml(m.country) + '</span>' +
-            '<span style="font-size: 12px; color: #f59e0b; font-weight: 800; background: rgba(245, 158, 11, 0.12); padding: 2px 7px; border-radius: 6px;">⏰ ' + m.hour + '</span>' +
+            '<span style="font-size: 11px; font-weight: 800; background: rgba(255,255,255,0.08); color: #cbd5e1; padding: 2px 8px; border-radius: 6px;">' + escapeHtml(m.country) + '</span>' +
+            '<span style="font-size: 12px; font-weight: 800; background: ' + badgeBg + '; color: ' + badgeColor + '; padding: 3px 8px; border-radius: 6px; letter-spacing: 0.3px;">' +
+              (isLive ? '🔴 EN JUEGO' : isFinished ? '🏁 FINALIZADO' : m.statusLabel) +
+            '</span>' +
           '</div>' +
-          '<div style="font-size: 14.5px; font-weight: 800; color: #fff; line-height: 1.35;">' + escapeHtml(m.desc) + '</div>' +
-          '<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 4px;">';
+          '<div style="font-size: 15px; font-weight: 800; color: #fff; line-height: 1.35;">' + escapeHtml(m.desc) + '</div>' +
+          '<div style="font-size: 11.5px; color: #94a3b8; margin-top: -4px;">Hora local: ' + m.localTimeStr + '</div>' +
+          '<div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: auto; padding-top: 6px;">';
 
         if(m.servers.length === 0){
-          html += '<span style="font-size: 11px; color: #64748b;">Señales disponibles cerca del inicio</span>';
+          html += '<span style="font-size: 11px; color: #64748b;">Señales activas cerca del pitazo</span>';
         } else {
           m.servers.forEach(function(s, sIdx){
             var btnBg = sIdx === 0 ? 'linear-gradient(135deg, rgba(244,63,94,0.35) 0%, rgba(139,92,246,0.35) 100%)' : 'rgba(255,255,255,0.06)';
@@ -1708,8 +1819,7 @@
       var stage = document.getElementById('playerStage');
       if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-
-    var currentMatchData = null;
+var currentMatchData = null;
     var matchLoadTimeout = null;
 
     function retryCurrentMatch(){
