@@ -1263,7 +1263,7 @@ footer {
           Cargando buffer de video en Full HD · Si tarda, cambia de servidor en 1 clic
         </div>
       </div>
-      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen onload="onIframeStreamLoaded()"></iframe>
+      <iframe id="cinemaIframe" loading="eager" fetchpriority="high" sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads" src="" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen onload="onIframeStreamLoaded()"></iframe></iframe>
     </div>
   </div>
 
@@ -2431,8 +2431,17 @@ function loadVideoSource(){
     }
   }
 
-  // Remove sandbox to avoid anti-sandbox triggers from players
-  iframe.removeAttribute('sandbox');
+  // Intelligent Anti-Popup Sandbox Shield: Enforces strict popup prevention
+  if(isAdShieldActive){
+    if(url.indexOf('multiembed.mov') !== -1){
+      iframe.removeAttribute('sandbox');
+    } else {
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads');
+    }
+  } else {
+    iframe.removeAttribute('sandbox');
+  }
+
   iframe.src = url;
   if(extBtn) extBtn.href = url;
 }
@@ -3251,20 +3260,28 @@ function toggleAdShield(){
   isAdShieldActive = !isAdShieldActive;
 
   if(iframe){
-    iframe.removeAttribute('sandbox');
+    if(isAdShieldActive){
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-downloads');
+    } else {
+      iframe.removeAttribute('sandbox');
+    }
   }
 
   if(btn){
     if(isAdShieldActive){
-      btn.innerHTML = '🛡️ Escudo Anti-Popups: ACTIVO';
+      btn.innerHTML = '🛡️ Escudo Anti-Popups: ACTIVO (Sin Anuncios)';
       btn.style.color = '#34d399';
-      btn.style.borderColor = 'rgba(52,211,153,0.4)';
+      btn.style.borderColor = 'rgba(52,211,153,0.5)';
+      btn.style.boxShadow = '0 0 12px rgba(52,211,153,0.3)';
     } else {
-      btn.innerHTML = '⚠️ Escudo: PERMISIVO';
+      btn.innerHTML = '⚠️ Escudo: PERMISIVO (Permite Popups)';
       btn.style.color = '#fbbf24';
-      btn.style.borderColor = 'rgba(251,191,36,0.4)';
+      btn.style.borderColor = 'rgba(251,191,36,0.5)';
+      btn.style.boxShadow = 'none';
     }
   }
+
+  loadVideoSource();
 }
 
 // Cinema Mode
