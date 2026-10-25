@@ -428,18 +428,18 @@ header {
 
 /* DYNAMIC FLOATING SUBMENU */
 .platform-floating-bar {
-  background: rgba(15, 23, 42, 0.95);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: linear-gradient(135deg, rgba(15, 23, 42, 0.98) 0%, rgba(30, 41, 59, 0.95) 100%);
+  backdrop-filter: blur(20px);
+  border: 1.5px solid rgba(244, 63, 94, 0.5);
   border-radius: 14px;
-  padding: 8px 16px;
+  padding: 10px 18px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   overflow-x: auto;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.15);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.7), 0 0 25px rgba(244, 63, 94, 0.25);
   animation: slideDownSubmenu 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  margin-top: 4px;
+  margin-top: 10px;
 }
 @keyframes slideDownSubmenu {
   from { opacity: 0; transform: translateY(-8px); }
@@ -902,18 +902,17 @@ footer {
       <button class="catalog-pill" onclick="filterCatalog('animacion', this)">🍰 Animación &amp; Anime</button>
       <button class="catalog-pill" onclick="filterCatalog('clasicos', this)">✨ Clásicos Inmortales</button>
     </div>
-  </div>
 
-  
-    <!-- Dynamic Floating Submenu Bar -->
+    <!-- Dynamic Floating Submenu Bar (Inside Controls for Instant Visibility) -->
     <div class="platform-floating-bar" id="platformSubmenuBar" style="display:none;">
-      <div style="font-size:11px;font-weight:800;color:#fff;display:flex;align-items:center;gap:6px;padding-right:10px;border-right:1px solid rgba(255,255,255,0.12);white-space:nowrap;" id="platformSubmenuTitle">
+      <div style="font-size:12px;font-weight:800;color:#fff;display:flex;align-items:center;gap:6px;padding-right:12px;border-right:1px solid rgba(255,255,255,0.15);white-space:nowrap;" id="platformSubmenuTitle">
         <span>🔴</span> <span>NETFLIX:</span>
       </div>
-      <div class="platform-sub-pills" id="platformSubPills" style="display:flex;gap:6px;align-items:center;overflow-x:auto;">
+      <div class="platform-sub-pills" id="platformSubPills" style="display:flex;gap:8px;align-items:center;overflow-x:auto;">
         <!-- Injected dynamically via JS -->
       </div>
     </div>
+  </div>
 
   <!-- POSTERS CATALOG GRID -->
   <div class="catalog-grid" id="catalogGrid">
@@ -1969,7 +1968,8 @@ var currentSubCategory = 'all';
 var PLATFORM_CONFIGS = {
   netflix: {
     name: 'Netflix',
-    providerId: 8,
+    providerId: '8',
+    color: '#ef4444',
     icon: '🔴',
     subs: [
       { id: 'all', label: '🔴 Todo Netflix', type: 'both' },
@@ -1984,7 +1984,8 @@ var PLATFORM_CONFIGS = {
   },
   disney: {
     name: 'Disney+',
-    providerId: 337,
+    providerId: '337',
+    color: '#38bdf8',
     icon: '🏰',
     subs: [
       { id: 'all', label: '🏰 Todo Disney+', type: 'both' },
@@ -1998,7 +1999,8 @@ var PLATFORM_CONFIGS = {
   },
   hbo: {
     name: 'HBO Max',
-    providerId: 1899,
+    providerId: '1899|384',
+    color: '#a855f7',
     icon: '👑',
     subs: [
       { id: 'all', label: '👑 Todo HBO Max', type: 'both' },
@@ -2011,7 +2013,8 @@ var PLATFORM_CONFIGS = {
   },
   prime: {
     name: 'Prime Video',
-    providerId: 119,
+    providerId: '119|9',
+    color: '#0ea5e9',
     icon: '📦',
     subs: [
       { id: 'all', label: '📦 Todo Prime Video', type: 'both' },
@@ -2024,7 +2027,8 @@ var PLATFORM_CONFIGS = {
   },
   apple: {
     name: 'Apple TV+',
-    providerId: 350,
+    providerId: '350|2',
+    color: '#9ca3af',
     icon: '🍏',
     subs: [
       { id: 'all', label: '🍏 Todo Apple TV+', type: 'both' },
@@ -2073,6 +2077,10 @@ function renderSubmenu(cat){
   }
 
   bar.style.display = 'flex';
+  if(cfg.color){
+    bar.style.borderColor = cfg.color;
+    bar.style.boxShadow = '0 12px 35px rgba(0,0,0,0.7), 0 0 25px ' + cfg.color + '44';
+  }
   if(titleEl){
     titleEl.innerHTML = '<span>' + cfg.icon + '</span> <span>' + cfg.name.toUpperCase() + ':</span>';
   }
@@ -2231,6 +2239,46 @@ function fetchCategoryPage(cat, page, appendToCurated){
           episodesPerSeason: isTv ? [10] : null
         };
       });
+
+      // Fallback safeguard: if watch_providers returns 0 (e.g. strict region filter), fallback to top popular content for that category
+      if(mapped.length === 0 && (cat === 'disney' || cat === 'hbo' || cat === 'netflix' || cat === 'prime' || cat === 'apple')){
+        console.warn('Fallback triggered for ' + cat + ' without region');
+        var fbUrl = 'https://api.themoviedb.org/3/discover/' + (targetMediaType === 'tv' ? 'tv' : 'movie') + '?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&language=es-MX&sort_by=popularity.desc&page=' + page;
+        fetch(fbUrl)
+          .then(function(r){ return r.json(); })
+          .then(function(fbData){
+            var fbRaw = fbData.results || [];
+            var fbMapped = fbRaw.map(function(item){
+              var isTv = (targetMediaType === 'tv') || (item.name && !item.title);
+              var title = isTv ? (item.name || item.original_name) : (item.title || item.original_title);
+              var date = isTv ? (item.first_air_date || '') : (item.release_date || '');
+              var year = date ? parseInt(date.substring(0, 4), 10) : 2024;
+              var poster = item.poster_path ? 'https://image.tmdb.org/t/p/w500' + item.poster_path : 'assets/brand_avatar.jpg';
+              return {
+                id: 'tmdb_' + item.id,
+                tmdbId: item.id,
+                imdbId: null,
+                type: isTv ? 'tv' : 'movie',
+                title: title,
+                year: year || 2024,
+                platform: cfg ? cfg.name : 'Mundial TMDB',
+                rating: item.vote_average ? item.vote_average.toFixed(1) : '7.6',
+                quality: '4K UHD',
+                lang: 'Latino / Sub / Cast',
+                genres: [cat, isTv ? 'tv' : 'movie'],
+                poster: poster,
+                desc: item.overview || 'Sinopsis oficial en español disponible al reproducir.',
+                ytTrailer: '',
+                seasons: isTv ? 1 : null,
+                episodesPerSeason: isTv ? [10] : null
+              };
+            });
+            activeItemsList = fbMapped;
+            renderCatalog(activeItemsList, false);
+            if(countEl) countEl.innerText = activeItemsList.length;
+          });
+        return;
+      }
 
       if(appendToCurated){
         mapped.forEach(function(m){
