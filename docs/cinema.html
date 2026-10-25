@@ -425,6 +425,49 @@ header {
   box-shadow: 0 0 16px rgba(244, 63, 94, 0.35);
 }
 
+
+/* DYNAMIC FLOATING SUBMENU */
+.platform-floating-bar {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 14px;
+  padding: 8px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow-x: auto;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 20px rgba(99, 102, 241, 0.15);
+  animation: slideDownSubmenu 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  margin-top: 4px;
+}
+@keyframes slideDownSubmenu {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.sub-pill {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  color: var(--txt-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.sub-pill:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+.sub-pill.active {
+  background: linear-gradient(135deg, var(--rose) 0%, var(--violet) 100%);
+  color: #fff;
+  border-color: rgba(244, 63, 94, 0.5);
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
+}
+
 /* POSTERS GRID (VERTICAL 2:3 RATIO ESTILO PELISPLUS) */
 .catalog-grid {
   display: grid;
@@ -860,6 +903,17 @@ footer {
       <button class="catalog-pill" onclick="filterCatalog('clasicos', this)">✨ Clásicos Inmortales</button>
     </div>
   </div>
+
+  
+    <!-- Dynamic Floating Submenu Bar -->
+    <div class="platform-floating-bar" id="platformSubmenuBar" style="display:none;">
+      <div style="font-size:11px;font-weight:800;color:#fff;display:flex;align-items:center;gap:6px;padding-right:10px;border-right:1px solid rgba(255,255,255,0.12);white-space:nowrap;" id="platformSubmenuTitle">
+        <span>🔴</span> <span>NETFLIX:</span>
+      </div>
+      <div class="platform-sub-pills" id="platformSubPills" style="display:flex;gap:6px;align-items:center;overflow-x:auto;">
+        <!-- Injected dynamically via JS -->
+      </div>
+    </div>
 
   <!-- POSTERS CATALOG GRID -->
   <div class="catalog-grid" id="catalogGrid">
@@ -1910,11 +1964,152 @@ function renderCatalog(items, append){
   grid.appendChild(frag);
 }
 
+var currentSubCategory = 'all';
+
+var PLATFORM_CONFIGS = {
+  netflix: {
+    name: 'Netflix',
+    providerId: 8,
+    icon: '🔴',
+    subs: [
+      { id: 'all', label: '🔴 Todo Netflix', type: 'both' },
+      { id: 'movies', label: '🍿 Películas', type: 'movie' },
+      { id: 'series', label: '📺 Series', type: 'tv' },
+      { id: 'anime', label: '⛩️ Anime', type: 'tv', genre: 16 },
+      { id: 'drama', label: '🎭 Dramas', type: 'both', genre: 18 },
+      { id: 'action', label: '💥 Acción', type: 'both', genre: 28 },
+      { id: 'terror', label: '😱 Terror', type: 'movie', genre: 27 },
+      { id: 'kids', label: '🍰 Infantil & Familia', type: 'both', genre: 10751 }
+    ]
+  },
+  disney: {
+    name: 'Disney+',
+    providerId: 337,
+    icon: '🏰',
+    subs: [
+      { id: 'all', label: '🏰 Todo Disney+', type: 'both' },
+      { id: 'movies', label: '🍿 Películas', type: 'movie' },
+      { id: 'series', label: '📺 Series', type: 'tv' },
+      { id: 'pixar', label: '🧸 Pixar & Infantil', type: 'both', genre: 10751 },
+      { id: 'action', label: '🦸 Marvel & Acción', type: 'both', genre: 28 },
+      { id: 'scifi', label: '🌌 Star Wars & Sci-Fi', type: 'both', genre: 878 },
+      { id: 'animacion', label: '🎨 Animación', type: 'both', genre: 16 }
+    ]
+  },
+  hbo: {
+    name: 'HBO Max',
+    providerId: 1899,
+    icon: '👑',
+    subs: [
+      { id: 'all', label: '👑 Todo HBO Max', type: 'both' },
+      { id: 'series', label: '📺 Series Legendarias', type: 'tv' },
+      { id: 'movies', label: '🍿 Películas Warner / HBO', type: 'movie' },
+      { id: 'drama', label: '🎭 Dramas & Thrillers', type: 'both', genre: 18 },
+      { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'both', genre: 878 },
+      { id: 'action', label: '💥 Acción & DC', type: 'both', genre: 28 }
+    ]
+  },
+  prime: {
+    name: 'Prime Video',
+    providerId: 119,
+    icon: '📦',
+    subs: [
+      { id: 'all', label: '📦 Todo Prime Video', type: 'both' },
+      { id: 'movies', label: '🍿 Películas', type: 'movie' },
+      { id: 'series', label: '📺 Series', type: 'tv' },
+      { id: 'action', label: '💥 Acción', type: 'both', genre: 28 },
+      { id: 'terror', label: '😱 Terror', type: 'movie', genre: 27 },
+      { id: 'comedy', label: '😂 Comedia', type: 'both', genre: 35 }
+    ]
+  },
+  apple: {
+    name: 'Apple TV+',
+    providerId: 350,
+    icon: '🍏',
+    subs: [
+      { id: 'all', label: '🍏 Todo Apple TV+', type: 'both' },
+      { id: 'series', label: '📺 Series Exclusivas', type: 'tv' },
+      { id: 'movies', label: '🍿 Películas Originales', type: 'movie' },
+      { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'both', genre: 878 },
+      { id: 'drama', label: '🎭 Grandes Dramas', type: 'both', genre: 18 }
+    ]
+  },
+  movie: {
+    name: 'Películas',
+    icon: '🍿',
+    subs: [
+      { id: 'all', label: '🍿 Todas las Películas', type: 'movie' },
+      { id: 'action', label: '💥 Acción', type: 'movie', genre: 28 },
+      { id: 'scifi', label: '🚀 Ciencia Ficción', type: 'movie', genre: 878 },
+      { id: 'terror', label: '😱 Terror', type: 'movie', genre: 27 },
+      { id: 'animacion', label: '🍰 Animación', type: 'movie', genre: 16 },
+      { id: 'comedy', label: '😂 Comedia', type: 'movie', genre: 35 }
+    ]
+  },
+  tv: {
+    name: 'Series',
+    icon: '📺',
+    subs: [
+      { id: 'all', label: '📺 Todas las Series', type: 'tv' },
+      { id: 'drama', label: '🎭 Drama & Misterio', type: 'tv', genre: 18 },
+      { id: 'scifi', label: '🚀 Sci-Fi & Fantasía', type: 'tv', genre: 10765 },
+      { id: 'action', label: '💥 Acción & Aventura', type: 'tv', genre: 10759 },
+      { id: 'anime', label: '⛩️ Anime', type: 'tv', genre: 16 }
+    ]
+  }
+};
+
+function renderSubmenu(cat){
+  var bar = document.getElementById('platformSubmenuBar');
+  var titleEl = document.getElementById('platformSubmenuTitle');
+  var pillsContainer = document.getElementById('platformSubPills');
+  if(!bar || !pillsContainer) return;
+
+  var cfg = PLATFORM_CONFIGS[cat];
+  if(!cfg){
+    bar.style.display = 'none';
+    currentSubCategory = 'all';
+    return;
+  }
+
+  bar.style.display = 'flex';
+  if(titleEl){
+    titleEl.innerHTML = '<span>' + cfg.icon + '</span> <span>' + cfg.name.toUpperCase() + ':</span>';
+  }
+
+  pillsContainer.innerHTML = '';
+  cfg.subs.forEach(function(s, idx){
+    var btn = document.createElement('button');
+    btn.className = 'sub-pill' + (s.id === currentSubCategory ? ' active' : '');
+    btn.innerHTML = s.label;
+    btn.onclick = function(){ switchPlatformSub(s.id, this); };
+    pillsContainer.appendChild(btn);
+  });
+}
+
+function switchPlatformSub(subId, btn){
+  currentSubCategory = subId;
+  document.querySelectorAll('.sub-pill').forEach(function(b){ b.classList.remove('active'); });
+  if(btn) btn.classList.add('active');
+
+  currentPage = 1;
+  var loadWrap = document.getElementById('loadMoreWrap');
+  if(loadWrap) loadWrap.style.display = 'block';
+  updatePageBadge(1);
+
+  var countEl = document.getElementById('resultsCount');
+  if(countEl) countEl.innerText = 'Cargando sección...';
+
+  activeItemsList = [];
+  fetchCategoryPage(currentCategory, 1, false);
+}
+
 function filterCatalog(cat, btn){
   document.querySelectorAll('.catalog-pill').forEach(function(b){ b.classList.remove('active'); });
   if(btn) btn.classList.add('active');
 
   currentCategory = cat;
+  currentSubCategory = 'all';
   currentPage = 1;
 
   var loadWrap = document.getElementById('loadMoreWrap');
@@ -1925,13 +2120,14 @@ function filterCatalog(cat, btn){
   var searchInput = document.getElementById('catalogSearchInput');
   if(searchInput) searchInput.value = '';
 
+  renderSubmenu(cat);
+
   if(cat === 'all'){
-    // Show curated list + page 1 of trending
     activeItemsList = catalog.slice();
     renderCatalog(activeItemsList, false);
     if(countEl) countEl.innerText = activeItemsList.length;
     fetchCategoryPage('all', 1, true);
-  } else if(['movie', 'tv', 'estrenos', 'netflix', 'disney', 'hbo', 'prime', 'apple'].indexOf(cat) !== -1){
+  } else if(PLATFORM_CONFIGS[cat] || cat === 'estrenos'){
     if(countEl) countEl.innerText = 'Consultando en tiempo real estrenos de ' + cat.toUpperCase() + '...';
     activeItemsList = [];
     fetchCategoryPage(cat, 1, false);
@@ -1943,45 +2139,46 @@ function filterCatalog(cat, btn){
   }
 }
 
-function loadTrendingToday(btn){
-  document.querySelectorAll('.catalog-pill').forEach(function(b){ b.classList.remove('active'); });
-  if(btn) btn.classList.add('active');
-
-  currentCategory = 'trending';
-  currentPage = 1;
-
-  var loadWrap = document.getElementById('loadMoreWrap');
-  if(loadWrap) loadWrap.style.display = 'block';
-  updatePageBadge(1);
-
-  var countEl = document.getElementById('resultsCount');
-  if(countEl) countEl.innerText = 'Cargando tendencias mundiales...';
-
-  activeItemsList = [];
-  fetchCategoryPage('trending', 1, false);
-}
-
 function fetchCategoryPage(cat, page, appendToCurated){
   var url = '';
+  var cfg = PLATFORM_CONFIGS[cat];
+  var subCfg = null;
+  if(cfg && Array.isArray(cfg.subs)){
+    subCfg = cfg.subs.find(function(s){ return s.id === currentSubCategory; });
+  }
+
+  var targetMediaType = 'movie'; // 'movie' or 'tv'
+  if(subCfg){
+    if(subCfg.type === 'tv') targetMediaType = 'tv';
+    else if(subCfg.type === 'movie') targetMediaType = 'movie';
+    else if(subCfg.type === 'both') targetMediaType = 'movie'; // default to movie for both
+  } else if(cat === 'tv') {
+    targetMediaType = 'tv';
+  }
+
   if(cat === 'all' || cat === 'trending'){
     url = 'https://api.themoviedb.org/3/trending/all/week?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
   } else if(cat === 'estrenos'){
-    // Recién agregadas y estrenos de hoy
     url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=primary_release_date.desc&primary_release_date.lte=2026-10-24&vote_count.gte=3&page=' + page;
-  } else if(cat === 'netflix'){
-    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=8&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
-  } else if(cat === 'disney'){
-    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=337&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
-  } else if(cat === 'hbo'){
-    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=1899&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
-  } else if(cat === 'prime'){
-    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=119&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
-  } else if(cat === 'apple'){
-    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&with_watch_providers=350&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+  } else if(cfg && cfg.providerId){
+    var endpoint = (targetMediaType === 'tv') ? 'tv' : 'movie';
+    url = 'https://api.themoviedb.org/3/discover/' + endpoint + '?api_key=' + TMDB_KEY + '&with_watch_providers=' + cfg.providerId + '&watch_region=MX&language=es-MX&sort_by=popularity.desc&page=' + page;
+    if(subCfg && subCfg.genre){
+      url += '&with_genres=' + subCfg.genre;
+    }
   } else if(cat === 'movie'){
-    url = 'https://api.themoviedb.org/3/movie/popular?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+    var endpoint = 'movie';
+    url = 'https://api.themoviedb.org/3/discover/movie?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=popularity.desc&page=' + page;
+    if(subCfg && subCfg.genre){
+      url += '&with_genres=' + subCfg.genre;
+    }
   } else if(cat === 'tv'){
-    url = 'https://api.themoviedb.org/3/tv/popular?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
+    url = 'https://api.themoviedb.org/3/discover/tv?api_key=' + TMDB_KEY + '&language=es-MX&sort_by=popularity.desc&page=' + page;
+    if(subCfg && subCfg.genre){
+      url += '&with_genres=' + subCfg.genre;
+    }
+  } else {
+    url = 'https://api.themoviedb.org/3/trending/all/week?api_key=' + TMDB_KEY + '&language=es-MX&page=' + page;
   }
 
   fetch(url)
@@ -1989,11 +2186,19 @@ function fetchCategoryPage(cat, page, appendToCurated){
     .then(function(data){
       var raw = data.results || [];
       var valid = raw.filter(function(i){
-        return (i.media_type === 'movie' || i.media_type === 'tv' || cat === 'movie' || cat === 'tv' || cat === 'netflix' || cat === 'hbo') && (i.poster_path || i.backdrop_path);
+        return (i.poster_path || i.backdrop_path);
       });
 
       var mapped = valid.map(function(item){
-        var isTv = (cat === 'tv' || cat === 'netflix' || cat === 'hbo') ? true : (item.media_type === 'tv');
+        // BULLETPROOF TV vs MOVIE DETERMINATION
+        var isTv = false;
+        if(item.media_type === 'tv') isTv = true;
+        else if(item.media_type === 'movie') isTv = false;
+        else if(targetMediaType === 'tv') isTv = true;
+        else if(targetMediaType === 'movie') isTv = false;
+        else if(item.name && !item.title) isTv = true;
+        else isTv = false;
+
         var title = isTv ? (item.name || item.original_name) : (item.title || item.original_title);
         var date = isTv ? (item.first_air_date || '') : (item.release_date || '');
         var year = date ? parseInt(date.substring(0, 4), 10) : 2024;
@@ -2001,15 +2206,11 @@ function fetchCategoryPage(cat, page, appendToCurated){
           ? 'https://image.tmdb.org/t/p/w500' + item.poster_path 
           : (item.backdrop_path ? 'https://image.tmdb.org/t/p/w500' + item.backdrop_path : 'assets/brand_avatar.jpg');
 
-        var platform = 'Mundial TMDB';
-        if(cat === 'netflix') platform = 'Netflix';
-        else if(cat === 'disney') platform = 'Disney+';
-        else if(cat === 'hbo') platform = 'HBO Max';
-        else if(cat === 'prime') platform = 'Prime Video';
-        else if(cat === 'apple') platform = 'Apple TV+';
-        else if(cat === 'estrenos') platform = 'Estreno Hoy';
-        else if(cat === 'movie') platform = 'Cine HD';
-        else if(cat === 'tv') platform = 'Serie TV';
+        var platform = cfg ? cfg.name : 'Mundial TMDB';
+        if(cat === 'estrenos') platform = 'Estreno Hoy';
+
+        var isFuture = year > 2024;
+        var badgeQuality = isFuture ? ('ESTRENO ' + year) : '4K UHD';
 
         return {
           id: 'tmdb_' + item.id,
@@ -2020,7 +2221,7 @@ function fetchCategoryPage(cat, page, appendToCurated){
           year: year || 2024,
           platform: platform,
           rating: item.vote_average ? item.vote_average.toFixed(1) : '7.6',
-          quality: '4K UHD',
+          quality: badgeQuality,
           lang: 'Latino / Sub / Cast',
           genres: [cat, isTv ? 'tv' : 'movie'],
           poster: poster,
@@ -2032,7 +2233,6 @@ function fetchCategoryPage(cat, page, appendToCurated){
       });
 
       if(appendToCurated){
-        // Append new items to activeItemsList avoiding duplicate tmdbIds
         mapped.forEach(function(m){
           var exists = activeItemsList.some(function(cur){ return cur.tmdbId === m.tmdbId; });
           if(!exists){
