@@ -2330,75 +2330,109 @@ function updateServerButtonLabels(){
   var isKdrama = currentItem && (currentItem.isKdorama || currentItem.originalLanguage === 'ko' || (currentItem.genres && currentItem.genres.indexOf('kdoramas') !== -1) || (currentItem.originCountry && currentItem.originCountry.indexOf('KR') !== -1));
 
   if(isKdrama){
-    if(b1) b1.innerHTML = '⚡ Servidor 1 (VidSrc PM · Calidad Nítida HD)';
+    if(b1) b1.innerHTML = '⚡ Servidor 1 (VidSrc PM · Nítido Full HD)';
     if(b2) b2.innerHTML = '🚀 Servidor 2 (VidSrc Stream)';
     if(b3) b3.innerHTML = '🛡️ Servidor 3 (Videasy Pro 4K)';
     if(b4) b4.innerHTML = '🌐 Servidor 4 (Smashy Multi-Host)';
   } else {
     if(activeLang === 'latino'){
-      if(activeServer === 1){
-        // Videasy Pro 4K: Ultra limpio, sin popups molestos y soporte multiaudio
-        url = isTv
-          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://player.videasy.net/movie/' + tmdbId;
-      } else if(activeServer === 2){
-        // VidSrc PM: Servidor nítido comprobado en Full HD
-        url = isTv
-          ? 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://vidsrc.pm/embed/movie/' + tmdbId;
-      } else if(activeServer === 3){
-        // VidSrc Global
-        url = isTv
-          ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://vidsrc.to/embed/movie/' + tmdbId;
-      } else if(activeServer === 4){
-        // PlayLatin HD Respaldo
-        url = isTv
-          ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
-      }
+      if(b1) b1.innerHTML = '🛡️ Servidor 1 (Videasy Pro 4K)';
+      if(b2) b2.innerHTML = '⚡ Servidor 2 (VidSrc PM · Nítido HD)';
+      if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Global)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (PlayLatin HD Respaldo)';
     } else if(activeLang === 'subtitulado'){
-      if(activeServer === 1){
-        url = isTv
-          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://player.videasy.net/movie/' + tmdbId;
-      } else if(activeServer === 2){
-        url = isTv
-          ? 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://vidsrc.pm/embed/movie/' + tmdbId;
-      } else if(activeServer === 3){
-        url = isTv
-          ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://vidsrc.to/embed/movie/' + tmdbId;
-      } else if(activeServer === 4){
-        url = isTv
-          ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
-      }
+      if(b1) b1.innerHTML = '🛡️ Servidor 1 (Videasy Pro 1080p Sub ES)';
+      if(b2) b2.innerHTML = '⚡ Servidor 2 (VidSrc PM · Subtitulado)';
+      if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Pro Sub)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (PlayLatin Subtitulado)';
     } else if(activeLang === 'castellano'){
-      if(activeServer === 1){
-        url = isTv
-          ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://player.videasy.net/movie/' + tmdbId;
-      } else if(activeServer === 2){
-        url = isTv
-          ? 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://vidsrc.pm/embed/movie/' + tmdbId;
-      } else if(activeServer === 3){
-        url = isTv
-          ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://vidsrc.to/embed/movie/' + tmdbId;
-      } else if(activeServer === 4){
-        url = isTv
-          ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
-          : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
-      }
+      if(b1) b1.innerHTML = '🛡️ Servidor 1 (Videasy Pro Castellano)';
+      if(b2) b2.innerHTML = '⚡ Servidor 2 (VidSrc PM · Castellano)';
+      if(b3) b3.innerHTML = '🚀 Servidor 3 (VidSrc Pro)';
+      if(b4) b4.innerHTML = '🌐 Servidor 4 (PlayLatin Castellano)';
+    }
+  }
+}
+
+function onIframeStreamLoaded(){
+  var overlay = document.getElementById('playerBufferingOverlay');
+  if(overlay){
+    overlay.style.opacity = '0';
+    setTimeout(function(){ overlay.style.display = 'none'; }, 300);
+  }
+}
+
+function loadVideoSource(){
+  var iframe = document.getElementById('cinemaIframe');
+  var extBtn = document.getElementById('externalWatchBtn');
+  var overlay = document.getElementById('playerBufferingOverlay');
+  if(!iframe || !currentItem) return;
+
+  // Auto-pause background radio so CPU & audio pipeline are 100% dedicated to movie
+  if(window.isRadioPlaying && typeof toggleRadio === 'function'){
+    toggleRadio();
+  }
+
+  // Show buffer loading overlay
+  if(overlay){
+    overlay.style.display = 'flex';
+    overlay.style.opacity = '1';
+    clearTimeout(window.overlayTimer);
+    window.overlayTimer = setTimeout(function(){ onIframeStreamLoaded(); }, 3500);
+  }
+
+  var url = '';
+  var isTv = currentItem.type === 'tv';
+  var tmdbId = currentItem.tmdbId;
+  var imdbId = currentItem.imdbId || currentItem.tmdbId;
+  var playLatinId = currentItem.imdbId || currentItem.tmdbId;
+
+  var isKdrama = currentItem.isKdorama || currentItem.originalLanguage === 'ko' || (currentItem.genres && currentItem.genres.indexOf('kdoramas') !== -1) || (currentItem.originCountry && currentItem.originCountry.indexOf('KR') !== -1);
+
+  if(isKdrama){
+    if(activeServer === 1){
+      url = isTv
+        ? 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://vidsrc.pm/embed/movie/' + tmdbId;
+    } else if(activeServer === 2){
+      url = isTv
+        ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://vidsrc.to/embed/movie/' + tmdbId;
+    } else if(activeServer === 3){
+      url = isTv
+        ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://player.videasy.net/movie/' + tmdbId;
+    } else if(activeServer === 4){
+      url = isTv
+        ? 'https://player.smashystream.com/tv/' + tmdbId + '?s=' + currentSeason + '&e=' + currentEpisode
+        : 'https://player.smashystream.com/movie/' + tmdbId;
+    }
+  } else {
+    if(activeServer === 1){
+      // Servidor 1: Videasy Pro 4K (Ultra rápido, sin popups molestos y multiaudio)
+      url = isTv
+        ? 'https://player.videasy.net/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://player.videasy.net/movie/' + tmdbId;
+    } else if(activeServer === 2){
+      // Servidor 2: VidSrc PM (Full HD nítido)
+      url = isTv
+        ? 'https://vidsrc.pm/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://vidsrc.pm/embed/movie/' + tmdbId;
+    } else if(activeServer === 3){
+      // Servidor 3: VidSrc Global
+      url = isTv
+        ? 'https://vidsrc.to/embed/tv/' + tmdbId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://vidsrc.to/embed/movie/' + tmdbId;
+    } else if(activeServer === 4){
+      // Servidor 4: PlayLatin HD Respaldo
+      url = isTv
+        ? 'https://playlatinsrc.co/custom/serial/' + playLatinId + '/' + currentSeason + '/' + currentEpisode
+        : 'https://playlatinsrc.co/embed/movie/' + playLatinId;
     }
   }
 
-  // DO NOT use sandbox attribute because external streaming players (VidSrc, Videasy) actively block playback with "Playback blocked: This player cannot be loaded inside a restricted (sandboxed) frame"
+  // Remove sandbox to avoid anti-sandbox triggers from players
   iframe.removeAttribute('sandbox');
-
   iframe.src = url;
   if(extBtn) extBtn.href = url;
 }
