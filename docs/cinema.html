@@ -823,26 +823,27 @@ footer {
 
     <!-- Multi-Server Selector Bar -->
     <div class="server-selector-bar">
-      <div style="display:flex;align-items:center;gap:8px;">
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
         <span style="font-size:11.5px;color:var(--txt-dim);font-weight:700;">SERVIDOR:</span>
         <div class="server-tabs">
           <button class="server-btn active" id="btnServer1" onclick="switchServer(1, this)">
-            ⚡ Servidor 1 (Ultra HD VidSrc)
+            ⚡ Servidor 1 (PlayLatin HD)
           </button>
           <button class="server-btn" id="btnServer2" onclick="switchServer(2, this)">
-            🌐 Servidor 2 (Multi-Audio Latino)
+            🌐 Servidor 2 (MultiEmbed 100%)
           </button>
           <button class="server-btn" id="btnServer3" onclick="switchServer(3, this)">
-            🚀 Servidor 3 (VidSrc ME)
+            🚀 Servidor 3 (VidLink Pro Rápido)
           </button>
           <button class="server-btn" id="btnServer4" onclick="switchServer(4, this)">
-            🎬 Servidor 4 (Trailer Oficial 4K)
+            🎬 Servidor 4 (Trailer Oficial)
           </button>
         </div>
       </div>
-      <div style="font-size:11px;color:#34d399;display:flex;align-items:center;gap:6px;">
-        <span style="width:6px;height:6px;border-radius:50%;background:#34d399;display:inline-block;"></span>
-        <span>Sin cortes · Si tarda, cambia a Servidor 2</span>
+      <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+        <button type="button" onclick="autoSwitchWorkingServer()" style="background:rgba(239,68,68,0.2);border:1px solid rgba(239,68,68,0.5);color:#fca5a5;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;transition:all 0.2s;" title="Si un servidor dice offline, toca aquí para cambiar al servidor que sí lo tiene">
+          🔄 ¿Dice Offline? Toca aquí
+        </button>
       </div>
     </div>
 
@@ -1705,13 +1706,21 @@ function selectMedia(item){
 
   // Asynchronously resolve IMDb ID if not already present
   if(!item.imdbId && item.tmdbId){
+    // If it's a TV series from TMDB without IMDb ID, PlayLatin will fail with OFFLINE 0 Servidores.
+    // So we smartly switch to Server 2 (MultiEmbed) or Server 3 (VidLink) which has 100% coverage!
+    if(item.type === 'tv' && activeServer === 1){
+      activeServer = 2;
+      document.querySelectorAll('.server-btn').forEach(function(b){ b.classList.remove('active'); });
+      var b2 = document.getElementById('btnServer2');
+      if(b2) b2.classList.add('active');
+    }
+
     var extUrl = 'https://api.themoviedb.org/3/' + item.type + '/' + item.tmdbId + '/external_ids?api_key=' + TMDB_KEY;
     fetch(extUrl)
       .then(function(res){ return res.json(); })
       .then(function(extData){
         if(extData && extData.imdb_id){
           item.imdbId = extData.imdb_id;
-          loadVideoSource();
         }
       })
       .catch(function(e){ console.warn('Could not fetch IMDb ID:', e); });
@@ -1803,9 +1812,9 @@ function updateServerButtonLabels(){
   var b4 = document.getElementById('btnServer4');
 
   if(activeLang === 'latino'){
-    if(b1) b1.innerHTML = '⚡ Servidor 1 (Latino HD - PlayLatin)';
-    if(b2) b2.innerHTML = '🌐 Servidor 2 (MultiEmbed Latino)';
-    if(b3) b3.innerHTML = '🚀 Servidor 3 (VidLink Pro ES)';
+    if(b1) b1.innerHTML = '⚡ Servidor 1 (PlayLatin HD)';
+    if(b2) b2.innerHTML = '🌐 Servidor 2 (MultiEmbed 100%)';
+    if(b3) b3.innerHTML = '🚀 Servidor 3 (VidLink Pro Rápido)';
     if(b4) b4.innerHTML = '🎬 Servidor 4 (Trailer Oficial 4K)';
   } else if(activeLang === 'subtitulado'){
     if(b1) b1.innerHTML = '⚡ Servidor 1 (VidLink Pro 1080p Sub ES)';
@@ -1930,10 +1939,20 @@ function switchToOfficialMario(){
   }
 }
 
+function autoSwitchWorkingServer(){
+  var nextServer = (activeServer === 1) ? 2 : (activeServer === 2 ? 3 : 1);
+  var btn = document.getElementById('btnServer' + nextServer);
+  switchServer(nextServer, btn);
+}
+
 function switchServer(serverNum, btn){
   activeServer = serverNum;
   document.querySelectorAll('.server-btn').forEach(function(b){ b.classList.remove('active'); });
   if(btn) btn.classList.add('active');
+  else {
+    var b = document.getElementById('btnServer' + serverNum);
+    if(b) b.classList.add('active');
+  }
   loadVideoSource();
 }
 
