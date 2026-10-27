@@ -17,10 +17,17 @@
   <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://otte.live.fly.ww.aiv-cdn.net" crossorigin>
+  <link rel="preconnect" href="https://a49live-pv-ta-amazon.akamaized.net" crossorigin>
+  <link rel="preconnect" href="https://a194live-pv-ta-amazon.akamaized.net" crossorigin>
+  <link rel="preconnect" href="https://m6foot.click" crossorigin>
+  <link rel="preconnect" href="https://streamxhd.com" crossorigin>
+  <link rel="preconnect" href="https://zonatv.sbs" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   
-  <!-- HLS.js for Live Streaming -->
+  <!-- HLS.js & Shaka Player (DASH + ClearKey DRM) for Ultra-Fast Live Streaming -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@1.5.8/dist/hls.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.compiled.js"></script>
 
   <style>
     :root {
@@ -716,6 +723,7 @@
               <span class="tag-live">EN VIVO</span>
               <span id="playingCountry" class="tag-country">🌍 Global</span>
               <span id="playingCategory" class="tag-category">General</span>
+              <span id="streamHealthBadge" style="display:none; font-size:11px; font-weight:700; padding:2px 8px; border-radius:999px; background:rgba(16,185,129,0.15); color:#34d399; border:1px solid rgba(16,185,129,0.35);">⚡ Turbo HD</span>
             </div>
           </div>
         </div>
@@ -740,6 +748,12 @@
             🔀 <span>Zapping</span>
           </button>
         </div>
+      </div>
+
+      <!-- Multi-Server Selector Bar (For Sports & Multi-Mirror Channels) -->
+      <div id="channelServerBar" style="display:none; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px; padding:10px 18px; background:rgba(2,6,23,0.92); border-top:1px solid rgba(255,255,255,0.08);">
+        <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;" id="channelServerButtons"></div>
+        <span style="font-size:11px; color:#94a3b8;">💡 Si una señal tarda en cargar, cambia de opción con 1 clic</span>
       </div>
     </div>
 
@@ -1174,18 +1188,64 @@
     var favorites = JSON.parse(localStorage.getItem('duarte_tv_favs') || '[]');
     var currentFilter = 'all';
     var currentChannel = null;
+    var currentServerIdx = 0;
     var hls = null;
+    var shakaPlayer = null;
+    var failoverTimer = null;
     var deferredPwaPrompt = null;
 
-    // Load custom channels from localStorage
-    try {
-      customChannels = JSON.parse(localStorage.getItem('duarte_tv_custom') || '[]');
-    } catch(e) {
-      customChannels = [];
+    // Sanitize defaultChannels: remove HTTP-only (Mixed Content blocked) & broken Pluto links, and upgrade key channels to HTTPS/DASH
+    function sanitizeDefaultChannels(){
+      var upgrades = {
+        'ch_18': { url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8' },
+        'ch_44': { url: 'https://de9yx47crxs6l.cloudfront.net/playlist.m3u8', name: 'Sony One Hits Acción HD' },
+        'ch_46': { url: 'https://m6foot.click/player/3/108', isEmbed: true, name: 'Azteca 7 HD' },
+        'ch_47': { url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8' },
+        'ch_49': { url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8', name: 'Azteca Uno HD' },
+        'ch_53': { url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/5wmhxwdb4l/out/v1/d7b375eb0f1c462f9090428cf2a1e132/cenc.mpd', drm: { '42095c4a98de2d937e8dd9d59a0da424': '8a4f2ab708e8af3daf9e5bf071f98d05' }, name: 'Bandamax HD' },
+        'ch_54': { url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/qej0n9zmvv/out/v1/93a227dbeef84293b95683c10fd88da2/cenc.mpd', drm: { '391ad12844fdb7c127e2c7ba23582b3b': '6c9b3103cd519fcad556e84f918998cd' }, name: 'BitMe HD' },
+        'ch_56': { url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ntkdl68eob/out/v1/bd5dfb7676994383881bc6e71877d29d/cenc.mpd', drm: { 'd695093ea3e66d75a4d213a3e2cbf360': '01be3f645e89a067d2786c295f68dde4' }, name: 'Canal 5 HD' },
+        'ch_128': { url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8' }
+      };
+      defaultChannels = defaultChannels.map(function(c){
+        if(upgrades[c.id]){
+          Object.assign(c, upgrades[c.id]);
+        }
+        c.name = (c.name || '').replace(/^.*group-title="[^"]*",\s*/i, '').replace(/\s*\[Geo-blocked\]/gi, '').trim();
+        return c;
+      }).filter(function(c){
+        if(!c.url) return false;
+        if(c.url.startsWith('http://')) return false;
+        if(c.url.includes('jmp2.uk/plu-')) return false;
+        return true;
+      });
+    }
+
+    // Load custom channels from localStorage and auto-sync VIP Sports, Comedy & Entertainment packs
+    function syncCustomAndVipCatalogs(){
+      try {
+        customChannels = JSON.parse(localStorage.getItem('duarte_tv_custom') || '[]');
+      } catch(e) {
+        customChannels = [];
+      }
+      var userOnly = customChannels.filter(function(c){
+        return c && c.id && !c.id.startsWith('vip_') && !c.id.startsWith('ent_');
+      });
+      var vipSports = getSportsVipChannels();
+      var entTop = getEntertainmentTop30Channels();
+      customChannels = vipSports.concat(entTop).concat(userOnly);
+      try {
+        localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
+      } catch(e) {}
     }
 
     // Initialize
     document.addEventListener('DOMContentLoaded', function(){
+      if(window.shaka && shaka.polyfill){
+        shaka.polyfill.installAll();
+      }
+      sanitizeDefaultChannels();
+      syncCustomAndVipCatalogs();
       updateCounts();
       renderChannels();
 
@@ -1327,11 +1387,105 @@
 
     function playChannelById(id){
       var channel = getAllChannels().find(function(c){ return c.id === id; });
-      if(channel) playChannel(channel);
+      if(channel) playChannel(channel, 0);
     }
 
-    function playChannel(c){
+    function setStreamHealth(text, mode){
+      var badge = document.getElementById('streamHealthBadge');
+      if(!badge) return;
+      if(!text){
+        badge.style.display = 'none';
+        return;
+      }
+      badge.style.display = 'inline-block';
+      badge.textContent = text;
+      if(mode === 'loading'){
+        badge.style.background = 'rgba(245,158,11,0.18)';
+        badge.style.color = '#fbbf24';
+        badge.style.borderColor = 'rgba(245,158,11,0.4)';
+      } else if(mode === 'warn'){
+        badge.style.background = 'rgba(244,63,94,0.18)';
+        badge.style.color = '#fb7185';
+        badge.style.borderColor = 'rgba(244,63,94,0.4)';
+      } else {
+        badge.style.background = 'rgba(16,185,129,0.16)';
+        badge.style.color = '#34d399';
+        badge.style.borderColor = 'rgba(16,185,129,0.38)';
+      }
+    }
+
+    function renderChannelServerBar(c, activeIdx){
+      var bar = document.getElementById('channelServerBar');
+      var container = document.getElementById('channelServerButtons');
+      if(!bar || !container) return;
+      var servers = (c && c.servers && c.servers.length > 0) ? c.servers : null;
+      if(!servers || servers.length <= 1){
+        bar.style.display = 'none';
+        container.innerHTML = '';
+        return;
+      }
+      bar.style.display = 'flex';
+      var html = '<span style="font-size:11.5px; font-weight:800; color:#cbd5e1; margin-right:4px;">📡 Señales:</span>';
+      servers.forEach(function(s, idx){
+        var isSel = idx === activeIdx;
+        var bg = isSel ? 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)' : 'rgba(255,255,255,0.07)';
+        var border = isSel ? '1px solid rgba(6,182,212,0.7)' : '1px solid rgba(255,255,255,0.14)';
+        var col = isSel ? '#ffffff' : '#cbd5e1';
+        var shadow = isSel ? '0 2px 10px rgba(6,182,212,0.35)' : 'none';
+        html += '<button onclick="switchChannelServer(' + idx + ')" style="background:' + bg + '; border:' + border + '; color:' + col + '; box-shadow:' + shadow + '; padding:5px 11px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer; transition:all 0.2s;">' +
+          escapeHtml(s.label || ('Opción ' + (idx + 1))) +
+        '</button>';
+      });
+      container.innerHTML = html;
+    }
+
+    function switchChannelServer(idx){
+      if(!currentChannel) return;
+      playChannel(currentChannel, idx);
+    }
+
+    function tryNextServerOrRetry(c, failedIdx){
+      if(!c || currentChannel !== c) return;
+      var servers = (c.servers && c.servers.length > 0) ? c.servers : null;
+      if(servers && failedIdx + 1 < servers.length){
+        setStreamHealth('🔄 Cambiando a ' + (servers[failedIdx + 1].label || ('Opción ' + (failedIdx + 2))) + '...', 'loading');
+        setTimeout(function(){
+          if(currentChannel === c) playChannel(c, failedIdx + 1);
+        }, 350);
+      } else {
+        setStreamHealth('⚠️ Señal ocupada · Usa los botones de Señal o Recargar', 'warn');
+      }
+    }
+
+    function destroyActiveEngines(){
+      if(failoverTimer){
+        clearTimeout(failoverTimer);
+        failoverTimer = null;
+      }
+      if(hls){
+        try { hls.destroy(); } catch(e){}
+        hls = null;
+      }
+      if(shakaPlayer){
+        try { shakaPlayer.destroy(); } catch(e){}
+        shakaPlayer = null;
+      }
+    }
+
+    function playChannel(c, serverIdx){
+      if(!c) return;
       currentChannel = c;
+      currentServerIdx = typeof serverIdx === 'number' ? serverIdx : 0;
+
+      var servers = (c.servers && c.servers.length > 0) ? c.servers : [{
+        label: '⚡ Señal Principal',
+        url: c.url,
+        drm: c.drm || null,
+        isEmbed: !!c.isEmbed
+      }];
+      if(currentServerIdx >= servers.length) currentServerIdx = 0;
+      var activeSource = servers[currentServerIdx];
+
       var video = document.getElementById('tvPlayer');
       var iframe = document.getElementById('tvIframe');
       var placeholder = document.getElementById('videoPlaceholder');
@@ -1339,12 +1493,16 @@
       if(placeholder) placeholder.classList.add('hidden');
       if(matchNotice) matchNotice.style.display = 'none';
 
+      destroyActiveEngines();
+
       // Reset Match Iframe & Restore Video Canvas
       if(iframe){
         iframe.style.display = 'none';
         iframe.src = 'about:blank';
       }
       if(video){
+        video.pause();
+        video.removeAttribute('src');
         video.style.display = 'block';
       }
 
@@ -1357,6 +1515,7 @@
       document.getElementById('playingCountry').textContent = flag + (c.country || 'Global');
 
       updateFavButtonState();
+      renderChannelServerBar(c, currentServerIdx);
       renderChannels(); // re-render to highlight active card
 
       // Scroll to player smoothly on small screens
@@ -1365,21 +1524,14 @@
         if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }
 
-      // Stream Playback Engine
-      if(hls){
-        hls.destroy();
-        hls = null;
-      }
-
-      var streamUrl = c.url;
-
-      // Check if channel is an embed or web stream player (e.g. tv-90.com, tvf90.com, etc.)
-      var isEmbed = c.isEmbed || (!streamUrl.includes('.m3u8') && !streamUrl.includes('.ts') && (streamUrl.includes('tv-90.com') || streamUrl.includes('tvf90.com') || streamUrl.includes('.php') || streamUrl.includes('embed')));
+      var streamUrl = activeSource.url || c.url;
+      var drmKeys = activeSource.drm || (currentServerIdx === 0 ? c.drm : null);
+      var isDash = streamUrl.includes('.mpd') || !!drmKeys;
+      var isEmbed = !isDash && (activeSource.isEmbed || (!streamUrl.includes('.m3u8') && !streamUrl.includes('.ts') && (streamUrl.includes('tv-90.com') || streamUrl.includes('tvf90.com') || streamUrl.includes('m6foot') || streamUrl.includes('streamxhd') || streamUrl.includes('streamtp') || streamUrl.includes('zonatv.sbs') || streamUrl.includes('dlive.sx') || streamUrl.includes('welivesportz') || streamUrl.includes('.php') || streamUrl.includes('embed'))));
       var popBtn = document.getElementById('btnPopoutStream');
-      
+
+      // 1. WEB EMBED ENGINE (Iframe with Multi-Server selector)
       if(isEmbed){
-        if(hls){ hls.destroy(); hls = null; }
-        video.pause();
         video.style.display = 'none';
         if(iframe){
           iframe.style.display = 'block';
@@ -1389,22 +1541,112 @@
           popBtn.style.display = 'inline-flex';
           popBtn.setAttribute('data-url', streamUrl);
         }
+        setStreamHealth('🟢 ' + (activeSource.label || 'Señal Activa'), 'ok');
         return;
       }
 
       if(popBtn) popBtn.style.display = 'none';
+      setStreamHealth('⚡ Conectando Turbo HD...', 'loading');
 
+      // 2. NATIVE DASH + CLEARKEY DRM ENGINE (Shaka Player - Sub-Second Startup, Zero Ads)
+      if(isDash && window.shaka && shaka.Player && shaka.Player.isBrowserSupported()){
+        shakaPlayer = new shaka.Player(video);
+        var shakaCfg = {
+          streaming: {
+            bufferingGoal: 14,
+            rebufferingGoal: 1.5,
+            bufferBehind: 18,
+            lowLatencyMode: false,
+            retryParameters: {
+              maxAttempts: 3,
+              baseDelay: 400,
+              backoffFactor: 1.5,
+              timeout: 7000
+            }
+          },
+          abr: {
+            enabled: true,
+            defaultBandwidthEstimate: 1600000
+          }
+        };
+        if(drmKeys){
+          shakaCfg.drm = { clearKeys: drmKeys };
+        }
+        shakaPlayer.configure(shakaCfg);
+
+        var idxSnap = currentServerIdx;
+        failoverTimer = setTimeout(function(){
+          if(currentChannel === c && video.readyState < 2){
+            tryNextServerOrRetry(c, idxSnap);
+          }
+        }, 8500);
+
+        shakaPlayer.addEventListener('error', function(evt){
+          console.warn('Shaka error:', evt.detail);
+          if(evt.detail && evt.detail.severity === 2){
+            tryNextServerOrRetry(c, idxSnap);
+          }
+        });
+
+        shakaPlayer.load(streamUrl).then(function(){
+          if(failoverTimer){ clearTimeout(failoverTimer); failoverTimer = null; }
+          setStreamHealth('🟢 Directo Turbo HD (Sin Anuncios)', 'ok');
+          // Prefer Spanish audio track if multiple exist
+          try {
+            var tracks = shakaPlayer.getVariantTracks();
+            var esTrack = tracks.find(function(t){ return t.language && (t.language.startsWith('es') || t.language === 'spa'); });
+            if(esTrack) shakaPlayer.selectAudioLanguage(esTrack.language);
+          } catch(e){}
+          video.play().catch(function(e){
+            console.log('Autoplay esperando interacción:', e);
+          });
+        }).catch(function(err){
+          console.warn('Fallo carga DASH:', err);
+          if(failoverTimer){ clearTimeout(failoverTimer); failoverTimer = null; }
+          tryNextServerOrRetry(c, idxSnap);
+        });
+        return;
+      }
+
+      // 3. TURBO HLS ENGINE (Instant Start Level 0 + Auto-ABR HD + Anti-Stall Buffer)
       if(Hls.isSupported()){
+        var hlsIdxSnap = currentServerIdx;
+        var netRetries = 0;
+
         hls = new Hls({
           enableWorker: true,
-          lowLatencyMode: true,
-          backBufferLength: 60
+          lowLatencyMode: false,
+          startLevel: 0,
+          capLevelToPlayerSize: true,
+          maxBufferLength: 30,
+          maxMaxBufferLength: 60,
+          backBufferLength: 30,
+          maxBufferHole: 0.5,
+          highBufferWatchdogPeriod: 2,
+          nudgeOffset: 0.2,
+          nudgeMaxRetry: 5,
+          manifestLoadingTimeOut: 7000,
+          manifestLoadingMaxRetry: 2,
+          manifestLoadingRetryDelay: 500,
+          levelLoadingTimeOut: 7000,
+          levelLoadingMaxRetry: 2,
+          fragLoadingTimeOut: 9000,
+          fragLoadingMaxRetry: 4,
+          fragLoadingRetryDelay: 500
         });
+
+        failoverTimer = setTimeout(function(){
+          if(currentChannel === c && video.readyState < 2){
+            tryNextServerOrRetry(c, hlsIdxSnap);
+          }
+        }, 8000);
 
         hls.loadSource(streamUrl);
         hls.attachMedia(video);
 
         hls.on(Hls.Events.MANIFEST_PARSED, function(){
+          if(failoverTimer){ clearTimeout(failoverTimer); failoverTimer = null; }
+          setStreamHealth('🟢 Señal Directa HD', 'ok');
           video.play().catch(function(e){
             console.log('Autoplay bloqueado, esperando interacción:', e);
           });
@@ -1414,16 +1656,22 @@
           if(data.fatal){
             switch(data.type){
               case Hls.ErrorTypes.NETWORK_ERROR:
-                console.warn('Network error en señal de streaming, reintentando...');
-                hls.startLoad();
+                netRetries++;
+                if(netRetries <= 2 && data.details !== Hls.ErrorDetails.MANIFEST_LOAD_ERROR && data.details !== Hls.ErrorDetails.MANIFEST_LOAD_TIMEOUT){
+                  console.warn('Reintentando red HLS...');
+                  hls.startLoad();
+                } else {
+                  if(failoverTimer){ clearTimeout(failoverTimer); failoverTimer = null; }
+                  tryNextServerOrRetry(c, hlsIdxSnap);
+                }
                 break;
               case Hls.ErrorTypes.MEDIA_ERROR:
-                console.warn('Media error en codec de streaming, recuperando...');
+                console.warn('Recuperando codec HLS...');
                 hls.recoverMediaError();
                 break;
               default:
-                console.error('Fatal HLS error, destruyendo instancia:', data);
-                hls.destroy();
+                if(failoverTimer){ clearTimeout(failoverTimer); failoverTimer = null; }
+                tryNextServerOrRetry(c, hlsIdxSnap);
                 break;
             }
           }
@@ -1432,6 +1680,9 @@
       } else if(video.canPlayType('application/vnd.apple.mpegurl')){
         // Native Safari HLS
         video.src = streamUrl;
+        video.onloadedmetadata = function(){
+          setStreamHealth('🟢 Señal Directa HD', 'ok');
+        };
         video.play().catch(function(e){ console.log('Autoplay Safari:', e); });
       } else {
         video.src = streamUrl;
@@ -1440,7 +1691,7 @@
 
     function retryStream(){
       if(currentChannel){
-        playChannel(currentChannel);
+        playChannel(currentChannel, currentServerIdx);
       }
     }
 
@@ -1601,223 +1852,85 @@
       return [
         {
           id: 'vip_dsports',
-          name: 'DSports HD (DirecTV Sports - LaLiga)',
+          name: 'DSports 1 HD (DirecTV Sports - LaLiga & Sudamericana)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://tv-90.com/drm/dsports.php',
+          url: 'https://a49live-pv-ta-amazon.akamaized.net/gru-nitro/live/clients/dash/enc/p2uelx03f8/out/v1/6394db35d71a4f48bf34300ae9ec9889/cenc.mpd',
+          drm: { 'c432184d1ab00475aded5731162d99b7': '5f361ae2b35dcb415fe612ea7e85ed9d' },
           isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_dsports_2',
-          name: 'DSports 2 HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tv-90.com/drm/dsports2.php',
-          isCustom: true,
-          isEmbed: true
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://a49live-pv-ta-amazon.akamaized.net/gru-nitro/live/clients/dash/enc/p2uelx03f8/out/v1/6394db35d71a4f48bf34300ae9ec9889/cenc.mpd', drm: { 'c432184d1ab00475aded5731162d99b7': '5f361ae2b35dcb415fe612ea7e85ed9d' }, isEmbed: false },
+            { label: '🛰️ Señal 2 (Mirror M6)', url: 'https://m6foot.click/player/3/94', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=dsports', isEmbed: true },
+            { label: '🛰️ Señal 4 (GoldenTP)', url: 'https://streamtp-golden1.click/global2.php?stream=dsports', isEmbed: true }
+          ]
         },
         {
           id: 'vip_dsports_plus',
-          name: 'DSports Plus (Eventos Especiales)',
+          name: 'DSports Plus HD (Eventos Especiales & Copa)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://tv-90.com/drm/dsportsplus.php',
+          url: 'https://a49live-pv-ta-amazon.akamaized.net/gru-nitro/live/clients/dash/enc/9bwnwl4oqk/out/v1/3fda5baf7b1b47e8b80ff18979d55b52/cenc.mpd',
+          drm: { '5983506f3f2e0b6df98fd1856adf45b6': 'd2ae7ea26cfdc61ba0f71771539ff87f' },
           isCustom: true,
-          isEmbed: true
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://a49live-pv-ta-amazon.akamaized.net/gru-nitro/live/clients/dash/enc/9bwnwl4oqk/out/v1/3fda5baf7b1b47e8b80ff18979d55b52/cenc.mpd', drm: { '5983506f3f2e0b6df98fd1856adf45b6': 'd2ae7ea26cfdc61ba0f71771539ff87f' }, isEmbed: false },
+            { label: '🛰️ Señal 2 (Mirror M6)', url: 'https://m6foot.click/player/3/96', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=dsportsplus', isEmbed: true },
+            { label: '🛰️ Señal 4 (GoldenTP)', url: 'https://streamtp-golden1.click/global2.php?stream=dsportsplus', isEmbed: true }
+          ]
         },
         {
-          id: 'vip_espn_1',
-          name: 'ESPN 1 HD (Champions & Premier)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          id: 'vip_dsports_2',
+          name: 'DSports 2 HD (LaLiga & Fútbol Europeo)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=espn',
+          url: 'https://m6foot.click/player/3/95',
           isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_espn_2',
-          name: 'ESPN 2 HD (Premier & Serie A)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=espn2',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_espn_3',
-          name: 'ESPN 3 HD (Bundesliga & F1)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=espn3',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_espn_4',
-          name: 'ESPN 4 HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=espn4',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_espn_premium',
-          name: 'ESPN Premium (Fútbol Argentino)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Argentina',
-          url: 'https://tvf90.com/1.php?stream=espnpremium',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_espn_extra',
-          name: 'ESPN Extra',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=espnextra',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_fox_sports_1',
-          name: 'Fox Sports 1 (Premier & UFC)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=foxsports',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_fox_sports_2',
-          name: 'Fox Sports 2 (Libertadores & WWE)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=foxsports2',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_fox_sports_3',
-          name: 'Fox Sports 3 (F1 & Motor)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=foxsports3',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_fox_sports_premium',
-          name: 'Fox Sports Premium (Fútbol Argentino)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
-          category: 'Deportes',
-          country: 'Argentina',
-          url: 'https://tvf90.com/1.php?stream=foxsportspremium',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_tnt_sports',
-          name: 'TNT Sports HD (Fútbol Argentino)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/TNT_Sports_2023.svg/800px-TNT_Sports_2023.svg.png',
-          category: 'Deportes',
-          country: 'Argentina',
-          url: 'https://tvf90.com/1.php?stream=tntsports',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_win_sports_plus',
-          name: 'Win Sports + HD (Fútbol Colombiano)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Win_Sports%2B_logo.png/640px-Win_Sports%2B_logo.png',
-          category: 'Deportes',
-          country: 'Colombia',
-          url: 'https://tvf90.com/1.php?stream=winsports2',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_win_sports',
-          name: 'Win Sports Básica',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Win_Sports_logo.png/640px-Win_Sports_logo.png',
-          category: 'Deportes',
-          country: 'Colombia',
-          url: 'https://tvf90.com/1.php?stream=winsports',
-          isCustom: true,
-          isEmbed: true
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/95', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=dsports2', isEmbed: true },
+            { label: '🛰️ Señal 3 (GoldenTP)', url: 'https://streamtp-golden1.click/global2.php?stream=dsports2', isEmbed: true }
+          ]
         },
         {
           id: 'vip_tudn_mx',
-          name: 'TUDN México (Liga MX & Concacaf)',
+          name: 'TUDN HD (Liga MX, Concacaf & Champions)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/TUDN_logo.svg/800px-TUDN_logo.svg.png',
           category: 'Deportes',
           country: 'México',
-          url: 'https://tvf90.com/1.php?stream=tudn',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ntkdl68eob/out/v1/bd5dfb7676994383881bc6e71877d29d/cenc.mpd',
+          drm: { 'd695093ea3e66d75a4d213a3e2cbf360': '01be3f645e89a067d2786c295f68dde4' },
           isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_tudn_usa',
-          name: 'TUDN USA (Champions & Concacaf)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/TUDN_logo.svg/800px-TUDN_logo.svg.png',
-          category: 'Deportes',
-          country: 'Estados Unidos',
-          url: 'https://tvf90.com/1.php?stream=tudn_usa',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_dazn_laliga',
-          name: 'DAZN LaLiga (LaLiga EA Sports)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/DAZN_Logo.svg/800px-DAZN_Logo.svg.png',
-          category: 'Deportes',
-          country: 'España',
-          url: 'https://tvf90.com/1.php?stream=daznlaliga',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_movistar_laliga',
-          name: 'Movistar LaLiga TV (España)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Movistar_Plus%2B_logo.svg/800px-Movistar_Plus%2B_logo.svg.png',
-          category: 'Deportes',
-          country: 'España',
-          url: 'https://tvf90.com/1.php?stream=movistarlaligatv',
-          isCustom: true,
-          isEmbed: true
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ntkdl68eob/out/v1/bd5dfb7676994383881bc6e71877d29d/cenc.mpd', drm: { 'd695093ea3e66d75a4d213a3e2cbf360': '01be3f645e89a067d2786c295f68dde4' }, isEmbed: false },
+            { label: '🛰️ Señal 2 (Mirror M6)', url: 'https://m6foot.click/player/3/68', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX MX)', url: 'https://streamxhd.com/live1.php?stream=tudnmx', isEmbed: true },
+            { label: '🛰️ Señal 4 (DLive USA)', url: 'https://dlive.sx/stream/stream-66.php', isEmbed: true }
+          ]
         },
         {
           id: 'vip_tyc_sports',
-          name: 'TyC Sports HD (Fútbol Argentino)',
+          name: 'TyC Sports HD (Fútbol Argentino & Copa)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/TyC_Sports_logo_2020.svg/800px-TyC_Sports_logo_2020.svg.png',
           category: 'Deportes',
           country: 'Argentina',
-          url: 'https://tvf90.com/1.php?stream=tycsports',
+          url: 'https://amg26268-amg26268c14-freelivesports-emea-10267.playouts.now.amagi.tv/ts-us-e2-n2/playlist/amg26268-sportsstudio-tycsports-freelivesportsemea/playlist.m3u8',
           isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_claro_sports',
-          name: 'Claro Sports HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Claro_Sports_logo.svg/800px-Claro_Sports_logo.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=clarosports',
-          isCustom: true,
-          isEmbed: true
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa HLS HD)', url: 'https://amg26268-amg26268c14-freelivesports-emea-10267.playouts.now.amagi.tv/ts-us-e2-n2/playlist/amg26268-sportsstudio-tycsports-freelivesportsemea/playlist.m3u8', isEmbed: false },
+            { label: '🛰️ Señal 2 (Mirror M6)', url: 'https://m6foot.click/player/3/77', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=tycsports', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=tycsports', isEmbed: true }
+          ]
         },
         {
           id: 'vip_realmadrid_tv',
@@ -1827,192 +1940,552 @@
           country: 'España',
           url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8',
           isCustom: true,
-          isEmbed: false
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Akamai HD)', url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8', isEmbed: false },
+            { label: '🛰️ Señal 2 (Mirror ZonaTV)', url: 'https://zonatv.sbs/canales.php?id=rmtv', isEmbed: true }
+          ]
         },
         {
-          id: 'vip_gol_play',
-          name: 'GOL Play (LaLiga en Abierto)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Gol_Play_logo.svg/800px-Gol_Play_logo.svg.png',
+          id: 'vip_adrenalina_sports',
+          name: 'Adrenalina Sports HD (UFC, MMA & Boxeo)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/UFC_logo.svg/800px-UFC_logo.svg.png',
+          category: 'Deportes',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ntkdl68eob/out/v1/bd5dfb7676994383881bc6e71877d29d/cenc.mpd',
+          drm: { 'd695093ea3e66d75a4d213a3e2cbf360': '01be3f645e89a067d2786c295f68dde4' },
+          isCustom: true,
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ntkdl68eob/out/v1/bd5dfb7676994383881bc6e71877d29d/cenc.mpd', drm: { 'd695093ea3e66d75a4d213a3e2cbf360': '01be3f645e89a067d2786c295f68dde4' }, isEmbed: false },
+            { label: '⚡ Señal 2 (Red Bull TV HD)', url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', isEmbed: false }
+          ]
+        },
+        {
+          id: 'vip_espn_1',
+          name: 'ESPN 1 HD (Champions League & Premier)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/87',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/87', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn', isEmbed: true },
+            { label: '🛰️ Señal 3 (WeLiveSportz)', url: 'https://welivesportz.cfd/embed/espn1col.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=espn', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_espn_2',
+          name: 'ESPN 2 HD (Premier League & Serie A)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/88',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/88', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn2', isEmbed: true },
+            { label: '🛰️ Señal 3 (WeLiveSportz)', url: 'https://welivesportz.cfd/embed/espn2arg.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=espn2', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_espn_3',
+          name: 'ESPN 3 HD (Bundesliga, Tenis & F1)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/89',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/89', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn3', isEmbed: true },
+            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-798.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=espn3', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_espn_4',
+          name: 'ESPN 4 HD (Ligue 1 & Copa Libertadores)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/90',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/90', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn4', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espn4', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_espn_5',
+          name: 'ESPN 5 HD (NBA, NFL & Fútbol)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/91',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/91', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn5', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espn5', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_espn_6',
+          name: 'ESPN 6 HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/92',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/92', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn6', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espn6', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_espn_7',
+          name: 'ESPN 7 HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/93',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/93', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn7', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espn7', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_espn_premium',
+          name: 'ESPN Premium HD (Fútbol Argentino)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Argentina',
+          url: 'https://m6foot.click/player/3/76',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/76', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espnpremium', isEmbed: true },
+            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-387.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=espnpremium', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_fox_sports_1',
+          name: 'Fox Sports 1 HD (Libertadores & UFC)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/78',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/78', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=fox1ar', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=foxsports', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_fox_sports_2',
+          name: 'Fox Sports 2 HD (Libertadores & WWE)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/79',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/79', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=fox2ar', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=foxsports2', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_fox_sports_3',
+          name: 'Fox Sports 3 HD (Fórmula 1 & Motor)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/80',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/80', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=fox3ar', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=foxsports3', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_tnt_sports',
+          name: 'TNT Sports HD (Fútbol Argentino & Chile)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/TNT_Sports_2023.svg/800px-TNT_Sports_2023.svg.png',
+          category: 'Deportes',
+          country: 'Argentina',
+          url: 'https://m6foot.click/player/3/75',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/75', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=tntsports', isEmbed: true },
+            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-388.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=tntsports', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_win_sports_plus',
+          name: 'Win Sports + HD (Fútbol Colombiano)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Win_Sports%2B_logo.png/640px-Win_Sports%2B_logo.png',
+          category: 'Deportes',
+          country: 'Colombia',
+          url: 'https://m6foot.click/player/3/81',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/81', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=winplus', isEmbed: true },
+            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-392.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=winsportsplus', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_dazn_laliga',
+          name: 'DAZN LaLiga HD (LaLiga EA Sports)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/DAZN_Logo.svg/800px-DAZN_Logo.svg.png',
           category: 'Deportes',
           country: 'España',
-          url: 'https://raw.githubusercontent.com/iptv-org/iptv/master/streams/es_golplay.m3u8',
+          url: 'https://m6foot.click/player/3/51',
           isCustom: true,
-          isEmbed: false
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/51', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=daznlaliga', isEmbed: true },
+            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-538.php', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_movistar_laliga',
+          name: 'Movistar LaLiga TV HD (España)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Movistar_Plus%2B_logo.svg/800px-Movistar_Plus%2B_logo.svg.png',
+          category: 'Deportes',
+          country: 'España',
+          url: 'https://m6foot.click/player/3/49',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/49', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=mlaliga', isEmbed: true },
+            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-84.php', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_dazn_f1',
+          name: 'DAZN Fórmula 1 HD (F1 & Motor 24/7)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/800px-F1.svg.png',
+          category: 'Deportes',
+          country: 'España',
+          url: 'https://m6foot.click/player/3/60',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6 F1)', url: 'https://m6foot.click/player/3/60', isEmbed: true },
+            { label: '🛰️ Señal 2 (DLive F1)', url: 'https://dlive.sx/stream/stream-537.php', isEmbed: true },
+            { label: '⚡ Señal 3 (Red Bull TV Directa)', url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', isEmbed: false }
+          ]
+        },
+        {
+          id: 'vip_gol_tv',
+          name: 'GOL TV Latino HD (Fútbol Sudamericano)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Gol_Play_logo.svg/800px-Gol_Play_logo.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://m6foot.click/player/3/74',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/74', isEmbed: true },
+            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=goltv', isEmbed: true }
+          ]
         }
       ];
     }
 
     function getEntertainmentTop30Channels(){
       return [
-        {
-          id: 'ent_warner',
-          name: 'Warner Channel HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Warner_Channel_logo_2023.svg/800px-Warner_Channel_logo_2023.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=warnerchannel',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_tnt_series',
-          name: 'TNT Series HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/TNT_Series_logo_2016.svg/800px-TNT_Series_logo_2016.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=tntseries',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_star_channel',
-          name: 'Star Channel HD (Antiguo FOX)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Star_Channel_2021.svg/800px-Star_Channel_2021.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=star_channel',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_cinemax',
-          name: 'Cinemax Latino HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Cinemax_logo_2011.svg/800px-Cinemax_logo_2011.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=cinemaxlatam',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_space',
-          name: 'Space HD (Acción & Suspense)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Canal_Space_2020.svg/800px-Canal_Space_2020.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=space',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_universal',
-          name: 'Universal TV HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Universal_TV_logo_2018.svg/800px-Universal_TV_logo_2018.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=universal',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_sony',
-          name: 'Sony Channel HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sony_Channel_logo_2019.svg/800px-Sony_Channel_logo_2019.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=sony',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_paramount',
-          name: 'Paramount Network HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Paramount_Network_2020.svg/800px-Paramount_Network_2020.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=paramount',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_golden',
-          name: 'Golden HD (Éxitos de Cine)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Canal_Golden_logo.png/640px-Canal_Golden_logo.png',
-          category: 'Cine & Series',
-          country: 'México',
-          url: 'https://tvf90.com/1.php?stream=golden',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_cinecanal',
-          name: 'Cinecanal HD (Hollywood)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Cinecanal_logo_2019.svg/800px-Cinecanal_logo_2019.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=cinecanal',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_hbo',
-          name: 'HBO HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HBO_logo.svg/800px-HBO_logo.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=hbo',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_hbo2',
-          name: 'HBO 2 HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HBO_logo.svg/800px-HBO_logo.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=hbo2',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_hbo_xtreme',
-          name: 'HBO Xtreme HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HBO_logo.svg/800px-HBO_logo.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=hboxtreme',
-          isCustom: true,
-          isEmbed: true
-        },
+        // ==========================================
+        // CATEGORÍA: COMEDIA (10 CANALES DIRECTOS ULTRA-RÁPIDOS)
+        // ==========================================
         {
           id: 'ent_distrito_comedia',
-          name: 'Distrito Comedia HD',
+          name: 'Distrito Comedia HD (Humor & Series 24/7)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Distrito_Comedia_logo_2018.png/640px-Distrito_Comedia_logo_2018.png',
           category: 'Comedia',
           country: 'México',
-          url: 'https://tvf90.com/1.php?stream=distritocomedia',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/jainwiiq5g/out/v1/1094f5319566443cb6a9000810384a1a/cenc.mpd',
+          drm: { '2c73635de48c1033f60965175563af02': 'ac71c079e88f068aad80e947bac1b494' },
           isCustom: true,
-          isEmbed: true
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/jainwiiq5g/out/v1/1094f5319566443cb6a9000810384a1a/cenc.mpd', drm: { '2c73635de48c1033f60965175563af02': 'ac71c079e88f068aad80e947bac1b494' }, isEmbed: false },
+            { label: '⚡ Señal 2 (Sony Series Comedia)', url: 'https://d1fhd07bw4d2d6.cloudfront.net/playlist.m3u8', isEmbed: false }
+          ]
         },
         {
-          id: 'ent_comedy_central',
-          name: 'Comedy Central HD (Latino)',
+          id: 'ent_universal_comedy',
+          name: 'Universal Comedy HD (Sitcoms & Comedia)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Universal_TV_logo_2018.svg/800px-Universal_TV_logo_2018.svg.png',
+          category: 'Comedia',
+          country: 'Latinoamérica',
+          url: 'https://a194live-pv-ta-amazon.akamaized.net/iad-nitro/live/clients/dash/enc/tcwhp6ginq/out/v1/a7f63b59eee140389a64ad9f23a9270c/cenc.mpd',
+          drm: { '2190c163d3128b9c19d72801b796fbe9': '2003846bde96230830ddaa41232bee1f' },
+          isCustom: true,
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://a194live-pv-ta-amazon.akamaized.net/iad-nitro/live/clients/dash/enc/tcwhp6ginq/out/v1/a7f63b59eee140389a64ad9f23a9270c/cenc.mpd', drm: { '2190c163d3128b9c19d72801b796fbe9': '2003846bde96230830ddaa41232bee1f' }, isEmbed: false },
+            { label: '⚡ Señal 2 (Runtime Comedia HD)', url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2553', isEmbed: false }
+          ]
+        },
+        {
+          id: 'ent_sony_comedia',
+          name: 'Sony One Series Comedia HD (24/7)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sony_Channel_logo_2019.svg/800px-Sony_Channel_logo_2019.svg.png',
+          category: 'Comedia',
+          country: 'Latinoamérica',
+          url: 'https://d1fhd07bw4d2d6.cloudfront.net/playlist.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_rakuten_comedia',
+          name: 'Rakuten TV Comedia HD (Películas de Risa)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Comedy_Central_2018.svg/800px-Comedy_Central_2018.svg.png',
+          category: 'Comedia',
+          country: 'España',
+          url: 'https://71db867f03ce4d71a29e92155f07ab87.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6180/master.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_runtime_comedia',
+          name: 'Runtime Comedia HD (Cine de Humor 24/7)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Comedy_Central_2018.svg/800px-Comedy_Central_2018.svg.png',
           category: 'Comedia',
           country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=comedycentral',
+          url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2553',
           isCustom: true,
-          isEmbed: true
+          isEmbed: false
         },
         {
           id: 'ent_las_estrellas',
-          name: 'Las Estrellas HD (Telenovelas & Shows)',
+          name: 'Las Estrellas HD (Comedia, Shows & Novelas)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Las_Estrellas_2016.svg/800px-Las_Estrellas_2016.svg.png',
           category: 'Comedia',
           country: 'México',
-          url: 'https://tvf90.com/1.php?stream=lasestrellas',
+          url: 'https://channel01-onlymex.akamaized.net/hls/live/2022749/event01/index.m3u8',
           isCustom: true,
-          isEmbed: true
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Akamai HLS)', url: 'https://channel01-onlymex.akamaized.net/hls/live/2022749/event01/index.m3u8', isEmbed: false },
+            { label: '⚡ Señal 2 (Directa DASH HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ntkdl68eob/out/v1/bd5dfb7676994383881bc6e71877d29d/cenc.mpd', drm: { 'd695093ea3e66d75a4d213a3e2cbf360': '01be3f645e89a067d2786c295f68dde4' }, isEmbed: false }
+          ]
         },
         {
-          id: 'ent_tnt_novelas',
-          name: 'TNT Novelas HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/TNT_Novelas_logo.svg/800px-TNT_Novelas_logo.svg.png',
+          id: 'ent_unicable',
+          name: 'Unicable HD (Late Nights, Comedia & Shows)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Las_Estrellas_2016.svg/800px-Las_Estrellas_2016.svg.png',
+          category: 'Comedia',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/rgx3cl4qyp/out/v1/11445a00c6cb4ddabf440068396cd2f0/cenc.mpd',
+          drm: { '127c86bdc5eb6ef9065f265048870ce0': '3b99e182e1e700aad17b57c0ff6faebb' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_bitme',
+          name: 'BitMe HD (Anime, Gaming & Comedia Geek)',
+          logo: 'https://i.imgur.com/79hrcx8.png',
+          category: 'Comedia',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/qej0n9zmvv/out/v1/93a227dbeef84293b95683c10fd88da2/cenc.mpd',
+          drm: { '391ad12844fdb7c127e2c7ba23582b3b': '6c9b3103cd519fcad556e84f918998cd' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_telehit',
+          name: 'Telehit HD (Humor, Entretenimiento & Música)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Cartoon_Network_2010_logo.svg/800px-Cartoon_Network_2010_logo.svg.png',
+          category: 'Comedia',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/69onjpmgph/out/v1/bffe5e192607426d850350fcb751674b/cenc.mpd',
+          drm: { '8db29d65d8db2422cfadefec929cdc46': 'b96587a4e8237bc22a186114b25179da' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_tbs_comedy',
+          name: 'TBS Comedy & Series HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Comedy_Central_2018.svg/800px-Comedy_Central_2018.svg.png',
+          category: 'Comedia',
+          country: 'Internacional',
+          url: 'https://dlive.sx/stream/stream-336.php',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Mirror TBS HD)', url: 'https://dlive.sx/stream/stream-336.php', isEmbed: true },
+            { label: '⚡ Señal 2 (Distrito Comedia Directo)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/jainwiiq5g/out/v1/1094f5319566443cb6a9000810384a1a/cenc.mpd', drm: { '2c73635de48c1033f60965175563af02': 'ac71c079e88f068aad80e947bac1b494' }, isEmbed: false }
+          ]
+        },
+
+        // ==========================================
+        // CATEGORÍA: CINE & SERIES (24 CANALES DIRECTOS ULTRA-RÁPIDOS)
+        // ==========================================
+        {
+          id: 'ent_golden',
+          name: 'Golden HD (Éxitos de Cine 24/7)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Canal_Golden_logo.png/640px-Canal_Golden_logo.png',
+          category: 'Cine & Series',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ox4csgyamg/out/v1/95cf9c4df3d542f6812f382a52771327/cenc.mpd',
+          drm: { '38dbcf2d094923f94aca4f913045e993': 'a475a0bcc6f77b04f07ed1487619d626' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_golden_premier',
+          name: 'Golden Premier HD (Estrenos VIP de Taquilla)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Canal_Golden_logo.png/640px-Canal_Golden_logo.png',
+          category: 'Cine & Series',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/1pyrprmguo/out/v1/e63748f718754f6ca76df9ce757b10f5/cenc.mpd',
+          drm: { 'b39fdb1efc89fa2b791bdce8428c3e09': '1941081db257b29643c95783d3a2c5cd' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_golden_edge',
+          name: 'Golden Edge HD (Cine de Acción & Suspenso)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Canal_Golden_logo.png/640px-Canal_Golden_logo.png',
+          category: 'Cine & Series',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/xv3tnoayi8/out/v1/46aaaeb778de4cd39893d88a7f93b05a/cenc.mpd',
+          drm: { 'ae4cbc34d4b1645f6c7b26410dde7b58': '647478cd3bd0dfb3e820249296c23096' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_golden_plus',
+          name: 'Golden Plus HD (Blockbusters de Hollywood)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Canal_Golden_logo.png/640px-Canal_Golden_logo.png',
+          category: 'Cine & Series',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/dash/enc/o09knwldwh/out/v1/15f9f74c888e4fdd9815ea94635ae4db/cenc.mpd',
+          drm: { 'ed5849d33e07606d6118d7fb26b90cd0': '63670e57e70353ca526fb07a8d7ddb7b' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_universal_cinema',
+          name: 'Universal Cinema HD (Películas de Hollywood)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Universal_TV_logo_2018.svg/800px-Universal_TV_logo_2018.svg.png',
           category: 'Cine & Series',
           country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=tntnovelas',
+          url: 'https://a194live-pv-ta-amazon.akamaized.net/iad-nitro/live/clients/dash/enc/4zoxgjxgur/out/v1/390ab02862ab46e5a6c8bbffe63287aa/cenc.mpd',
+          drm: { '4b422371cef8a6c33602cd8fa4dbb66a': 'b18d165a30fb2e32df9596b723ffc9d6' },
           isCustom: true,
-          isEmbed: true
+          isEmbed: false
+        },
+        {
+          id: 'ent_universal_premiere',
+          name: 'Universal Premiere HD (Series Estreno)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Universal_TV_logo_2018.svg/800px-Universal_TV_logo_2018.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://a194live-pv-ta-amazon.akamaized.net/iad-nitro/live/clients/dash/enc/ciqsqqxp8g/out/v1/e9283351f50849a8ab602a894772649f/cenc.mpd',
+          drm: { '547c1e15b8e93f1077d34f77a7ab018f': 'ba3f1a0580b46e371a6b02ef2ab2304f' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_universal_crime',
+          name: 'Universal Crime HD (Series Policiales & Acción)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Universal_TV_logo_2018.svg/800px-Universal_TV_logo_2018.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://a194live-pv-ta-amazon.akamaized.net/iad-nitro/live/clients/dash/enc/xuvkx1kkfl/out/v1/6a977f46a77b4a03a1e55db484c1695a/cenc.mpd',
+          drm: { 'cfc6790cbc2bc791b05c4f8f8126f5b5': 'b1c5b3c9a8ddc4badf5f49f8a989cf77' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_universal_reality',
+          name: 'Universal Reality HD (Realities & Drama)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Universal_TV_logo_2018.svg/800px-Universal_TV_logo_2018.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://a194live-pv-ta-amazon.akamaized.net/iad-nitro/live/clients/dash/enc/tezhlmgs1w/out/v1/362fef2b778b4531b4e0dd3db6acf805/cenc.mpd',
+          drm: { '6824642c08bd3cdb6c08404a894287f9': '081aab1fb4e8da70e21bb906e704e5d6' },
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_usa_network',
+          name: 'USA Network HD (Series & Películas)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Warner_Channel_logo_2023.svg/800px-Warner_Channel_logo_2023.svg.png',
+          category: 'Cine & Series',
+          country: 'Internacional',
+          url: 'https://cfrt.stream.peacocktv.com/Content/CMAF_OL1-CTR-4s/Live/channel(usa-west)/master.mpd',
+          drm: { '252a671825ba31ec8433f978c32ccf6d': 'ee560759ecc8d2274df2e63fcef56915' },
+          isCustom: true,
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://cfrt.stream.peacocktv.com/Content/CMAF_OL1-CTR-4s/Live/channel(usa-west)/master.mpd', drm: { '252a671825ba31ec8433f978c32ccf6d': 'ee560759ecc8d2274df2e63fcef56915' }, isEmbed: false },
+            { label: '🛰️ Señal 2 (Mirror DLive)', url: 'https://dlive.sx/stream/stream-343.php', isEmbed: true }
+          ]
+        },
+        {
+          id: 'ent_sony_cine',
+          name: 'Sony Cine HD (Películas en Español 24/7)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sony_Channel_logo_2019.svg/800px-Sony_Channel_logo_2019.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://a-cdn.klowdtv.com:443/803B48A/a-klowdtv.com/live1/cine_720p/playlist.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_sony_accion',
+          name: 'Sony One Hits Acción HD (Cine de Acción)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sony_Channel_logo_2019.svg/800px-Sony_Channel_logo_2019.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://de9yx47crxs6l.cloudfront.net/playlist.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_sony_blacklist',
+          name: 'Sony One: The Blacklist HD (Serie 24/7)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sony_Channel_logo_2019.svg/800px-Sony_Channel_logo_2019.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://db57ce9cb585443b89cc08f6e6d00a61.mediatailor.us-west-2.amazonaws.com/v1/master/ba62fe743df0fe93366eba3a257d792884136c7f/LINEAR-834-ES-SONYONETHEBLACKLIST-LG_ES/playlist.m3u8',
+          isCustom: true,
+          isEmbed: false
         },
         {
           id: 'ent_depelicula',
@@ -2020,129 +2493,140 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/De_Pel%C3%ADcula_logo.png/640px-De_Pel%C3%ADcula_logo.png',
           category: 'Cine & Series',
           country: 'México',
-          url: 'https://tvf90.com/1.php?stream=depelicula',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/qhi3aitwuj/out/v1/188aaa2e1fce4dfa809d22d690795df5/cenc.mpd',
+          drm: { 'ceb1333b11d79085cf30eecd1f254969': '50c22b8d1071dc0a667bfb01acd8cc1c' },
           isCustom: true,
-          isEmbed: true
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (De Película HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/qhi3aitwuj/out/v1/188aaa2e1fce4dfa809d22d690795df5/cenc.mpd', drm: { 'ceb1333b11d79085cf30eecd1f254969': '50c22b8d1071dc0a667bfb01acd8cc1c' }, isEmbed: false },
+            { label: '⚡ Señal 2 (De Película Plus HD)', url: 'https://a194live-pv-ta-amazon.akamaized.net/iad-nitro/live/clients/dash/enc/nz5yyu2men/out/v1/06a7c74f616d4f1f829c3c4b7c4b9ea8/cenc.mpd', drm: { 'f3378f29fcdb0c51156b6fce4ecea7b7': '01f61c4fec5b2dc7a803f706c0d1897f' }, isEmbed: false }
+          ]
         },
         {
-          id: 'ent_tcm',
-          name: 'TCM (Turner Classic Movies)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Turner_Classic_Movies_logo_2021.svg/800px-Turner_Classic_Movies_logo_2021.svg.png',
+          id: 'ent_tlnovelas',
+          name: 'TLNovelas HD (Grandes Telenovelas 24/7)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/TNT_Novelas_logo.svg/800px-TNT_Novelas_logo.svg.png',
           category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=tcm',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_cartoon_network',
-          name: 'Cartoon Network HD (Latino)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Cartoon_Network_2010_logo.svg/800px-Cartoon_Network_2010_logo.svg.png',
-          category: 'Comedia',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=cartoonnetwork',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_discovery',
-          name: 'Discovery Channel HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Discovery_Channel_2019.svg/800px-Discovery_Channel_2019.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=discoverychannel',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_history',
-          name: 'History Channel HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/History_Logo.svg/800px-History_Logo.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=historychannel',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_animal_planet',
-          name: 'Animal Planet HD',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Animal_Planet_2018.svg/800px-Animal_Planet_2018.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=animalplanet',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_tlc',
-          name: 'TLC Discovery HD (Estilo de Vida & Realities)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/TLC_2006.svg/800px-TLC_2006.svg.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://tvf90.com/1.php?stream=tlc',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'ent_pluto_estelar',
-          name: 'Pluto TV Cine Estelar (24/7 HD)',
-          logo: 'https://images.pluto.tv/channels/5d8d164d92e97a5e107638d2/colorLogoPNG.png',
-          category: 'Cine & Series',
-          country: 'Latinoamérica',
-          url: 'https://jmp2.uk/plu-5d8d164d92e97a5e107638d2.m3u8',
+          country: 'México',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/dash/enc/tzgm3ypc9h/out/v1/df58cea12d064dd5b579f99d55c650b7/cenc.mpd',
+          drm: { 'a7e1530b2a1173710ecc1a46b7456afc': '957b4d11b52f9bf726f92e2b689a3d05' },
           isCustom: true,
           isEmbed: false
         },
         {
-          id: 'ent_pluto_accion',
-          name: 'Pluto TV Cine Acción (24/7 HD)',
-          logo: 'https://images.pluto.tv/channels/5e972a21ad709d00074195ba/colorLogoPNG.png',
+          id: 'ent_sony_novelas',
+          name: 'Sony Novelas HD (Series & Dramas Latinos)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sony_Channel_logo_2019.svg/800px-Sony_Channel_logo_2019.svg.png',
           category: 'Cine & Series',
           country: 'Latinoamérica',
-          url: 'https://jmp2.uk/plu-5e972a21ad709d00074195ba.m3u8',
+          url: 'https://teleon.tv/stream/cG5wODQ1NTkxMHBucDg0.m3u8',
           isCustom: true,
           isEmbed: false
         },
         {
-          id: 'ent_pluto_comedia',
-          name: 'Pluto TV Comedia Latino (24/7 HD)',
-          logo: 'https://images.pluto.tv/channels/5ffcc21a432945000762d06b/colorLogoPNG.png',
-          category: 'Comedia',
-          country: 'Latinoamérica',
-          url: 'https://jmp2.uk/plu-5ffcc21a432945000762d06b.m3u8',
+          id: 'ent_rakuten_top',
+          name: 'Rakuten TV Pelis Top HD (Cine Taquillero)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Paramount_Network_2020.svg/800px-Paramount_Network_2020.svg.png',
+          category: 'Cine & Series',
+          country: 'España',
+          url: 'https://d4a4999341764c67a67e9ec9eb3790ab.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-5983/master.m3u8',
           isCustom: true,
           isEmbed: false
         },
         {
-          id: 'ent_pluto_series',
-          name: 'Pluto TV Series Éxito (24/7 HD)',
-          logo: 'https://images.pluto.tv/channels/5dcde1317578340009b751d0/colorLogoPNG.png',
+          id: 'ent_rakuten_accion',
+          name: 'Rakuten TV Acción HD (Cine de Acción 24/7)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Canal_Space_2020.svg/800px-Canal_Space_2020.svg.png',
+          category: 'Cine & Series',
+          country: 'España',
+          url: 'https://87f2e2e5e7624e3bad85da1ca2ed31a7.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6069/master.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_rakuten_scifi',
+          name: 'Rakuten TV Sci-Fi HD (Ciencia Ficción)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Star_Channel_2021.svg/800px-Star_Channel_2021.svg.png',
+          category: 'Cine & Series',
+          country: 'España',
+          url: 'https://sci-fi-rakuten-tv-es.fast.rakuten.tv/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6740/master.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_rakuten_thrillers',
+          name: 'Rakuten TV Thrillers & Suspenso HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Cinemax_logo_2011.svg/800px-Cinemax_logo_2011.svg.png',
+          category: 'Cine & Series',
+          country: 'España',
+          url: 'https://2bc7b486c90441a480dcab4bcdc6fbb5.mediatailor.eu-west-1.amazonaws.com/v1/master/0547f18649bd788bec7b67b746e47670f558b6b2/production-LiveChannel-6480/master.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_cine_estrella',
+          name: 'Cine Estrella TV HD (Películas en Español)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Cinecanal_logo_2019.svg/800px-Cinecanal_logo_2019.svg.png',
           category: 'Cine & Series',
           country: 'Latinoamérica',
-          url: 'https://jmp2.uk/plu-5dcde1317578340009b751d0.m3u8',
+          url: 'https://aegis-cloudfront-1.tubi.video/e1921b21-6cd6-4b21-bb46-832cbb74485c/playlist.m3u8',
+          isCustom: true,
+          isEmbed: false,
+          servers: [
+            { label: '⚡ Señal 1 (Cine Estrella HD)', url: 'https://aegis-cloudfront-1.tubi.video/e1921b21-6cd6-4b21-bb46-832cbb74485c/playlist.m3u8', isEmbed: false },
+            { label: '⚡ Señal 2 (Todo Cine HD)', url: 'https://aegis-cloudfront-1.tubi.video/be9224ff-0bff-440d-aa84-40afcb2150b5/playlist.m3u8', isEmbed: false }
+          ]
+        },
+        {
+          id: 'ent_runtime_accion',
+          name: 'Runtime Acción HD (Películas de Acción)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Canal_Space_2020.svg/800px-Canal_Space_2020.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://stream.ads.ottera.tv/playlist.m3u8?network_id=2552',
           isCustom: true,
           isEmbed: false
         },
         {
-          id: 'ent_bob_esponja',
-          name: 'Bob Esponja 24/7 (Canal Oficial)',
-          logo: 'https://images.pluto.tv/channels/6254598f5083f800076d8563/colorLogoPNG_1781042617821.png',
-          category: 'Comedia',
-          country: 'Latinoamérica',
-          url: 'https://jmp2.uk/plu-6254598f5083f800076d8563.m3u8',
+          id: 'ent_azteca_uno',
+          name: 'Azteca Uno HD (Entretenimiento & Series)',
+          logo: 'https://i.imgur.com/rRxgBtI.png',
+          category: 'Cine & Series',
+          country: 'México',
+          url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8',
           isCustom: true,
           isEmbed: false
         },
         {
-          id: 'ent_avatar',
-          name: 'Avatar: La Leyenda de Aang 24/7',
-          logo: 'https://images.pluto.tv/channels/6759ee82bd523200083b4f0f/colorLogoPNG.png',
-          category: 'Comedia',
+          id: 'ent_hbo',
+          name: 'HBO HD (Cine Premium & Series)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HBO_logo.svg/800px-HBO_logo.svg.png',
+          category: 'Cine & Series',
           country: 'Latinoamérica',
-          url: 'https://jmp2.uk/plu-6759ee82bd523200083b4f0f.m3u8',
+          url: 'https://zonatv.sbs/canales/hbo/',
           isCustom: true,
-          isEmbed: false
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (HBO HD)', url: 'https://zonatv.sbs/canales/hbo/', isEmbed: true },
+            { label: '🛰️ Señal 2 (HBO Xtreme HD)', url: 'https://zonatv.sbs/canales/hbo/xtreme.php', isEmbed: true },
+            { label: '🛰️ Señal 3 (HBO Plus HD)', url: 'https://zonatv.sbs/canales/hbo/plus.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (HBO Family HD)', url: 'https://zonatv.sbs/canales/hbo/family.php', isEmbed: true }
+          ]
+        },
+        {
+          id: 'ent_tnt_series',
+          name: 'TNT & AMC Series HD (Acción & Drama)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/TNT_Series_logo_2016.svg/800px-TNT_Series_logo_2016.svg.png',
+          category: 'Cine & Series',
+          country: 'Internacional',
+          url: 'https://dlive.sx/stream/stream-303.php',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (AMC HD)', url: 'https://dlive.sx/stream/stream-303.php', isEmbed: true },
+            { label: '🛰️ Señal 2 (TNT HD)', url: 'https://dlive.sx/stream/stream-338.php', isEmbed: true },
+            { label: '⚡ Señal 3 (Golden Premier Directo)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/1pyrprmguo/out/v1/e63748f718754f6ca76df9ce757b10f5/cenc.mpd', drm: { 'b39fdb1efc89fa2b791bdce8428c3e09': '1941081db257b29643c95783d3a2c5cd' }, isEmbed: false }
+          ]
         }
       ];
     }
@@ -2651,10 +3135,10 @@
       if(!m) return;
       var s = m.servers && m.servers[sIdx];
       if(!s) return;
-      playMatchOption(m.desc, s.name, s.url);
+      playMatchOption(m.desc, s.name, s.url, mIdx, sIdx);
     }
 
-    function playMatchOption(matchTitle, serverName, streamUrl){
+    function playMatchOption(matchTitle, serverName, streamUrl, mIdx, sIdx){
       var video = document.getElementById('tvPlayer');
       var iframe = document.getElementById('tvIframe');
       var placeholder = document.getElementById('videoPlaceholder');
@@ -2662,13 +3146,34 @@
       if(placeholder) placeholder.classList.add('hidden');
       if(notice) notice.style.display = 'none';
 
+      destroyActiveEngines();
+
       // Update UI Header
       document.getElementById('playingTitle').textContent = matchTitle + ' · ' + serverName;
       document.getElementById('playingLogo').src = 'assets/icon_tv.jpg';
       document.getElementById('playingCategory').textContent = serverName;
       document.getElementById('playingCountry').textContent = '⚽ Deportes';
+      setStreamHealth('🟢 ' + serverName, 'ok');
 
-      if(hls){ hls.destroy(); hls = null; }
+      // Render Match Server Switcher Bar if match has multiple options
+      var bar = document.getElementById('channelServerBar');
+      var container = document.getElementById('channelServerButtons');
+      var mObj = (typeof mIdx === 'number' && currentRenderedMatches) ? currentRenderedMatches[mIdx] : null;
+      if(bar && container && mObj && mObj.servers && mObj.servers.length > 1){
+        bar.style.display = 'flex';
+        var bHtml = '<span style="font-size:11.5px; font-weight:800; color:#cbd5e1; margin-right:4px;">⚽ Señales Partido:</span>';
+        mObj.servers.forEach(function(srv, idx){
+          var isSel = idx === sIdx;
+          var bg = isSel ? 'linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%)' : 'rgba(255,255,255,0.07)';
+          var border = isSel ? '1px solid rgba(244,63,94,0.7)' : '1px solid rgba(255,255,255,0.14)';
+          var col = isSel ? '#ffffff' : '#cbd5e1';
+          bHtml += '<button onclick="playMatchByIndex(' + mIdx + ', ' + idx + ')" style="background:' + bg + '; border:' + border + '; color:' + col + '; padding:5px 11px; border-radius:8px; font-size:11.5px; font-weight:700; cursor:pointer;">⚡ ' + escapeHtml(srv.name) + '</button>';
+        });
+        container.innerHTML = bHtml;
+      } else if(bar){
+        bar.style.display = 'none';
+      }
+
       video.pause();
       video.style.display = 'none';
 

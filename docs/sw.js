@@ -1,5 +1,5 @@
-// DuarteCinema Pro - High Performance PWA Service Worker
-const CACHE_NAME = 'duartecinema-v1.2.1';
+// DuarteCinema & DuarteTV Pro - High Performance PWA Service Worker
+const CACHE_NAME = 'duartecinema-v1.3.0';
 const STATIC_ASSETS = [
   './cinema.html',
   './manifest.json',
@@ -44,15 +44,12 @@ self.addEventListener('fetch', (event) => {
 
   const url = new URL(req.url);
 
-  // Bypass third-party streaming embeds, HLS streams, and TMDB API from SW interception
+  // Bypass third-party streaming embeds, HLS/DASH streams, and TMDB API from SW interception
   if (
-    url.hostname.includes('themoviedb.org') ||
-    url.hostname.includes('videasy.net') ||
-    url.hostname.includes('vidsrc') ||
-    url.hostname.includes('playlatin') ||
-    url.hostname.includes('smashystream') ||
-    url.hostname.includes('zeno.fm') ||
+    url.hostname !== self.location.hostname ||
     url.pathname.endsWith('.m3u8') ||
+    url.pathname.endsWith('.mpd') ||
+    url.pathname.endsWith('.m4s') ||
     url.pathname.endsWith('.ts') ||
     url.pathname.endsWith('.m3u')
   ) {
