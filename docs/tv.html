@@ -1212,8 +1212,20 @@
     function playChannel(c){
       currentChannel = c;
       var video = document.getElementById('tvPlayer');
+      var iframe = document.getElementById('tvIframe');
       var placeholder = document.getElementById('videoPlaceholder');
+      var matchNotice = document.getElementById('matchWaitingNotice');
       if(placeholder) placeholder.classList.add('hidden');
+      if(matchNotice) matchNotice.style.display = 'none';
+
+      // Reset Match Iframe & Restore Video Canvas
+      if(iframe){
+        iframe.style.display = 'none';
+        iframe.src = 'about:blank';
+      }
+      if(video){
+        video.style.display = 'block';
+      }
 
       // Update UI Header
       document.getElementById('playingTitle').textContent = c.name;
