@@ -648,17 +648,20 @@
       <div class="brand-title">Duarte<span>TV</span> <span class="badge-pro">PRO</span></div>
     </a>
     <div class="nav-actions">
+      <button onclick="switchMainView('channels')" class="nav-btn" style="color: #38bdf8; border-color: rgba(6,182,212,0.4); font-weight: 700;">
+        📺 <span>Canales</span>
+      </button>
+      <button onclick="switchMainView('matches')" class="nav-btn" style="color: #f43f5e; border-color: rgba(244,63,94,0.4); font-weight: 700;">
+        ⚽ <span>Partidos</span>
+      </button>
       <button id="pwaHeaderBtn" onclick="openDownloadModal()" class="nav-btn" style="background:linear-gradient(135deg, rgba(139,92,246,0.38) 0%, rgba(6,182,212,0.38) 100%);border:1px solid rgba(139,92,246,0.75);color:#fff;font-weight:800;box-shadow:0 0 16px rgba(139,92,246,0.45);cursor:pointer;" title="Descargar o instalar DuarteTV App">
         📥 <span>Descargar App</span>
       </button>
       <a href="cinema.html" class="nav-btn" style="color: #f43f5e; border-color: rgba(244,63,94,0.4);">
         🎬 <span>DuarteCinema</span>
       </a>
-      <a href="arcade.html" class="nav-btn" style="color: #38bdf8; border-color: rgba(6,182,212,0.4);">
+      <a href="arcade.html" class="nav-btn" style="color: #a855f7; border-color: rgba(168,85,247,0.4);">
         🕹️ <span>DuarteArcade</span>
-      </a>
-      <a href="tools.html" class="nav-btn" style="color: #34d399; border-color: rgba(16,185,129,0.4);">
-        🛠️ <span>Web Suite PRO</span>
       </a>
       <a href="index.html" class="nav-btn">
         🏠 <span>Inicio</span>
@@ -737,112 +740,135 @@
       </div>
     </div>
 
-    
     <!-- ==========================================
-         MATCH CENTER EN VIVO: AGENDA DEPORTIVA DIRECTA
+         SELECTOR PRINCIPAL: DUARTETV CANALES vs PARTIDOS
          ========================================== -->
-    <div class="match-center-section" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%); border: 1.5px solid rgba(244, 63, 94, 0.45); border-radius: 20px; padding: 22px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 25px rgba(244, 63, 94, 0.2);">
-      
-      <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; flex-wrap: wrap;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span style="font-size: 26px; background: rgba(244, 63, 94, 0.2); width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">⚽</span>
-          <div>
-            <h3 style="font-size: 19px; font-weight: 800; color: #fff; font-family: 'Space Grotesk', sans-serif; display: flex; align-items: center; gap: 8px;">
-              Agenda de Partidos en Vivo (Fútbol Libre & Roja Directa)
-              <span id="liveMatchesCount" style="font-size: 11px; background: rgba(244,63,94,0.25); color: #f43f5e; border: 1px solid rgba(244,63,94,0.5); padding: 2px 8px; border-radius: 999px;">Cargando...</span>
-            </h3>
-            <p style="font-size: 12.5px; color: #94a3b8;">Todos los partidos del día con opciones de señal y escudo anti-publicidad de DuarteTV</p>
+    <div style="display: flex; justify-content: center; align-items: center; gap: 12px; margin: 24px auto 26px; padding: 6px; background: rgba(15, 23, 42, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 18px; backdrop-filter: blur(12px); max-width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+      <button id="mainTabChannels" onclick="switchMainView('channels')" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: 14px; font-weight: 800; font-size: 14.5px; border: none; cursor: pointer; transition: all 0.25s; background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%); color: #fff; box-shadow: 0 4px 18px rgba(139,92,246,0.45);">
+        <span style="font-size: 18px;">📺</span>
+        <span>DuarteTV Canales</span>
+      </button>
+
+      <button id="mainTabMatches" onclick="switchMainView('matches')" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 12px 18px; border-radius: 14px; font-weight: 800; font-size: 14.5px; border: 1px solid rgba(255,255,255,0.12); cursor: pointer; transition: all 0.25s; background: rgba(255,255,255,0.05); color: #94a3b8;">
+        <span style="font-size: 18px;">⚽</span>
+        <span>Partidos</span>
+        <span id="headerLiveDot" style="display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #f43f5e; box-shadow: 0 0 8px #f43f5e;"></span>
+      </button>
+    </div>
+
+    <!-- ==========================================
+         SECCIÓN 1: PARTIDOS EN VIVO Y TRANSMISIONES
+         ========================================== -->
+    <div id="matchesSection" style="display: none;">
+      <div class="match-center-section" style="background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.9) 100%); border: 1.5px solid rgba(244, 63, 94, 0.45); border-radius: 20px; padding: 22px; margin-bottom: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.6), 0 0 25px rgba(244, 63, 94, 0.2);">
+        
+        <div style="display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 18px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 26px; background: rgba(244, 63, 94, 0.2); width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center;">⚽</span>
+            <div>
+              <h3 style="font-size: 19px; font-weight: 800; color: #fff; font-family: 'Space Grotesk', sans-serif; display: flex; align-items: center; gap: 8px;">
+                Agenda de Partidos en Directo
+                <span id="liveMatchesCount" style="font-size: 11px; background: rgba(244,63,94,0.25); color: #f43f5e; border: 1px solid rgba(244,63,94,0.5); padding: 2px 8px; border-radius: 999px;">Cargando...</span>
+              </h3>
+              <p style="font-size: 12.5px; color: #94a3b8;">Transmisiones deportivas de hoy con servidores alternativos y escudo anti-publicidad</p>
+            </div>
+          </div>
+
+          <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+            <div style="display: flex; gap: 6px; background: rgba(2,6,23,0.6); padding: 3px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
+              <button id="agendaFilterLive" onclick="setAgendaStatusFilter('live', this)" style="background: rgba(244,63,94,0.3); border: 1px solid rgba(244,63,94,0.6); color: #fff; font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
+                🔴 En Juego (<span id="countLiveBadge">0</span>)
+              </button>
+              <button id="agendaFilterUpcoming" onclick="setAgendaStatusFilter('upcoming', this)" style="background: none; border: none; color: #94a3b8; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
+                ⏰ Próximos (<span id="countUpcomingBadge">0</span>)
+              </button>
+              <button id="agendaFilterAll" onclick="setAgendaStatusFilter('all', this)" style="background: none; border: none; color: #94a3b8; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
+                🌟 Todos
+              </button>
+            </div>
+
+            <input type="text" id="matchSearchInput" placeholder="Buscar equipo o liga..." oninput="filterLiveAgenda()" style="background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 12px; border-radius: 10px; font-size: 12.5px; outline: none; width: 180px;">
+            
+            <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: #94a3b8; cursor: pointer;">
+              <input type="checkbox" id="hideFinishedCheckbox" checked onchange="renderLiveAgenda()">
+              <span>Ocultar finalizados</span>
+            </label>
+
+            <button onclick="fetchLiveAgenda()" class="ctrl-btn" style="padding: 6px 10px; font-size: 12px;" title="Actualizar agenda">
+              🔄
+            </button>
           </div>
         </div>
 
-        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-          <div style="display: flex; gap: 6px; background: rgba(2,6,23,0.6); padding: 3px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);">
-            <button id="agendaFilterLive" onclick="setAgendaStatusFilter('live', this)" style="background: rgba(244,63,94,0.3); border: 1px solid rgba(244,63,94,0.6); color: #fff; font-size: 11.5px; font-weight: 800; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
-              🔴 En Juego (<span id="countLiveBadge">0</span>)
-            </button>
-            <button id="agendaFilterUpcoming" onclick="setAgendaStatusFilter('upcoming', this)" style="background: none; border: none; color: #94a3b8; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
-              ⏰ Próximos (<span id="countUpcomingBadge">0</span>)
-            </button>
-            <button id="agendaFilterAll" onclick="setAgendaStatusFilter('all', this)" style="background: none; border: none; color: #94a3b8; font-size: 11.5px; font-weight: 700; padding: 4px 10px; border-radius: 8px; cursor: pointer;">
-              🌟 Todos
-            </button>
+        <!-- Live Matches Dynamic Container -->
+        <div id="liveMatchesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; max-height: 580px; overflow-y: auto; padding-right: 4px;">
+          <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #94a3b8;">
+            ⏳ Conectando con la agenda deportiva en vivo...
           </div>
+        </div>
 
-          <input type="text" id="matchSearchInput" placeholder="Buscar equipo o liga..." oninput="filterLiveAgenda()" style="background: rgba(2, 6, 23, 0.7); border: 1px solid rgba(255,255,255,0.15); color: #fff; padding: 6px 12px; border-radius: 10px; font-size: 12.5px; outline: none; width: 180px;">
-          
-          <label style="display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: #94a3b8; cursor: pointer;">
-            <input type="checkbox" id="hideFinishedCheckbox" checked onchange="renderLiveAgenda()">
-            <span>Ocultar finalizados</span>
-          </label>
+      </div>
+    </div>
 
-          <button onclick="fetchLiveAgenda()" class="ctrl-btn" style="padding: 6px 10px; font-size: 12px;">
-            🔄
+    <!-- ==========================================
+         SECCIÓN 2: CANALES DUARTETV (24/7 & M3U)
+         ========================================== -->
+    <div id="channelsSection">
+      <!-- Private M3U Playlist Banner (El Modelo Neutro) -->
+      <div class="m3u-banner">
+        <div class="m3u-banner-info">
+          <span class="icon">📡</span>
+          <div>
+            <h4>¿Tienes una lista M3U con ESPN, Nickelodeon o Champions League?</h4>
+            <p>Cárgala de forma 100% privada y segura en tu navegador. DuarteTV funciona como VLC / TiviMate neutro.</p>
+          </div>
+        </div>
+        <button onclick="openM3uModal()" class="btn-m3u-modal">
+          ➕ Cargar Lista M3U Privada
+        </button>
+      </div>
+
+      <!-- Catalog Bar: Search & Country Tabs -->
+      <div class="catalog-bar">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar canal por nombre, país o categoría (ej. Honduras, Noticias, Azteca, Deportes)..." oninput="filterChannels()">
+        </div>
+
+        <div class="filter-tabs">
+          <button class="filter-pill active" data-filter="all" onclick="setFilter('all', this)">
+            🌟 Todos <span class="filter-count" id="countAll">0</span>
+          </button>
+          <button class="filter-pill" data-filter="favs" onclick="setFilter('favs', this)">
+            ⭐ Mis Favoritos <span class="filter-count" id="countFavs">0</span>
+          </button>
+          <button class="filter-pill" data-filter="custom" onclick="setFilter('custom', this)">
+            📡 Mis Canales M3U <span class="filter-count" id="countCustom">0</span>
+          </button>
+          <button class="filter-pill" data-filter="honduras" onclick="setFilter('honduras', this)">
+            🇭🇳 Honduras <span class="filter-count" id="countHn">0</span>
+          </button>
+          <button class="filter-pill" data-filter="mexico" onclick="setFilter('mexico', this)">
+            🇲🇽 México <span class="filter-count" id="countMx">0</span>
+          </button>
+          <button class="filter-pill" data-filter="spain" onclick="setFilter('spain', this)">
+            🇪🇸 España <span class="filter-count" id="countEs">0</span>
+          </button>
+          <button class="filter-pill" data-filter="sports" onclick="setFilter('sports', this)">
+            ⚽ Deportes <span class="filter-count" id="countSports">0</span>
+          </button>
+          <button class="filter-pill" data-filter="news" onclick="setFilter('news', this)">
+            📰 Noticias 24/7 <span class="filter-count" id="countNews">0</span>
+          </button>
+          <button class="filter-pill" data-filter="kids" onclick="setFilter('kids', this)">
+            🧒 Niños & Dibujos <span class="filter-count" id="countKids">0</span>
           </button>
         </div>
       </div>
 
-      <!-- Live Matches Dynamic Container -->
-      <div id="liveMatchesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 14px; max-height: 520px; overflow-y: auto; padding-right: 4px;">
-        <div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: #94a3b8;">
-          ⏳ Conectando con la agenda deportiva en vivo...
-        </div>
-      </div>
-
+      <!-- Channels Grid -->
+      <div class="channels-grid" id="channelsGrid"></div>
     </div>
-<!-- Private M3U Playlist Banner (El Modelo Neutro) -->
-    <div class="m3u-banner">
-      <div class="m3u-banner-info">
-        <span class="icon">📡</span>
-        <div>
-          <h4>¿Tienes una lista M3U con ESPN, Nickelodeon o Champions League?</h4>
-          <p>Cárgala de forma 100% privada y segura en tu navegador. DuarteTV funciona como VLC / TiviMate neutro.</p>
-        </div>
-      </div>
-      <button onclick="openM3uModal()" class="btn-m3u-modal">
-        ➕ Cargar Lista M3U Privada
-      </button>
-    </div>
-
-    <!-- Catalog Bar: Search & Country Tabs -->
-    <div class="catalog-bar">
-      <div class="search-box">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="searchInput" class="search-input" placeholder="Buscar canal por nombre, país o categoría (ej. Honduras, Noticias, Azteca, Deportes)..." oninput="filterChannels()">
-      </div>
-
-      <div class="filter-tabs">
-        <button class="filter-pill active" data-filter="all" onclick="setFilter('all', this)">
-          🌟 Todos <span class="filter-count" id="countAll">0</span>
-        </button>
-        <button class="filter-pill" data-filter="favs" onclick="setFilter('favs', this)">
-          ⭐ Mis Favoritos <span class="filter-count" id="countFavs">0</span>
-        </button>
-        <button class="filter-pill" data-filter="custom" onclick="setFilter('custom', this)">
-          📡 Mis Canales M3U <span class="filter-count" id="countCustom">0</span>
-        </button>
-        <button class="filter-pill" data-filter="honduras" onclick="setFilter('honduras', this)">
-          🇭🇳 Honduras <span class="filter-count" id="countHn">0</span>
-        </button>
-        <button class="filter-pill" data-filter="mexico" onclick="setFilter('mexico', this)">
-          🇲🇽 México <span class="filter-count" id="countMx">0</span>
-        </button>
-        <button class="filter-pill" data-filter="spain" onclick="setFilter('spain', this)">
-          🇪🇸 España <span class="filter-count" id="countEs">0</span>
-        </button>
-        <button class="filter-pill" data-filter="sports" onclick="setFilter('sports', this)">
-          ⚽ Deportes <span class="filter-count" id="countSports">0</span>
-        </button>
-        <button class="filter-pill" data-filter="news" onclick="setFilter('news', this)">
-          📰 Noticias 24/7 <span class="filter-count" id="countNews">0</span>
-        </button>
-        <button class="filter-pill" data-filter="kids" onclick="setFilter('kids', this)">
-          🧒 Niños & Dibujos <span class="filter-count" id="countKids">0</span>
-        </button>
-      </div>
-    </div>
-
-    <!-- Channels Grid -->
-    <div class="channels-grid" id="channelsGrid"></div>
 
   </div>
 
@@ -1377,6 +1403,57 @@
       }
     }
 
+    // ==========================================
+    // CONTROLADOR DE VISTA PRINCIPAL: CANALES vs PARTIDOS
+    // ==========================================
+    var currentMainView = 'channels'; // 'channels' o 'matches'
+
+    function switchMainView(view){
+      currentMainView = view;
+      var channelsSection = document.getElementById('channelsSection');
+      var matchesSection = document.getElementById('matchesSection');
+      var tabChannels = document.getElementById('mainTabChannels');
+      var tabMatches = document.getElementById('mainTabMatches');
+
+      if(view === 'matches'){
+        if(channelsSection) channelsSection.style.display = 'none';
+        if(matchesSection) matchesSection.style.display = 'block';
+
+        if(tabChannels){
+          tabChannels.style.background = 'rgba(255,255,255,0.05)';
+          tabChannels.style.color = '#94a3b8';
+          tabChannels.style.border = '1px solid rgba(255,255,255,0.12)';
+          tabChannels.style.boxShadow = 'none';
+        }
+        if(tabMatches){
+          tabMatches.style.background = 'linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%)';
+          tabMatches.style.color = '#fff';
+          tabMatches.style.border = 'none';
+          tabMatches.style.boxShadow = '0 4px 18px rgba(244,63,94,0.45)';
+        }
+        var mSection = document.getElementById('matchesSection');
+        if(mSection) mSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        if(channelsSection) channelsSection.style.display = 'block';
+        if(matchesSection) matchesSection.style.display = 'none';
+
+        if(tabChannels){
+          tabChannels.style.background = 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%)';
+          tabChannels.style.color = '#fff';
+          tabChannels.style.border = 'none';
+          tabChannels.style.boxShadow = '0 4px 18px rgba(139,92,246,0.45)';
+        }
+        if(tabMatches){
+          tabMatches.style.background = 'rgba(255,255,255,0.05)';
+          tabMatches.style.color = '#94a3b8';
+          tabMatches.style.border = '1px solid rgba(255,255,255,0.12)';
+          tabMatches.style.boxShadow = 'none';
+        }
+        var cSection = document.getElementById('channelsSection');
+        if(cSection) cSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+
     // Modal M3U Logic
     function openM3uModal(){
       var m = document.getElementById('m3uModal');
@@ -1623,6 +1700,15 @@
 
     document.addEventListener('DOMContentLoaded', function(){
       fetchLiveAgenda();
+
+      // Check URL tab parameter or hash
+      try {
+        var urlParams = new URLSearchParams(window.location.search);
+        if(urlParams.get('tab') === 'partidos' || window.location.hash === '#partidos'){
+          switchMainView('matches');
+        }
+      } catch(e){}
+
       // Auto-refresh match status every 60 seconds
       setInterval(function(){
         recalculateMatchStatuses();
