@@ -814,18 +814,23 @@
          SECCIÓN 2: CANALES DUARTETV (24/7 & M3U)
          ========================================== -->
     <div id="channelsSection">
-      <!-- Private M3U Playlist Banner (El Modelo Neutro) -->
-      <div class="m3u-banner">
+      <!-- Private M3U Playlist Banner & Sports VIP (El Modelo Neutro) -->
+      <div class="m3u-banner" style="background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(15, 23, 42, 0.95) 100%); border: 1.5px solid rgba(244, 63, 94, 0.45); border-radius: 18px; padding: 18px 22px; margin-bottom: 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
         <div class="m3u-banner-info">
-          <span class="icon">📡</span>
+          <span class="icon" style="font-size: 32px;">🏆</span>
           <div>
-            <h4>¿Tienes una lista M3U con ESPN, Nickelodeon o Champions League?</h4>
-            <p>Cárgala de forma 100% privada y segura en tu navegador. DuarteTV funciona como VLC / TiviMate neutro.</p>
+            <h4 style="color: #fff; font-size: 16px; font-weight: 800; font-family: 'Space Grotesk', sans-serif;">Canales Deportivos VIP (ESPN, Fox Sports, DSports, TUDN, DAZN)</h4>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 3px;">Activa con 1 clic en tu dispositivo las señales oficiales para Champions League, LaLiga, Premier y Liga MX.</p>
           </div>
         </div>
-        <button onclick="openM3uModal()" class="btn-m3u-modal">
-          ➕ Cargar Lista M3U Privada
-        </button>
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <button onclick="loadSportsVipPack()" class="btn-m3u-modal" style="background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); border: none; font-weight: 800; box-shadow: 0 4px 18px rgba(244,63,94,0.45); cursor: pointer;">
+            ⚡ Activar Pack Fútbol VIP (1-Clic)
+          </button>
+          <button onclick="openM3uModal()" class="btn-m3u-modal" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);">
+            ⚙️ Cargar Otra Lista
+          </button>
+        </div>
       </div>
 
       <!-- Catalog Bar: Search & Country Tabs -->
@@ -893,7 +898,22 @@
 
       <!-- Tab 0: Presets 1-Clic -->
       <div id="tabContentPresets">
-        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">¿No tienes enlaces? Carga miles de canales y eventos deportivos comunitarios con un solo clic:</p>
+        <div style="background: linear-gradient(135deg, rgba(244,63,94,0.18) 0%, rgba(139,92,246,0.2) 100%); border: 1.5px solid rgba(244,63,94,0.55); border-radius: 14px; padding: 14px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(244,63,94,0.25);">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <div style="font-weight: 800; color: #fff; font-size: 14.5px; display: flex; align-items: center; gap: 8px;">
+              <span>🏆</span> Pack Canales Deportivos VIP
+            </div>
+            <span style="font-size: 10.5px; font-weight: 800; background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); color: #fff; padding: 3px 8px; border-radius: 999px;">PREMIUM</span>
+          </div>
+          <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 10px; line-height: 1.4;">
+            ESPN 1, 2, 3, Deportes, DSports, Fox Sports, TUDN y DAZN LaLiga listos en tu memoria.
+          </p>
+          <button onclick="loadSportsVipPack()" class="btn-m3u-modal" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); color: #fff; font-weight: 800; border: none; padding: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(244,63,94,0.4);">
+            ⚡ Activar Pack Deportes VIP Ahora (1-Clic)
+          </button>
+        </div>
+
+        <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">Otras listas globales gratuitas:</p>
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <button onclick="loadPreset('https://iptv-org.github.io/iptv/categories/sports.m3u', 'Deportes Globales')" class="btn-m3u-modal" style="display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; text-align: left; background: rgba(255,255,255,0.06); border: 1px solid rgba(139,92,246,0.4); box-shadow: none;">
             <span>⚽ <strong>Deportes Globales</strong> (Fútbol, Torneos, Resúmenes)</span>
@@ -1278,6 +1298,19 @@
 
       var streamUrl = c.url;
 
+      // Check if channel is an embed or web stream player (e.g. tv-90.com, tvf90.com, etc.)
+      var isEmbed = c.isEmbed || (!streamUrl.includes('.m3u8') && !streamUrl.includes('.ts') && (streamUrl.includes('tv-90.com') || streamUrl.includes('tvf90.com') || streamUrl.includes('.php') || streamUrl.includes('embed')));
+      if(isEmbed){
+        if(hls){ hls.destroy(); hls = null; }
+        video.pause();
+        video.style.display = 'none';
+        if(iframe){
+          iframe.style.display = 'block';
+          iframe.src = streamUrl;
+        }
+        return;
+      }
+
       if(Hls.isSupported()){
         hls = new Hls({
           enableWorker: true,
@@ -1479,6 +1512,166 @@
       var activeContent = document.getElementById('tabContent' + targetTab);
       if(activeBtn) activeBtn.classList.add('active');
       if(activeContent) activeContent.style.display = 'block';
+    }
+
+    function loadSportsVipPack(){
+      var vipChannels = [
+        {
+          id: 'vip_espn_1',
+          name: 'ESPN (Señal Principal)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/canal.php?stream=espndeportes',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_espn_2',
+          name: 'ESPN 2 (Premier & Champions)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/2.php?stream=espndeportes',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_espn_3',
+          name: 'ESPN 3 (Serie A & F1)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/3.php?stream=espndeportes',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_espn_deportes',
+          name: 'ESPN Deportes USA (LaLiga)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/canal.php?stream=espndeportes',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_dsports',
+          name: 'DSports HD (DirecTV Sports)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tv-90.com/drm/dsports.php',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_dsports_2',
+          name: 'DSports 2 HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=dsports',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_dsports_plus',
+          name: 'DSports Plus (Eventos Especiales)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/plus1.php?stream=dsports_eventos',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_fox_sports',
+          name: 'Fox Sports 1 (Premier & UFC)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=foxsports',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_fox_sports_2',
+          name: 'Fox Sports 2 (Libertadores & WWE)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/2.php?stream=foxsports',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_tudn',
+          name: 'TUDN (Champions & Liga MX)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/TUDN_logo.svg/800px-TUDN_logo.svg.png',
+          category: 'Deportes',
+          country: 'México',
+          url: 'https://tvf90.com/1.php?stream=tudn',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_dazn_laliga',
+          name: 'DAZN LaLiga (España HD)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/DAZN_Logo_Master.svg/800px-DAZN_Logo_Master.svg.png',
+          category: 'Deportes',
+          country: 'España',
+          url: 'https://tv-90.com/drm/dazn1.php',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_tyc_sports',
+          name: 'TyC Sports HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/TyC_Sports_logo_2020.svg/800px-TyC_Sports_logo_2020.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=tycsports',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_realmadrid_tv',
+          name: 'Real Madrid TV (Oficial HD)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Real_Madrid_TV_logo.svg/800px-Real_Madrid_TV_logo.svg.png',
+          category: 'Deportes',
+          country: 'España',
+          url: 'https://rmtv.akamaized.net/hls/live/2043153/rmtv-es-web/master.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'vip_gol_play',
+          name: 'GOL Play (LaLiga en Abierto)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Gol_Play_logo.svg/800px-Gol_Play_logo.svg.png',
+          category: 'Deportes',
+          country: 'España',
+          url: 'https://raw.githubusercontent.com/iptv-org/iptv/master/streams/es_golplay.m3u8',
+          isCustom: true,
+          isEmbed: false
+        }
+      ];
+
+      var existingIds = customChannels.map(function(c){ return c.id; });
+      vipChannels.forEach(function(vc){
+        if(!existingIds.includes(vc.id)){
+          customChannels.unshift(vc);
+        }
+      });
+
+      localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
+      updateCounts();
+      setFilter('custom');
+      closeM3uModal();
+      
+      // Auto-tune first VIP channel (ESPN)
+      playChannel(vipChannels[0]);
     }
 
     function loadPreset(url, name){
