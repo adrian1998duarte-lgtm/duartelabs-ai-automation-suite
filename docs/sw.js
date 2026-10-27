@@ -1,5 +1,5 @@
 // DuarteCinema Pro - High Performance PWA Service Worker
-const CACHE_NAME = 'duartecinema-v1.1.0';
+const CACHE_NAME = 'duartecinema-v1.2.0';
 const STATIC_ASSETS = [
   './cinema.html',
   './manifest.json',

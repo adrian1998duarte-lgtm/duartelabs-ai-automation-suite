@@ -822,13 +822,19 @@
         <div class="m3u-banner-info">
           <span class="icon" style="font-size: 32px;">🏆</span>
           <div>
-            <h4 style="color: #fff; font-size: 16px; font-weight: 800; font-family: 'Space Grotesk', sans-serif;">Canales Deportivos VIP (ESPN, Fox Sports, DSports, TUDN, DAZN)</h4>
-            <p style="color: #94a3b8; font-size: 13px; margin-top: 3px;">Activa con 1 clic en tu dispositivo las señales oficiales para Champions League, LaLiga, Premier y Liga MX.</p>
+            <h4 style="color: #fff; font-size: 16px; font-weight: 800; font-family: 'Space Grotesk', sans-serif;">Packs VIP Gratis en Tu Dispositivo (Fútbol, Cine, Series & Comedia)</h4>
+            <p style="color: #94a3b8; font-size: 13px; margin-top: 3px;">Activa con 1 solo clic en la memoria de tu app las mejores señales premium sin anuncios y 100% legales.</p>
           </div>
         </div>
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <button onclick="loadSportsVipPack()" class="btn-m3u-modal" style="background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); border: none; font-weight: 800; box-shadow: 0 4px 18px rgba(244,63,94,0.45); cursor: pointer;">
-            ⚡ Activar Pack Fútbol VIP (1-Clic)
+            ⚽ Pack Fútbol VIP (24 Canales)
+          </button>
+          <button onclick="loadEntertainmentTop30Pack()" class="btn-m3u-modal" style="background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); border: none; font-weight: 800; box-shadow: 0 4px 18px rgba(6,182,212,0.4); cursor: pointer;">
+            🎬 TOP 30 Cine & Comedia
+          </button>
+          <button onclick="loadAllVipPacks()" class="btn-m3u-modal" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border: none; font-weight: 800; box-shadow: 0 4px 18px rgba(16,185,129,0.4); cursor: pointer;">
+            🌟 Activar TODO el Pack Mega VIP
           </button>
           <button onclick="openM3uModal()" class="btn-m3u-modal" style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.18);">
             ⚙️ Cargar Otra Lista
@@ -840,7 +846,7 @@
       <div class="catalog-bar">
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input type="text" id="searchInput" class="search-input" placeholder="Buscar canal por nombre, país o categoría (ej. Honduras, Noticias, Azteca, Deportes)..." oninput="filterChannels()">
+          <input type="text" id="searchInput" class="search-input" placeholder="Buscar canal por nombre, país o categoría (ej. Warner, ESPN, Honduras, Comedia)..." oninput="filterChannels()">
         </div>
 
         <div class="filter-tabs">
@@ -853,6 +859,15 @@
           <button class="filter-pill" data-filter="custom" onclick="setFilter('custom', this)">
             📡 Mis Canales M3U <span class="filter-count" id="countCustom">0</span>
           </button>
+          <button class="filter-pill" data-filter="sports" onclick="setFilter('sports', this)">
+            ⚽ Deportes <span class="filter-count" id="countSports">0</span>
+          </button>
+          <button class="filter-pill" data-filter="movies_series" onclick="setFilter('movies_series', this)">
+            🎬 Cine & Series <span class="filter-count" id="countMoviesSeries">0</span>
+          </button>
+          <button class="filter-pill" data-filter="comedy" onclick="setFilter('comedy', this)">
+            🎭 Comedia <span class="filter-count" id="countComedy">0</span>
+          </button>
           <button class="filter-pill" data-filter="honduras" onclick="setFilter('honduras', this)">
             🇭🇳 Honduras <span class="filter-count" id="countHn">0</span>
           </button>
@@ -861,9 +876,6 @@
           </button>
           <button class="filter-pill" data-filter="spain" onclick="setFilter('spain', this)">
             🇪🇸 España <span class="filter-count" id="countEs">0</span>
-          </button>
-          <button class="filter-pill" data-filter="sports" onclick="setFilter('sports', this)">
-            ⚽ Deportes <span class="filter-count" id="countSports">0</span>
           </button>
           <button class="filter-pill" data-filter="news" onclick="setFilter('news', this)">
             📰 Noticias 24/7 <span class="filter-count" id="countNews">0</span>
@@ -901,19 +913,55 @@
 
       <!-- Tab 0: Presets 1-Clic -->
       <div id="tabContentPresets">
-        <div style="background: linear-gradient(135deg, rgba(244,63,94,0.18) 0%, rgba(139,92,246,0.2) 100%); border: 1.5px solid rgba(244,63,94,0.55); border-radius: 14px; padding: 14px; margin-bottom: 16px; box-shadow: 0 4px 20px rgba(244,63,94,0.25);">
+        <!-- Mega Pack Ultra Card -->
+        <div style="background: linear-gradient(135deg, rgba(16,185,129,0.22) 0%, rgba(6,182,212,0.22) 100%); border: 1.5px solid rgba(16,185,129,0.65); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; box-shadow: 0 4px 20px rgba(16,185,129,0.25);">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <div style="font-weight: 800; color: #fff; font-size: 14.5px; display: flex; align-items: center; gap: 8px;">
-              <span>🏆</span> Pack Canales Deportivos VIP
+            <div style="font-weight: 800; color: #fff; font-size: 15px; display: flex; align-items: center; gap: 8px;">
+              <span>🌟</span> Mega Pack Ultra VIP (Deportes + Cine + Series + Comedia)
             </div>
-            <span style="font-size: 10.5px; font-weight: 800; background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); color: #fff; padding: 3px 8px; border-radius: 999px;">PREMIUM</span>
+            <span style="font-size: 10px; font-weight: 800; background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%); color: #fff; padding: 3px 8px; border-radius: 999px;">TODO EN 1</span>
           </div>
           <p style="font-size: 12px; color: #cbd5e1; margin-bottom: 10px; line-height: 1.4;">
-            ESPN 1, 2, 3, Deportes, DSports, Fox Sports, TUDN y DAZN LaLiga listos en tu memoria.
+            Instala con 1 solo toque más de 54 canales exclusivos (todos los ESPN, Fox Sports, DSports, DAZN, Warner, TNT, HBO, Sony, Universal, Distrito Comedia, Las Estrellas y más).
           </p>
-          <button onclick="loadSportsVipPack()" class="btn-m3u-modal" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); color: #fff; font-weight: 800; border: none; padding: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(244,63,94,0.4);">
-            ⚡ Activar Pack Deportes VIP Ahora (1-Clic)
+          <button onclick="loadAllVipPacks()" class="btn-m3u-modal" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #fff; font-weight: 800; border: none; padding: 10px; cursor: pointer; box-shadow: 0 4px 15px rgba(16,185,129,0.4);">
+            🌟 Activar Mega Pack Completo Ultra (1-Clic)
           </button>
+        </div>
+
+        <!-- 2 Side-by-side VIP Packs -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 12px; margin-bottom: 16px;">
+          <!-- Card Deportes -->
+          <div style="background: linear-gradient(135deg, rgba(244,63,94,0.18) 0%, rgba(139,92,246,0.2) 100%); border: 1.5px solid rgba(244,63,94,0.55); border-radius: 14px; padding: 14px; box-shadow: 0 4px 20px rgba(244,63,94,0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <div style="font-weight: 800; color: #fff; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                <span>⚽</span> Canales Deportivos VIP
+              </div>
+              <span style="font-size: 10px; font-weight: 800; background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); color: #fff; padding: 2px 7px; border-radius: 999px;">24 CANALES</span>
+            </div>
+            <p style="font-size: 11.5px; color: #cbd5e1; margin-bottom: 10px; line-height: 1.4;">
+              DSports 1-2, ESPN 1-4, Fox Sports 1-3, TNT Sports, Win Sports +, TUDN, DAZN y Movistar.
+            </p>
+            <button onclick="loadSportsVipPack()" class="btn-m3u-modal" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #f43f5e 0%, #8b5cf6 100%); color: #fff; font-weight: 800; border: none; padding: 9px; cursor: pointer; box-shadow: 0 4px 15px rgba(244,63,94,0.4);">
+              ⚡ Activar Fútbol VIP (1-Clic)
+            </button>
+          </div>
+
+          <!-- Card Cine & Comedia -->
+          <div style="background: linear-gradient(135deg, rgba(6,182,212,0.18) 0%, rgba(59,130,246,0.2) 100%); border: 1.5px solid rgba(6,182,212,0.55); border-radius: 14px; padding: 14px; box-shadow: 0 4px 20px rgba(6,182,212,0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+              <div style="font-weight: 800; color: #fff; font-size: 14px; display: flex; align-items: center; gap: 8px;">
+                <span>🎬</span> TOP 30 Cine, Series & Comedia
+              </div>
+              <span style="font-size: 10px; font-weight: 800; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); color: #fff; padding: 2px 7px; border-radius: 999px;">30 CANALES</span>
+            </div>
+            <p style="font-size: 11.5px; color: #cbd5e1; margin-bottom: 10px; line-height: 1.4;">
+              Warner, TNT, Star Channel, Space, Universal, Sony, Paramount, HBO, Distrito Comedia, Las Estrellas, Cartoon y más.
+            </p>
+            <button onclick="loadEntertainmentTop30Pack()" class="btn-m3u-modal" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%); color: #fff; font-weight: 800; border: none; padding: 9px; cursor: pointer; box-shadow: 0 4px 15px rgba(6,182,212,0.4);">
+              🎬 Activar TOP 30 Cine & Comedia (1-Clic)
+            </button>
+          </div>
         </div>
 
         <p style="font-size: 13px; color: #94a3b8; margin-bottom: 14px;">Otras listas globales gratuitas:</p>
@@ -1165,6 +1213,19 @@
       document.getElementById('countMx').textContent = all.filter(function(c){ return c.country === 'México'; }).length;
       document.getElementById('countEs').textContent = all.filter(function(c){ return c.country === 'España'; }).length;
       document.getElementById('countSports').textContent = all.filter(function(c){ return (c.category||'').toLowerCase().includes('deport') || (c.category||'').toLowerCase().includes('sport'); }).length;
+      
+      var elMovies = document.getElementById('countMoviesSeries');
+      if(elMovies) elMovies.textContent = all.filter(function(c){ 
+        var cat = (c.category||'').toLowerCase(); 
+        return cat.includes('cine') || cat.includes('series') || cat.includes('movie'); 
+      }).length;
+      
+      var elComedy = document.getElementById('countComedy');
+      if(elComedy) elComedy.textContent = all.filter(function(c){ 
+        var cat = (c.category||'').toLowerCase(); 
+        return cat.includes('comedia') || cat.includes('comedy'); 
+      }).length;
+
       document.getElementById('countNews').textContent = all.filter(function(c){ return (c.category||'').toLowerCase().includes('notic') || (c.category||'').toLowerCase().includes('news'); }).length;
       document.getElementById('countKids').textContent = all.filter(function(c){ return (c.category||'').toLowerCase().includes('niñ') || (c.category||'').toLowerCase().includes('kid') || (c.category||'').toLowerCase().includes('anim'); }).length;
     }
@@ -1172,7 +1233,12 @@
     function setFilter(filter, btn){
       currentFilter = filter;
       document.querySelectorAll('.filter-pill').forEach(function(p){ p.classList.remove('active'); });
-      if(btn) btn.classList.add('active');
+      if(btn) {
+        btn.classList.add('active');
+      } else {
+        var activeBtn = document.querySelector('.filter-pill[data-filter="' + filter + '"]');
+        if(activeBtn) activeBtn.classList.add('active');
+      }
       renderChannels();
     }
 
@@ -1200,11 +1266,19 @@
         } else if(currentFilter === 'sports'){
           var cat = (c.category || '').toLowerCase();
           if(!cat.includes('deport') && !cat.includes('sport')) return false;
+        } else if(currentFilter === 'movies_series'){
+          var cat = (c.category || '').toLowerCase();
+          if(!cat.includes('cine') && !cat.includes('series') && !cat.includes('movie')) return false;
+        } else if(currentFilter === 'comedy'){
+          var cat = (c.category || '').toLowerCase();
+          if(!cat.includes('comedia') && !cat.includes('comedy')) return false;
         } else if(currentFilter === 'news'){
           var cat = (c.category || '').toLowerCase();
           if(!cat.includes('notic') && !cat.includes('news')) return false;
         } else if(currentFilter === 'kids'){
           var cat = (c.category || '').toLowerCase();
+          if(!cat.includes('niñ') && !cat.includes('kid') && !cat.includes('anim')) return false;
+        }
           if(!cat.includes('niñ') && !cat.includes('kid') && !cat.includes('anim')) return false;
         }
 
@@ -1525,8 +1599,8 @@
       if(activeContent) activeContent.style.display = 'block';
     }
 
-    function loadSportsVipPack(){
-      var vipChannels = [
+    function getSportsVipChannels(){
+      return [
         {
           id: 'vip_dsports',
           name: 'DSports HD (DirecTV Sports - LaLiga)',
@@ -1588,7 +1662,37 @@
           isEmbed: true
         },
         {
-          id: 'vip_fox_sports',
+          id: 'vip_espn_4',
+          name: 'ESPN 4 HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=espn4',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_espn_premium',
+          name: 'ESPN Premium (Fútbol Argentino)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Argentina',
+          url: 'https://tvf90.com/1.php?stream=espnpremium',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_espn_extra',
+          name: 'ESPN Extra',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=espnextra',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_fox_sports_1',
           name: 'Fox Sports 1 (Premier & UFC)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
           category: 'Deportes',
@@ -1603,13 +1707,63 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://tvf90.com/2.php?stream=foxsports',
+          url: 'https://tvf90.com/1.php?stream=foxsports2',
           isCustom: true,
           isEmbed: true
         },
         {
-          id: 'vip_tudn',
-          name: 'TUDN (Champions & Liga MX)',
+          id: 'vip_fox_sports_3',
+          name: 'Fox Sports 3 (F1 & Motor)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=foxsports3',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_fox_sports_premium',
+          name: 'Fox Sports Premium (Fútbol Argentino)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
+          category: 'Deportes',
+          country: 'Argentina',
+          url: 'https://tvf90.com/1.php?stream=foxsportspremium',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_tnt_sports',
+          name: 'TNT Sports HD (Fútbol Argentino)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/TNT_Sports_2023.svg/800px-TNT_Sports_2023.svg.png',
+          category: 'Deportes',
+          country: 'Argentina',
+          url: 'https://tvf90.com/1.php?stream=tntsports',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_win_sports_plus',
+          name: 'Win Sports + HD (Fútbol Colombiano)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Win_Sports%2B_logo.png/640px-Win_Sports%2B_logo.png',
+          category: 'Deportes',
+          country: 'Colombia',
+          url: 'https://tvf90.com/1.php?stream=winsports2',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_win_sports',
+          name: 'Win Sports Básica',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Win_Sports_logo.png/640px-Win_Sports_logo.png',
+          category: 'Deportes',
+          country: 'Colombia',
+          url: 'https://tvf90.com/1.php?stream=winsports',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_tudn_mx',
+          name: 'TUDN México (Liga MX & Concacaf)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/TUDN_logo.svg/800px-TUDN_logo.svg.png',
           category: 'Deportes',
           country: 'México',
@@ -1618,12 +1772,52 @@
           isEmbed: true
         },
         {
+          id: 'vip_tudn_usa',
+          name: 'TUDN USA (Champions & Concacaf)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e0/TUDN_logo.svg/800px-TUDN_logo.svg.png',
+          category: 'Deportes',
+          country: 'Estados Unidos',
+          url: 'https://tvf90.com/1.php?stream=tudn_usa',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_dazn_laliga',
+          name: 'DAZN LaLiga (LaLiga EA Sports)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/DAZN_Logo.svg/800px-DAZN_Logo.svg.png',
+          category: 'Deportes',
+          country: 'España',
+          url: 'https://tvf90.com/1.php?stream=daznlaliga',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_movistar_laliga',
+          name: 'Movistar LaLiga TV (España)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Movistar_Plus%2B_logo.svg/800px-Movistar_Plus%2B_logo.svg.png',
+          category: 'Deportes',
+          country: 'España',
+          url: 'https://tvf90.com/1.php?stream=movistarlaligatv',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
           id: 'vip_tyc_sports',
           name: 'TyC Sports HD (Fútbol Argentino)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/TyC_Sports_logo_2020.svg/800px-TyC_Sports_logo_2020.svg.png',
           category: 'Deportes',
-          country: 'Internacional',
+          country: 'Argentina',
           url: 'https://tvf90.com/1.php?stream=tycsports',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_claro_sports',
+          name: 'Claro Sports HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/87/Claro_Sports_logo.svg/800px-Claro_Sports_logo.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=clarosports',
           isCustom: true,
           isEmbed: true
         },
@@ -1648,18 +1842,359 @@
           isEmbed: false
         }
       ];
+    }
 
+    function getEntertainmentTop30Channels(){
+      return [
+        {
+          id: 'ent_warner',
+          name: 'Warner Channel HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/Warner_Channel_logo_2023.svg/800px-Warner_Channel_logo_2023.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=warnerchannel',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_tnt_series',
+          name: 'TNT Series HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/TNT_Series_logo_2016.svg/800px-TNT_Series_logo_2016.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=tntseries',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_star_channel',
+          name: 'Star Channel HD (Antiguo FOX)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Star_Channel_2021.svg/800px-Star_Channel_2021.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=star_channel',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_cinemax',
+          name: 'Cinemax Latino HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/Cinemax_logo_2011.svg/800px-Cinemax_logo_2011.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=cinemaxlatam',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_space',
+          name: 'Space HD (Acción & Suspense)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Canal_Space_2020.svg/800px-Canal_Space_2020.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=space',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_universal',
+          name: 'Universal TV HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Universal_TV_logo_2018.svg/800px-Universal_TV_logo_2018.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=universal',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_sony',
+          name: 'Sony Channel HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Sony_Channel_logo_2019.svg/800px-Sony_Channel_logo_2019.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=sony',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_paramount',
+          name: 'Paramount Network HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Paramount_Network_2020.svg/800px-Paramount_Network_2020.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=paramount',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_golden',
+          name: 'Golden HD (Éxitos de Cine)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Canal_Golden_logo.png/640px-Canal_Golden_logo.png',
+          category: 'Cine & Series',
+          country: 'México',
+          url: 'https://tvf90.com/1.php?stream=golden',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_cinecanal',
+          name: 'Cinecanal HD (Hollywood)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Cinecanal_logo_2019.svg/800px-Cinecanal_logo_2019.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=cinecanal',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_hbo',
+          name: 'HBO HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HBO_logo.svg/800px-HBO_logo.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=hbo',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_hbo2',
+          name: 'HBO 2 HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HBO_logo.svg/800px-HBO_logo.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=hbo2',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_hbo_xtreme',
+          name: 'HBO Xtreme HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/HBO_logo.svg/800px-HBO_logo.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=hboxtreme',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_distrito_comedia',
+          name: 'Distrito Comedia HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Distrito_Comedia_logo_2018.png/640px-Distrito_Comedia_logo_2018.png',
+          category: 'Comedia',
+          country: 'México',
+          url: 'https://tvf90.com/1.php?stream=distritocomedia',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_comedy_central',
+          name: 'Comedy Central HD (Latino)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Comedy_Central_2018.svg/800px-Comedy_Central_2018.svg.png',
+          category: 'Comedia',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=comedycentral',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_las_estrellas',
+          name: 'Las Estrellas HD (Telenovelas & Shows)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Las_Estrellas_2016.svg/800px-Las_Estrellas_2016.svg.png',
+          category: 'Comedia',
+          country: 'México',
+          url: 'https://tvf90.com/1.php?stream=lasestrellas',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_tnt_novelas',
+          name: 'TNT Novelas HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/TNT_Novelas_logo.svg/800px-TNT_Novelas_logo.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=tntnovelas',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_depelicula',
+          name: 'De Película HD (Cine Mexicano Clásico)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/De_Pel%C3%ADcula_logo.png/640px-De_Pel%C3%ADcula_logo.png',
+          category: 'Cine & Series',
+          country: 'México',
+          url: 'https://tvf90.com/1.php?stream=depelicula',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_tcm',
+          name: 'TCM (Turner Classic Movies)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Turner_Classic_Movies_logo_2021.svg/800px-Turner_Classic_Movies_logo_2021.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=tcm',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_cartoon_network',
+          name: 'Cartoon Network HD (Latino)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/80/Cartoon_Network_2010_logo.svg/800px-Cartoon_Network_2010_logo.svg.png',
+          category: 'Comedia',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=cartoonnetwork',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_discovery',
+          name: 'Discovery Channel HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Discovery_Channel_2019.svg/800px-Discovery_Channel_2019.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=discoverychannel',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_history',
+          name: 'History Channel HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/History_Logo.svg/800px-History_Logo.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=historychannel',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_animal_planet',
+          name: 'Animal Planet HD',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/20/Animal_Planet_2018.svg/800px-Animal_Planet_2018.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=animalplanet',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_tlc',
+          name: 'TLC Discovery HD (Estilo de Vida & Realities)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/TLC_2006.svg/800px-TLC_2006.svg.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://tvf90.com/1.php?stream=tlc',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'ent_pluto_estelar',
+          name: 'Pluto TV Cine Estelar (24/7 HD)',
+          logo: 'https://images.pluto.tv/channels/5d8d164d92e97a5e107638d2/colorLogoPNG.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://jmp2.uk/plu-5d8d164d92e97a5e107638d2.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_pluto_accion',
+          name: 'Pluto TV Cine Acción (24/7 HD)',
+          logo: 'https://images.pluto.tv/channels/5e972a21ad709d00074195ba/colorLogoPNG.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://jmp2.uk/plu-5e972a21ad709d00074195ba.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_pluto_comedia',
+          name: 'Pluto TV Comedia Latino (24/7 HD)',
+          logo: 'https://images.pluto.tv/channels/5ffcc21a432945000762d06b/colorLogoPNG.png',
+          category: 'Comedia',
+          country: 'Latinoamérica',
+          url: 'https://jmp2.uk/plu-5ffcc21a432945000762d06b.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_pluto_series',
+          name: 'Pluto TV Series Éxito (24/7 HD)',
+          logo: 'https://images.pluto.tv/channels/5dcde1317578340009b751d0/colorLogoPNG.png',
+          category: 'Cine & Series',
+          country: 'Latinoamérica',
+          url: 'https://jmp2.uk/plu-5dcde1317578340009b751d0.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_bob_esponja',
+          name: 'Bob Esponja 24/7 (Canal Oficial)',
+          logo: 'https://images.pluto.tv/channels/6254598f5083f800076d8563/colorLogoPNG_1781042617821.png',
+          category: 'Comedia',
+          country: 'Latinoamérica',
+          url: 'https://jmp2.uk/plu-6254598f5083f800076d8563.m3u8',
+          isCustom: true,
+          isEmbed: false
+        },
+        {
+          id: 'ent_avatar',
+          name: 'Avatar: La Leyenda de Aang 24/7',
+          logo: 'https://images.pluto.tv/channels/6759ee82bd523200083b4f0f/colorLogoPNG.png',
+          category: 'Comedia',
+          country: 'Latinoamérica',
+          url: 'https://jmp2.uk/plu-6759ee82bd523200083b4f0f.m3u8',
+          isCustom: true,
+          isEmbed: false
+        }
+      ];
+    }
+
+    function loadSportsVipPack(){
+      var vipChannels = getSportsVipChannels();
       // Clean existing VIP channels from custom list and prepend refreshed ones
       customChannels = customChannels.filter(function(c){ return !c.id.startsWith('vip_'); });
       customChannels = vipChannels.concat(customChannels);
 
       localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
       updateCounts();
-      setFilter('custom');
+      setFilter('sports');
       closeM3uModal();
       
       // Auto-tune first VIP channel (DSports HD)
       playChannel(vipChannels[0]);
+    }
+
+    function loadEntertainmentTop30Pack(){
+      var entChannels = getEntertainmentTop30Channels();
+      // Clean existing entertainment channels from custom list and prepend refreshed ones
+      customChannels = customChannels.filter(function(c){ return !c.id.startsWith('ent_'); });
+      customChannels = entChannels.concat(customChannels);
+
+      localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
+      updateCounts();
+      setFilter('movies_series');
+      closeM3uModal();
+
+      // Auto-tune first entertainment channel (Warner Channel HD)
+      playChannel(entChannels[0]);
+    }
+
+    function loadAllVipPacks(){
+      var sports = getSportsVipChannels();
+      var ent = getEntertainmentTop30Channels();
+      var combined = sports.concat(ent);
+
+      // Clean existing VIP and Entertainment channels
+      customChannels = customChannels.filter(function(c){ return !c.id.startsWith('vip_') && !c.id.startsWith('ent_'); });
+      customChannels = combined.concat(customChannels);
+
+      localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
+      updateCounts();
+      setFilter('all');
+      closeM3uModal();
+
+      // Auto-tune first channel
+      playChannel(sports[0]);
     }
 
     function loadPreset(url, name){
