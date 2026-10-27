@@ -721,6 +721,9 @@
         </div>
 
         <div class="player-controls">
+          <button class="ctrl-btn" id="btnPopoutStream" onclick="openCurrentStreamInNewTab()" style="display:none; color: #38bdf8; border-color: rgba(6,182,212,0.5); background: rgba(6,182,212,0.12);" title="Abrir transmisión directa en nueva pestaña (útil si tu bloqueador Brave / AdBlock impide cargar el reproductor)">
+            ↗ <span>Abrir Directo</span>
+          </button>
           <button class="ctrl-btn" id="btnToggleFav" onclick="toggleCurrentFavorite()" title="Guardar en Favoritos">
             ⭐ <span id="favBtnLabel">Favorito</span>
           </button>
@@ -1300,6 +1303,8 @@
 
       // Check if channel is an embed or web stream player (e.g. tv-90.com, tvf90.com, etc.)
       var isEmbed = c.isEmbed || (!streamUrl.includes('.m3u8') && !streamUrl.includes('.ts') && (streamUrl.includes('tv-90.com') || streamUrl.includes('tvf90.com') || streamUrl.includes('.php') || streamUrl.includes('embed')));
+      var popBtn = document.getElementById('btnPopoutStream');
+      
       if(isEmbed){
         if(hls){ hls.destroy(); hls = null; }
         video.pause();
@@ -1308,8 +1313,14 @@
           iframe.style.display = 'block';
           iframe.src = streamUrl;
         }
+        if(popBtn){
+          popBtn.style.display = 'inline-flex';
+          popBtn.setAttribute('data-url', streamUrl);
+        }
         return;
       }
+
+      if(popBtn) popBtn.style.display = 'none';
 
       if(Hls.isSupported()){
         hls = new Hls({
@@ -1517,48 +1528,8 @@
     function loadSportsVipPack(){
       var vipChannels = [
         {
-          id: 'vip_espn_1',
-          name: 'ESPN (Señal Principal)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/canal.php?stream=espndeportes',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_espn_2',
-          name: 'ESPN 2 (Premier & Champions)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/2.php?stream=espndeportes',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_espn_3',
-          name: 'ESPN 3 (Serie A & F1)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/3.php?stream=espndeportes',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
-          id: 'vip_espn_deportes',
-          name: 'ESPN Deportes USA (LaLiga)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
-          category: 'Deportes',
-          country: 'Internacional',
-          url: 'https://tvf90.com/canal.php?stream=espndeportes',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
           id: 'vip_dsports',
-          name: 'DSports HD (DirecTV Sports)',
+          name: 'DSports HD (DirecTV Sports - LaLiga)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
           category: 'Deportes',
           country: 'Internacional',
@@ -1572,7 +1543,7 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://tvf90.com/1.php?stream=dsports',
+          url: 'https://tv-90.com/drm/dsports2.php',
           isCustom: true,
           isEmbed: true
         },
@@ -1582,7 +1553,37 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://tvf90.com/plus1.php?stream=dsports_eventos',
+          url: 'https://tv-90.com/drm/dsportsplus.php',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_espn_1',
+          name: 'ESPN 1 HD (Champions & Premier)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=espn',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_espn_2',
+          name: 'ESPN 2 HD (Premier & Serie A)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=espn2',
+          isCustom: true,
+          isEmbed: true
+        },
+        {
+          id: 'vip_espn_3',
+          name: 'ESPN 3 HD (Bundesliga & F1)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Internacional',
+          url: 'https://tvf90.com/1.php?stream=espn3',
           isCustom: true,
           isEmbed: true
         },
@@ -1617,18 +1618,8 @@
           isEmbed: true
         },
         {
-          id: 'vip_dazn_laliga',
-          name: 'DAZN LaLiga (España HD)',
-          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/DAZN_Logo_Master.svg/800px-DAZN_Logo_Master.svg.png',
-          category: 'Deportes',
-          country: 'España',
-          url: 'https://tv-90.com/drm/dazn1.php',
-          isCustom: true,
-          isEmbed: true
-        },
-        {
           id: 'vip_tyc_sports',
-          name: 'TyC Sports HD',
+          name: 'TyC Sports HD (Fútbol Argentino)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/TyC_Sports_logo_2020.svg/800px-TyC_Sports_logo_2020.svg.png',
           category: 'Deportes',
           country: 'Internacional',
@@ -1638,7 +1629,7 @@
         },
         {
           id: 'vip_realmadrid_tv',
-          name: 'Real Madrid TV (Oficial HD)',
+          name: 'Real Madrid TV (Oficial HD 24/7)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Real_Madrid_TV_logo.svg/800px-Real_Madrid_TV_logo.svg.png',
           category: 'Deportes',
           country: 'España',
@@ -1658,19 +1649,16 @@
         }
       ];
 
-      var existingIds = customChannels.map(function(c){ return c.id; });
-      vipChannels.forEach(function(vc){
-        if(!existingIds.includes(vc.id)){
-          customChannels.unshift(vc);
-        }
-      });
+      // Clean existing VIP channels from custom list and prepend refreshed ones
+      customChannels = customChannels.filter(function(c){ return !c.id.startsWith('vip_'); });
+      customChannels = vipChannels.concat(customChannels);
 
       localStorage.setItem('duarte_tv_custom', JSON.stringify(customChannels));
       updateCounts();
       setFilter('custom');
       closeM3uModal();
       
-      // Auto-tune first VIP channel (ESPN)
+      // Auto-tune first VIP channel (DSports HD)
       playChannel(vipChannels[0]);
     }
 
@@ -2168,9 +2156,23 @@
       iframe.style.display = 'block';
       iframe.src = targetUrl;
 
+      var popBtn = document.getElementById('btnPopoutStream');
+      if(popBtn){
+        popBtn.style.display = 'inline-flex';
+        popBtn.setAttribute('data-url', targetUrl);
+      }
+
       // Scroll to player smoothly
       var stage = document.getElementById('playerStage');
       if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function openCurrentStreamInNewTab(){
+      var popBtn = document.getElementById('btnPopoutStream');
+      var url = popBtn ? popBtn.getAttribute('data-url') : null;
+      if(url){
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
     }
 var currentMatchData = null;
     var matchLoadTimeout = null;
