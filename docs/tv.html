@@ -20,9 +20,9 @@
   <link rel="preconnect" href="https://otte.live.fly.ww.aiv-cdn.net" crossorigin>
   <link rel="preconnect" href="https://a49live-pv-ta-amazon.akamaized.net" crossorigin>
   <link rel="preconnect" href="https://a194live-pv-ta-amazon.akamaized.net" crossorigin>
-  <link rel="preconnect" href="https://m6foot.click" crossorigin>
-  <link rel="preconnect" href="https://streamxhd.com" crossorigin>
-  <link rel="preconnect" href="https://zonatv.sbs" crossorigin>
+  <link rel="preconnect" href="https://streamxhd.sbs" crossorigin>
+  <link rel="preconnect" href="https://streamtp99a.sbs" crossorigin>
+  <link rel="preconnect" href="https://tvf90.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
   
   <!-- HLS.js & Shaka Player (DASH + ClearKey DRM) for Ultra-Fast Live Streaming -->
@@ -741,8 +741,8 @@
           <button class="ctrl-btn" onclick="toggleFullscreen()" title="Pantalla Completa">
             ⛶ <span>Pantalla Completa</span>
           </button>
-          <button class="ctrl-btn" onclick="retryStream()" title="Reconectar señal">
-            ⚡ <span>Recargar</span>
+          <button class="ctrl-btn" id="btnReloadStream" onclick="retryStream()" title="Reconectar señal">
+            ⚡ <span id="reloadBtnLabel">Recargar</span>
           </button>
           <button class="ctrl-btn" onclick="playRandomChannel()" title="Cambiar a otro canal">
             🔀 <span>Zapping</span>
@@ -1189,6 +1189,8 @@
     var currentFilter = 'all';
     var currentChannel = null;
     var currentServerIdx = 0;
+    var lastPlayedMode = 'channel'; // 'channel' | 'match'
+    var currentMatchState = null;   // { title, serverName, url, mIdx, sIdx }
     var hls = null;
     var shakaPlayer = null;
     var failoverTimer = null;
@@ -1197,9 +1199,20 @@
     // Sanitize defaultChannels: remove HTTP-only (Mixed Content blocked) & broken Pluto links, and upgrade key channels to HTTPS/DASH
     function sanitizeDefaultChannels(){
       var upgrades = {
-        'ch_18': { url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8' },
+        'ch_18': {
+          url: 'https://streamxhd.sbs/live1.php?stream=deportestvc',
+          isEmbed: true,
+          name: 'Deportes TVC Honduras HD (Liga Nacional & Selección)',
+          category: 'Deportes',
+          country: 'Honduras',
+          servers: [
+            { label: '⚡ Señal 1 (Deportes TVC HD)', url: 'https://streamxhd.sbs/live1.php?stream=deportestvc', isEmbed: true },
+            { label: '🛰️ Señal 2 (Concacaf / Disney+ 5)', url: 'https://streamxhd.sbs/live1.php?stream=disney5', isEmbed: true },
+            { label: '🛰️ Señal 3 (ESPN Norte / MX HD)', url: 'https://streamxhd.sbs/live1.php?stream=espnmx', isEmbed: true }
+          ]
+        },
         'ch_44': { url: 'https://de9yx47crxs6l.cloudfront.net/playlist.m3u8', name: 'Sony One Hits Acción HD' },
-        'ch_46': { url: 'https://m6foot.click/player/3/108', isEmbed: true, name: 'Azteca 7 HD' },
+        'ch_46': { url: 'https://zonatv.sbs/canales/azteca7/', isEmbed: true, name: 'Azteca 7 HD' },
         'ch_47': { url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8' },
         'ch_49': { url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8', name: 'Azteca Uno HD' },
         'ch_53': { url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/5wmhxwdb4l/out/v1/d7b375eb0f1c462f9090428cf2a1e132/cenc.mpd', drm: { '42095c4a98de2d937e8dd9d59a0da424': '8a4f2ab708e8af3daf9e5bf071f98d05' }, name: 'Bandamax HD' },
@@ -1472,9 +1485,10 @@
       }
     }
 
-    function playChannel(c, serverIdx){
+    function playChannel(c, serverIdx, isReload){
       if(!c) return;
       currentChannel = c;
+      lastPlayedMode = 'channel';
       currentServerIdx = typeof serverIdx === 'number' ? serverIdx : 0;
 
       var servers = (c.servers && c.servers.length > 0) ? c.servers : [{
@@ -1527,21 +1541,33 @@
       var streamUrl = activeSource.url || c.url;
       var drmKeys = activeSource.drm || (currentServerIdx === 0 ? c.drm : null);
       var isDash = streamUrl.includes('.mpd') || !!drmKeys;
-      var isEmbed = !isDash && (activeSource.isEmbed || (!streamUrl.includes('.m3u8') && !streamUrl.includes('.ts') && (streamUrl.includes('tv-90.com') || streamUrl.includes('tvf90.com') || streamUrl.includes('m6foot') || streamUrl.includes('streamxhd') || streamUrl.includes('streamtp') || streamUrl.includes('zonatv.sbs') || streamUrl.includes('dlive.sx') || streamUrl.includes('welivesportz') || streamUrl.includes('.php') || streamUrl.includes('embed'))));
+      var isEmbed = !isDash && (activeSource.isEmbed || (!streamUrl.includes('.m3u8') && !streamUrl.includes('.ts') && (streamUrl.includes('tv-90.com') || streamUrl.includes('tvf90.com') || streamUrl.includes('m6foot') || streamUrl.includes('streamxhd') || streamUrl.includes('streamtp') || streamUrl.includes('zonatv.sbs') || streamUrl.includes('dlive.sx') || streamUrl.includes('thedaddy.pk') || streamUrl.includes('welivesportz') || streamUrl.includes('.php') || streamUrl.includes('embed'))));
       var popBtn = document.getElementById('btnPopoutStream');
 
-      // 1. WEB EMBED ENGINE (Iframe with Multi-Server selector)
+      // 1. WEB EMBED ENGINE (Iframe with Multi-Server selector & Async Reload)
       if(isEmbed){
         video.style.display = 'none';
+        var finalEmbedUrl = streamUrl;
+        if(isReload){
+          finalEmbedUrl = streamUrl + (streamUrl.includes('?') ? '&' : '?') + '_t=' + Date.now();
+        }
         if(iframe){
           iframe.style.display = 'block';
-          iframe.src = streamUrl;
+          if(isReload){
+            setStreamHealth('⏳ Reconectando ' + (activeSource.label || 'Señal') + '...', 'loading');
+            setTimeout(function(){
+              iframe.src = finalEmbedUrl;
+              setStreamHealth('🟢 ' + (activeSource.label || 'Señal Activa'), 'ok');
+            }, 90);
+          } else {
+            iframe.src = finalEmbedUrl;
+            setStreamHealth('🟢 ' + (activeSource.label || 'Señal Activa'), 'ok');
+          }
         }
         if(popBtn){
           popBtn.style.display = 'inline-flex';
           popBtn.setAttribute('data-url', streamUrl);
         }
-        setStreamHealth('🟢 ' + (activeSource.label || 'Señal Activa'), 'ok');
         return;
       }
 
@@ -1690,8 +1716,36 @@
     }
 
     function retryStream(){
+      var btn = document.getElementById('btnReloadStream');
+      var lbl = document.getElementById('reloadBtnLabel');
+      if(btn && lbl){
+        lbl.textContent = 'Recargando...';
+        btn.style.borderColor = '#38bdf8';
+        btn.style.color = '#38bdf8';
+        setTimeout(function(){
+          lbl.textContent = 'Recargar';
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }, 900);
+      }
+
+      if(lastPlayedMode === 'match' && currentMatchState){
+        playMatchOption(
+          currentMatchState.title,
+          currentMatchState.serverName,
+          currentMatchState.url,
+          currentMatchState.mIdx,
+          currentMatchState.sIdx,
+          true
+        );
+        return;
+      }
+
       if(currentChannel){
-        playChannel(currentChannel, currentServerIdx);
+        playChannel(currentChannel, currentServerIdx, true);
+      } else {
+        var all = getAllChannels();
+        if(all.length > 0) playChannel(all[0], 0, true);
       }
     }
 
@@ -1851,6 +1905,57 @@
     function getSportsVipChannels(){
       return [
         {
+          id: 'vip_olimpia_concacaf',
+          name: 'Copa Centroamericana CONCACAF HD (Olimpia vs Cartaginés / Internacional)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
+          category: 'Deportes',
+          country: 'Honduras',
+          url: 'https://streamxhd.sbs/live1.php?stream=disney5',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Olimpia En Vivo - Disney+ 5)', url: 'https://streamxhd.sbs/live1.php?stream=disney5', isEmbed: true },
+            { label: '🛰️ Señal 2 (ESPN Norte / MX HD)', url: 'https://streamxhd.sbs/live1.php?stream=espnmx', isEmbed: true },
+            { label: '🛰️ Señal 3 (Deportes TVC Honduras)', url: 'https://streamxhd.sbs/live1.php?stream=deportestvc', isEmbed: true },
+            { label: '🛰️ Señal 4 (Disney+ 4 Concacaf)', url: 'https://streamxhd.sbs/live1.php?stream=disney4', isEmbed: true },
+            { label: '🛰️ Señal 5 (FUTV Costa Rica HD)', url: 'https://streamxhd.sbs/live1.php?stream=futv', isEmbed: true },
+            { label: '🛰️ Señal 6 (ZonaTV Disney+ 5)', url: 'https://zonatv.sbs/canales/disney5.php', isEmbed: true }
+          ]
+        },
+        {
+          id: 'vip_deportes_tvc_hn',
+          name: 'Deportes TVC Honduras HD (Liga Nacional de Honduras: Olimpia, Motagua, Real España, Marathón)',
+          logo: 'https://i.imgur.com/Y1t8xkL.png',
+          category: 'Deportes',
+          country: 'Honduras',
+          url: 'https://streamxhd.sbs/live1.php?stream=deportestvc',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Deportes TVC Honduras HD)', url: 'https://streamxhd.sbs/live1.php?stream=deportestvc', isEmbed: true },
+            { label: '🛰️ Señal 2 (Concacaf / Disney+ 5)', url: 'https://streamxhd.sbs/live1.php?stream=disney5', isEmbed: true },
+            { label: '🛰️ Señal 3 (ESPN Norte / MX HD)', url: 'https://streamxhd.sbs/live1.php?stream=espnmx', isEmbed: true },
+            { label: '⚡ Señal 4 (Azteca Deportes Directo)', url: 'https://azt-oo.otteravision.com/out/v1/da53d7d388be437e92bf8f464018eb48/index.m3u8', isEmbed: false }
+          ]
+        },
+        {
+          id: 'vip_tigo_sports_ca',
+          name: 'Tigo Sports & Fútbol Centroamericano HD (Liga Nacional, Concacaf & Centroamérica)',
+          logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/3b/Tigo_Sports_2025.png/960px-Tigo_Sports_2025.png',
+          category: 'Deportes',
+          country: 'Honduras',
+          url: 'https://streamxhd.sbs/live1.php?stream=futv',
+          isCustom: true,
+          isEmbed: true,
+          servers: [
+            { label: '⚡ Señal 1 (Fútbol Centroamericano HD)', url: 'https://streamxhd.sbs/live1.php?stream=futv', isEmbed: true },
+            { label: '🛰️ Señal 2 (Deportes TVC Honduras)', url: 'https://streamxhd.sbs/live1.php?stream=deportestvc', isEmbed: true },
+            { label: '⚡ Señal 3 (TD+ Centroamérica Directo)', url: 'https://cloudvideo.servers10.com:8081/8230/index.m3u8', isEmbed: false },
+            { label: '🛰️ Señal 4 (Concacaf Disney+ 5)', url: 'https://streamxhd.sbs/live1.php?stream=disney5', isEmbed: true },
+            { label: '🛰️ Señal 5 (Concacaf Disney+ 4)', url: 'https://streamxhd.sbs/live1.php?stream=disney4', isEmbed: true }
+          ]
+        },
+        {
           id: 'vip_dsports',
           name: 'DSports 1 HD (DirecTV Sports - LaLiga & Sudamericana)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
@@ -1862,9 +1967,9 @@
           isEmbed: false,
           servers: [
             { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://a49live-pv-ta-amazon.akamaized.net/gru-nitro/live/clients/dash/enc/p2uelx03f8/out/v1/6394db35d71a4f48bf34300ae9ec9889/cenc.mpd', drm: { 'c432184d1ab00475aded5731162d99b7': '5f361ae2b35dcb415fe612ea7e85ed9d' }, isEmbed: false },
-            { label: '🛰️ Señal 2 (Mirror M6)', url: 'https://m6foot.click/player/3/94', isEmbed: true },
-            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=dsports', isEmbed: true },
-            { label: '🛰️ Señal 4 (GoldenTP)', url: 'https://streamtp-golden1.click/global2.php?stream=dsports', isEmbed: true }
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.sbs/live1.php?stream=dsports', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamTP HD)', url: 'https://streamtp99a.sbs/global1.php?stream=dsports', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=dsports', isEmbed: true }
           ]
         },
         {
@@ -1879,9 +1984,8 @@
           isEmbed: false,
           servers: [
             { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://a49live-pv-ta-amazon.akamaized.net/gru-nitro/live/clients/dash/enc/9bwnwl4oqk/out/v1/3fda5baf7b1b47e8b80ff18979d55b52/cenc.mpd', drm: { '5983506f3f2e0b6df98fd1856adf45b6': 'd2ae7ea26cfdc61ba0f71771539ff87f' }, isEmbed: false },
-            { label: '🛰️ Señal 2 (Mirror M6)', url: 'https://m6foot.click/player/3/96', isEmbed: true },
-            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=dsportsplus', isEmbed: true },
-            { label: '🛰️ Señal 4 (GoldenTP)', url: 'https://streamtp-golden1.click/global2.php?stream=dsportsplus', isEmbed: true }
+            { label: '🛰️ Señal 2 (StreamTP HD)', url: 'https://streamtp99a.sbs/global1.php?stream=dsportsplus', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.sbs/live1.php?stream=dsportsplus', isEmbed: true }
           ]
         },
         {
@@ -1890,13 +1994,13 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/68/DSports_logo.png/640px-DSports_logo.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/95',
+          url: 'https://streamxhd.sbs/live1.php?stream=dsports2',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/95', isEmbed: true },
-            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=dsports2', isEmbed: true },
-            { label: '🛰️ Señal 3 (GoldenTP)', url: 'https://streamtp-golden1.click/global2.php?stream=dsports2', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=dsports2', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamTP HD)', url: 'https://streamtp99a.sbs/global1.php?stream=dsports2', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=dsports2', isEmbed: true }
           ]
         },
         {
@@ -1911,9 +2015,9 @@
           isEmbed: false,
           servers: [
             { label: '⚡ Señal 1 (Directa Turbo HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/ntkdl68eob/out/v1/bd5dfb7676994383881bc6e71877d29d/cenc.mpd', drm: { 'd695093ea3e66d75a4d213a3e2cbf360': '01be3f645e89a067d2786c295f68dde4' }, isEmbed: false },
-            { label: '🛰️ Señal 2 (Mirror M6)', url: 'https://m6foot.click/player/3/68', isEmbed: true },
-            { label: '🛰️ Señal 3 (StreamX MX)', url: 'https://streamxhd.com/live1.php?stream=tudnmx', isEmbed: true },
-            { label: '🛰️ Señal 4 (DLive USA)', url: 'https://dlive.sx/stream/stream-66.php', isEmbed: true }
+            { label: '🛰️ Señal 2 (StreamX TUDN MX)', url: 'https://streamxhd.sbs/live1.php?stream=tudnmx', isEmbed: true },
+            { label: '🛰️ Señal 3 (ZonaTV TUDN)', url: 'https://zonatv.sbs/canales/tudn/tudnmx.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 TUDN)', url: 'https://tvf90.com/5.php?stream=tudn', isEmbed: true }
           ]
         },
         {
@@ -1927,9 +2031,9 @@
           isEmbed: false,
           servers: [
             { label: '⚡ Señal 1 (Directa HLS HD)', url: 'https://amg26268-amg26268c14-freelivesports-emea-10267.playouts.now.amagi.tv/ts-us-e2-n2/playlist/amg26268-sportsstudio-tycsports-freelivesportsemea/playlist.m3u8', isEmbed: false },
-            { label: '🛰️ Señal 2 (Mirror M6)', url: 'https://m6foot.click/player/3/77', isEmbed: true },
-            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=tycsports', isEmbed: true },
-            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=tycsports', isEmbed: true }
+            { label: '🛰️ Señal 2 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=tycsports', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=tycsports', isEmbed: true },
+            { label: '🛰️ Señal 4 (ZonaTV TyC)', url: 'https://zonatv.sbs/canales/tyc/', isEmbed: true }
           ]
         },
         {
@@ -1963,110 +2067,110 @@
         },
         {
           id: 'vip_espn_1',
-          name: 'ESPN 1 HD (Champions League & Premier)',
+          name: 'ESPN 1 HD (Champions League, Concacaf & Premier)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/87',
+          url: 'https://streamxhd.sbs/live1.php?stream=espn',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/87', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn', isEmbed: true },
-            { label: '🛰️ Señal 3 (WeLiveSportz)', url: 'https://welivesportz.cfd/embed/espn1col.php', isEmbed: true },
-            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=espn', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=espn', isEmbed: true },
+            { label: '🛰️ Señal 2 (ESPN Norte / MX HD)', url: 'https://streamxhd.sbs/live1.php?stream=espnmx', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamTP HD)', url: 'https://streamtp99a.sbs/global1.php?stream=espn', isEmbed: true },
+            { label: '🛰️ Señal 4 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=espn', isEmbed: true }
           ]
         },
         {
           id: 'vip_espn_2',
-          name: 'ESPN 2 HD (Premier League & Serie A)',
+          name: 'ESPN 2 HD (Premier League, Concacaf & Serie A)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/88',
+          url: 'https://streamxhd.sbs/live1.php?stream=espn2',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/88', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn2', isEmbed: true },
-            { label: '🛰️ Señal 3 (WeLiveSportz)', url: 'https://welivesportz.cfd/embed/espn2arg.php', isEmbed: true },
-            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=espn2', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=espn2', isEmbed: true },
+            { label: '🛰️ Señal 2 (TVF90 Directo HD)', url: 'https://tvf90.com/5.php?stream=espn2', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamTP HD)', url: 'https://streamtp99a.sbs/global1.php?stream=espn2', isEmbed: true },
+            { label: '🛰️ Señal 4 (ESPN 2 Norte / MX)', url: 'https://streamxhd.sbs/live1.php?stream=espn2mx', isEmbed: true }
           ]
         },
         {
           id: 'vip_espn_3',
-          name: 'ESPN 3 HD (Bundesliga, Tenis & F1)',
+          name: 'ESPN 3 HD (Bundesliga, NBA, Tenis & F1)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/89',
+          url: 'https://streamtp99a.sbs/global1.php?stream=espn3',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/89', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn3', isEmbed: true },
-            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-798.php', isEmbed: true },
-            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=espn3', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamTP 24/7 HD)', url: 'https://streamtp99a.sbs/global1.php?stream=espn3', isEmbed: true },
+            { label: '🛰️ Señal 2 (TVF90 Directo HD)', url: 'https://tvf90.com/5.php?stream=espn3', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.sbs/live1.php?stream=espn3', isEmbed: true },
+            { label: '🛰️ Señal 4 (ZonaTV ESPN 3)', url: 'https://zonatv.sbs/canales/espn3/op3.php', isEmbed: true }
           ]
         },
         {
           id: 'vip_espn_4',
-          name: 'ESPN 4 HD (Ligue 1 & Copa Libertadores)',
+          name: 'ESPN 4 HD (Ligue 1, Concacaf & Libertadores)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/90',
+          url: 'https://streamtp99a.sbs/global1.php?stream=espn4',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/90', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn4', isEmbed: true },
-            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espn4', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamTP 24/7 HD)', url: 'https://streamtp99a.sbs/global1.php?stream=espn4', isEmbed: true },
+            { label: '🛰️ Señal 2 (TVF90 Directo HD)', url: 'https://tvf90.com/5.php?stream=espn4', isEmbed: true },
+            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.sbs/live1.php?stream=espn4', isEmbed: true }
           ]
         },
         {
           id: 'vip_espn_5',
-          name: 'ESPN 5 HD (NBA, NFL & Fútbol)',
+          name: 'ESPN 5 HD (NBA, NFL & Fútbol Internacional)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/91',
+          url: 'https://streamtp99a.sbs/global1.php?stream=espn5',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/91', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn5', isEmbed: true },
-            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espn5', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamTP 24/7 HD)', url: 'https://streamtp99a.sbs/global1.php?stream=espn5', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.sbs/live1.php?stream=espn5', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=espn5', isEmbed: true }
           ]
         },
         {
           id: 'vip_espn_6',
-          name: 'ESPN 6 HD',
+          name: 'ESPN 6 HD (Eventos & Torneos)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/92',
+          url: 'https://streamtp99a.sbs/global1.php?stream=espn6',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/92', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn6', isEmbed: true },
-            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espn6', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamTP 24/7 HD)', url: 'https://streamtp99a.sbs/global1.php?stream=espn6', isEmbed: true },
+            { label: '🛰️ Señal 2 (Disney+ 6 Directo)', url: 'https://streamxhd.sbs/live1.php?stream=disney6', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=espn6', isEmbed: true }
           ]
         },
         {
           id: 'vip_espn_7',
-          name: 'ESPN 7 HD',
+          name: 'ESPN 7 HD (Multideporte 24/7)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/93',
+          url: 'https://tvf90.com/5.php?stream=espn7',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/93', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=espn7', isEmbed: true },
-            { label: '🛰️ Señal 3 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espn7', isEmbed: true }
+            { label: '⚡ Señal 1 (TVF90 24/7 HD)', url: 'https://tvf90.com/5.php?stream=espn7', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamTP HD)', url: 'https://streamtp99a.sbs/global1.php?stream=espn7', isEmbed: true },
+            { label: '🛰️ Señal 3 (Disney+ 7 Directo)', url: 'https://streamxhd.sbs/live1.php?stream=disney7', isEmbed: true }
           ]
         },
         {
@@ -2075,29 +2179,30 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/2f/ESPN_wordmark.svg/800px-ESPN_wordmark.svg.png',
           category: 'Deportes',
           country: 'Argentina',
-          url: 'https://m6foot.click/player/3/76',
+          url: 'https://streamtp99a.sbs/global1.php?stream=espnpremium',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/76', isEmbed: true },
-            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=espnpremium', isEmbed: true },
-            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-387.php', isEmbed: true },
-            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=espnpremium', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamTP 24/7 HD)', url: 'https://streamtp99a.sbs/global1.php?stream=espnpremium', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.sbs/live1.php?stream=espnpremium', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=espnpremium', isEmbed: true },
+            { label: '🛰️ Señal 4 (ZonaTV Premium)', url: 'https://zonatv.sbs/canales/espn-premium/', isEmbed: true }
           ]
         },
         {
           id: 'vip_fox_sports_1',
-          name: 'Fox Sports 1 HD (Libertadores & UFC)',
+          name: 'Fox Sports 1 HD (Concacaf, Libertadores & UFC)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/78',
+          url: 'https://streamxhd.sbs/live1.php?stream=fox1ar',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/78', isEmbed: true },
-            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=fox1ar', isEmbed: true },
-            { label: '🛰️ Señal 3 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=foxsports', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=fox1ar', isEmbed: true },
+            { label: '🛰️ Señal 2 (Fox Sports MX HD)', url: 'https://streamxhd.sbs/live1.php?stream=foxsports3mx', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=foxsports', isEmbed: true },
+            { label: '🛰️ Señal 4 (ZonaTV Fox Sports)', url: 'https://zonatv.sbs/canales/fox-sports/', isEmbed: true }
           ]
         },
         {
@@ -2106,13 +2211,13 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/79',
+          url: 'https://streamxhd.sbs/live1.php?stream=fox2ar',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/79', isEmbed: true },
-            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=fox2ar', isEmbed: true },
-            { label: '🛰️ Señal 3 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=foxsports2', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=fox2ar', isEmbed: true },
+            { label: '🛰️ Señal 2 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=foxsports2', isEmbed: true },
+            { label: '🛰️ Señal 3 (ZonaTV Fox 2)', url: 'https://zonatv.sbs/canales/fox-sports2/', isEmbed: true }
           ]
         },
         {
@@ -2121,13 +2226,13 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fox_Sports_logo.svg/800px-Fox_Sports_logo.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/80',
+          url: 'https://streamxhd.sbs/live1.php?stream=foxsports3mx',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/80', isEmbed: true },
-            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=fox3ar', isEmbed: true },
-            { label: '🛰️ Señal 3 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=foxsports3', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=foxsports3mx', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX Sur HD)', url: 'https://streamxhd.sbs/live1.php?stream=fox3ar', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=foxsports3', isEmbed: true }
           ]
         },
         {
@@ -2136,14 +2241,14 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/TNT_Sports_2023.svg/800px-TNT_Sports_2023.svg.png',
           category: 'Deportes',
           country: 'Argentina',
-          url: 'https://m6foot.click/player/3/75',
+          url: 'https://streamxhd.sbs/live1.php?stream=tntsports',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/75', isEmbed: true },
-            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=tntsports', isEmbed: true },
-            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-388.php', isEmbed: true },
-            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=tntsports', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=tntsports', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamTP HD)', url: 'https://streamtp99a.sbs/global1.php?stream=tntsports', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=tntsports', isEmbed: true },
+            { label: '🛰️ Señal 4 (ZonaTV TNT)', url: 'https://zonatv.sbs/canales/tnt-sports/', isEmbed: true }
           ]
         },
         {
@@ -2152,14 +2257,14 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Win_Sports%2B_logo.png/640px-Win_Sports%2B_logo.png',
           category: 'Deportes',
           country: 'Colombia',
-          url: 'https://m6foot.click/player/3/81',
+          url: 'https://streamxhd.sbs/live1.php?stream=winplus',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/81', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=winplus', isEmbed: true },
-            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-392.php', isEmbed: true },
-            { label: '🛰️ Señal 4 (TVF90 Online)', url: 'https://tvf90.com/online/canal.php?stream=winsportsplus', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX Win+ HD)', url: 'https://streamxhd.sbs/live1.php?stream=winplus', isEmbed: true },
+            { label: '🛰️ Señal 2 (StreamX Win Sports)', url: 'https://streamxhd.sbs/live1.php?stream=winsports', isEmbed: true },
+            { label: '🛰️ Señal 3 (TVF90 Directo)', url: 'https://tvf90.com/5.php?stream=winsports2', isEmbed: true },
+            { label: '🛰️ Señal 4 (ZonaTV Win+)', url: 'https://zonatv.sbs/canales/winsports/', isEmbed: true }
           ]
         },
         {
@@ -2168,13 +2273,13 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/DAZN_Logo.svg/800px-DAZN_Logo.svg.png',
           category: 'Deportes',
           country: 'España',
-          url: 'https://m6foot.click/player/3/51',
+          url: 'https://streamxhd.sbs/live1.php?stream=daznlaliga',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/51', isEmbed: true },
-            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=daznlaliga', isEmbed: true },
-            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-538.php', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=daznlaliga', isEmbed: true },
+            { label: '🛰️ Señal 2 (ZonaTV DAZN LaLiga)', url: 'https://zonatv.sbs/canales/dazn-laliga/', isEmbed: true },
+            { label: '🛰️ Señal 3 (ZonaTV Opción 2)', url: 'https://zonatv.sbs/canales/dazn-laliga/op2.php', isEmbed: true }
           ]
         },
         {
@@ -2183,28 +2288,28 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/8/8f/Movistar_Plus%2B_logo.svg/800px-Movistar_Plus%2B_logo.svg.png',
           category: 'Deportes',
           country: 'España',
-          url: 'https://m6foot.click/player/3/49',
+          url: 'https://streamxhd.sbs/live1.php?stream=mlaliga',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/49', isEmbed: true },
-            { label: '🛰️ Señal 2 (StreamX HD)', url: 'https://streamxhd.com/live1.php?stream=mlaliga', isEmbed: true },
-            { label: '🛰️ Señal 3 (DLive HD)', url: 'https://dlive.sx/stream/stream-84.php', isEmbed: true }
+            { label: '⚡ Señal 1 (StreamX 24/7 HD)', url: 'https://streamxhd.sbs/live1.php?stream=mlaliga', isEmbed: true },
+            { label: '🛰️ Señal 2 (ZonaTV LaLiga)', url: 'https://zonatv.sbs/canales/laliga/', isEmbed: true },
+            { label: '🛰️ Señal 3 (ZonaTV Opción 2)', url: 'https://zonatv.sbs/canales/laliga/op2.php', isEmbed: true }
           ]
         },
         {
           id: 'vip_dazn_f1',
-          name: 'DAZN Fórmula 1 HD (F1 & Motor 24/7)',
+          name: 'DAZN Fórmula 1 & Motor HD (24/7)',
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/33/F1.svg/800px-F1.svg.png',
           category: 'Deportes',
           country: 'España',
-          url: 'https://m6foot.click/player/3/60',
+          url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8',
           isCustom: true,
-          isEmbed: true,
+          isEmbed: false,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6 F1)', url: 'https://m6foot.click/player/3/60', isEmbed: true },
-            { label: '🛰️ Señal 2 (DLive F1)', url: 'https://dlive.sx/stream/stream-537.php', isEmbed: true },
-            { label: '⚡ Señal 3 (Red Bull TV Directa)', url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', isEmbed: false }
+            { label: '⚡ Señal 1 (Red Bull Motor Directa HD)', url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', isEmbed: false },
+            { label: '🛰️ Señal 2 (Fox Sports 3 Motor)', url: 'https://streamxhd.sbs/live1.php?stream=foxsports3mx', isEmbed: true },
+            { label: '🛰️ Señal 3 (ZonaTV DAZN 1)', url: 'https://zonatv.sbs/canales/dazn1/', isEmbed: true }
           ]
         },
         {
@@ -2213,12 +2318,13 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Gol_Play_logo.svg/800px-Gol_Play_logo.svg.png',
           category: 'Deportes',
           country: 'Internacional',
-          url: 'https://m6foot.click/player/3/74',
+          url: 'https://zonatv.sbs/canales/goltvlatino/',
           isCustom: true,
           isEmbed: true,
           servers: [
-            { label: '⚡ Señal 1 (Mirror M6)', url: 'https://m6foot.click/player/3/74', isEmbed: true },
-            { label: '🛰️ Señal 2 (GoldenTP HD)', url: 'https://streamtp-golden1.click/global1.php?stream=goltv', isEmbed: true }
+            { label: '⚡ Señal 1 (ZonaTV GolTV HD)', url: 'https://zonatv.sbs/canales/goltvlatino/', isEmbed: true },
+            { label: '🛰️ Señal 2 (GolTV Opción 2)', url: 'https://zonatv.sbs/canales/goltvlatino/op2.php', isEmbed: true },
+            { label: '🛰️ Señal 3 (Gol Perú HD)', url: 'https://zonatv.sbs/canales/golperu/', isEmbed: true }
           ]
         }
       ];
@@ -2342,12 +2448,14 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/Comedy_Central_2018.svg/800px-Comedy_Central_2018.svg.png',
           category: 'Comedia',
           country: 'Internacional',
-          url: 'https://dlive.sx/stream/stream-336.php',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/jainwiiq5g/out/v1/1094f5319566443cb6a9000810384a1a/cenc.mpd',
+          drm: { '2c73635de48c1033f60965175563af02': 'ac71c079e88f068aad80e947bac1b494' },
           isCustom: true,
-          isEmbed: true,
+          isEmbed: false,
           servers: [
-            { label: '⚡ Señal 1 (Mirror TBS HD)', url: 'https://dlive.sx/stream/stream-336.php', isEmbed: true },
-            { label: '⚡ Señal 2 (Distrito Comedia Directo)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/jainwiiq5g/out/v1/1094f5319566443cb6a9000810384a1a/cenc.mpd', drm: { '2c73635de48c1033f60965175563af02': 'ac71c079e88f068aad80e947bac1b494' }, isEmbed: false }
+            { label: '⚡ Señal 1 (Comedia Directo HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/jainwiiq5g/out/v1/1094f5319566443cb6a9000810384a1a/cenc.mpd', drm: { '2c73635de48c1033f60965175563af02': 'ac71c079e88f068aad80e947bac1b494' }, isEmbed: false },
+            { label: '⚡ Señal 2 (Telehit Humor HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/69onjpmgph/out/v1/bffe5e192607426d850350fcb751674b/cenc.mpd', drm: { '8db29d65d8db2422cfadefec929cdc46': 'b96587a4e8237bc22a186114b25179da' }, isEmbed: false },
+            { label: '🛰️ Señal 3 (Mirror TBS Int)', url: 'https://dlive.sx/stream/stream-336.php', isEmbed: true }
           ]
         },
 
@@ -2619,13 +2727,15 @@
           logo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9e/TNT_Series_logo_2016.svg/800px-TNT_Series_logo_2016.svg.png',
           category: 'Cine & Series',
           country: 'Internacional',
-          url: 'https://dlive.sx/stream/stream-303.php',
+          url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/1pyrprmguo/out/v1/e63748f718754f6ca76df9ce757b10f5/cenc.mpd',
+          drm: { 'b39fdb1efc89fa2b791bdce8428c3e09': '1941081db257b29643c95783d3a2c5cd' },
           isCustom: true,
-          isEmbed: true,
+          isEmbed: false,
           servers: [
-            { label: '⚡ Señal 1 (AMC HD)', url: 'https://dlive.sx/stream/stream-303.php', isEmbed: true },
-            { label: '🛰️ Señal 2 (TNT HD)', url: 'https://dlive.sx/stream/stream-338.php', isEmbed: true },
-            { label: '⚡ Señal 3 (Golden Premier Directo)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/1pyrprmguo/out/v1/e63748f718754f6ca76df9ce757b10f5/cenc.mpd', drm: { 'b39fdb1efc89fa2b791bdce8428c3e09': '1941081db257b29643c95783d3a2c5cd' }, isEmbed: false }
+            { label: '⚡ Señal 1 (Golden Premier Directo HD)', url: 'https://otte.live.fly.ww.aiv-cdn.net/gru-nitro/live/clients/dash/enc/1pyrprmguo/out/v1/e63748f718754f6ca76df9ce757b10f5/cenc.mpd', drm: { 'b39fdb1efc89fa2b791bdce8428c3e09': '1941081db257b29643c95783d3a2c5cd' }, isEmbed: false },
+            { label: '⚡ Señal 2 (Universal Crime Directo HD)', url: 'https://a194live-pv-ta-amazon.akamaized.net/iad-nitro/live/clients/dash/enc/xuvkx1kkfl/out/v1/6a977f46a77b4a03a1e55db484c1695a/cenc.mpd', drm: { 'cfc6790cbc2bc791b05c4f8f8126f5b5': 'b1c5b3c9a8ddc4badf5f49f8a989cf77' }, isEmbed: false },
+            { label: '🛰️ Señal 3 (Mirror AMC Int)', url: 'https://dlive.sx/stream/stream-303.php', isEmbed: true },
+            { label: '🛰️ Señal 4 (Mirror TNT Int)', url: 'https://dlive.sx/stream/stream-338.php', isEmbed: true }
           ]
         }
       ];
@@ -2979,6 +3089,74 @@
       if(liveMatchesCountEl) liveMatchesCountEl.textContent = liveCount + ' En Juego · ' + upcomingCount + ' Próximos';
     }
 
+    function normalizeMatchEmbedUrl(rawUrl){
+      if(!rawUrl) return '';
+      var decoded = rawUrl;
+      if(rawUrl.includes('?r=') || rawUrl.includes('&r=')){
+        try {
+          var u = new URL(rawUrl, window.location.origin);
+          var b = u.searchParams.get('r');
+          if(b){
+            decoded = atob(decodeURIComponent(b)).trim();
+          }
+        } catch(e){
+          try {
+            var m = rawUrl.match(/[?&]r=([^&]+)/);
+            if(m && m[1]) decoded = atob(decodeURIComponent(m[1])).trim();
+          } catch(e2){}
+        }
+      }
+      decoded = decoded
+        .replace(/https?:\/\/streamtp-golden1\.click/gi, 'https://streamtp99a.sbs')
+        .replace(/https?:\/\/streamxhd\.com/gi, 'https://streamxhd.sbs')
+        .replace(/https?:\/\/(?:www\.)?tvf90\.com\/(?:1|2|3|hd|online\/canal)\.php\?stream=/gi, 'https://tvf90.com/5.php?stream=');
+      return decoded;
+    }
+
+    function expandMatchServers(desc, rawServers){
+      var expanded = [];
+      var seenUrls = {};
+      function addSrv(name, url){
+        if(!url || seenUrls[url]) return;
+        seenUrls[url] = true;
+        expanded.push({ name: name, url: url });
+      }
+
+      var streamXSupported = {
+        disney1: 1, disney2: 1, disney3: 1, disney4: 1, disney5: 1, disney6: 1, disney7: 1,
+        espn: 1, espn2: 1, espn3: 1, espn4: 1, espn5: 1, espn6: 1, espn7: 1, espnmx: 1, espn2mx: 1, espn3mx: 1,
+        espnpremium: 1, tntsports: 1, tycsports: 1, foxsports: 1, foxsports2: 1, foxsports3: 1,
+        dsports: 1, dsports2: 1, dsportsplus: 1, tudn: 1, tudnmx: 1,
+        deportestvc: 1, futv: 1, winsports: 1, winsports2: 1, liga1max: 1, golperu: 1, vtvplus: 1
+      };
+
+      (rawServers || []).forEach(function(s){
+        var cleanUrl = normalizeMatchEmbedUrl(s.url);
+        var streamMatch = cleanUrl.match(/[?&]stream=([a-zA-Z0-9_-]+)/);
+        if(streamMatch && streamMatch[1]){
+          var code = streamMatch[1].toLowerCase();
+          if(streamXSupported[code]){
+            addSrv(s.name + ' (StreamX HD)', 'https://streamxhd.sbs/live1.php?stream=' + code);
+            addSrv(s.name + ' (Mirror 2)', 'https://streamtp99a.sbs/global1.php?stream=' + code);
+          }
+          addSrv(s.name + ' (Directo)', 'https://tvf90.com/5.php?stream=' + code);
+        } else {
+          addSrv(s.name, cleanUrl);
+        }
+      });
+
+      // Si es partido de Olimpia, Cartaginés, Honduras, Liga Nacional o Copa Centroamericana CONCACAF, inyectar respaldos verificados 24/7
+      if(/olimpia|cartagin|motagua|real espa|marath[oó]n|olancho|honduras|concacaf|centroamericana|saprissa|alajuelense|herediano|comunicaciones|municipal/i.test(desc || '')){
+        addSrv('Disney+ 5 (Concacaf HD)', 'https://streamxhd.sbs/live1.php?stream=disney5');
+        addSrv('Deportes TVC HN HD', 'https://streamxhd.sbs/live1.php?stream=deportestvc');
+        addSrv('FUTV Centroamérica HD', 'https://streamxhd.sbs/live1.php?stream=futv');
+        addSrv('ESPN Norte (Concacaf HD)', 'https://streamtp99a.sbs/global1.php?stream=espnmx');
+        addSrv('Disney+ 4 (Concacaf Alt)', 'https://streamxhd.sbs/live1.php?stream=disney4');
+      }
+
+      return expanded;
+    }
+
     function fetchLiveAgenda(){
       var container = document.getElementById('liveMatchesGrid');
 
@@ -3008,7 +3186,7 @@
             var matchDate = new Date(matchIso);
             var localTimeStr = matchDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
 
-            var servers = embeds.map(function(e){
+            var rawServers = embeds.map(function(e){
               var eAttr = e.attributes || {};
               var name = eAttr.embed_name || 'Opción';
               var iframePath = eAttr.embed_iframe || '';
@@ -3020,6 +3198,8 @@
               }
               return { name: name, url: url };
             });
+
+            var servers = expandMatchServers(desc, rawServers);
 
             return {
               id: item.id,
@@ -3102,14 +3282,7 @@
             var border = sIdx === 0 ? '1px solid rgba(244,63,94,0.55)' : '1px solid rgba(255,255,255,0.14)';
             var color = sIdx === 0 ? '#fff' : '#cbd5e1';
 
-            var directPopoutUrl = s.url;
-            if(s.url.includes('?r=') || s.url.includes('&r=')){
-              try {
-                var u = new URL(s.url);
-                var b = u.searchParams.get('r');
-                if(b) directPopoutUrl = atob(b).trim();
-              } catch(e){}
-            }
+            var directPopoutUrl = normalizeMatchEmbedUrl(s.url);
 
             html += '<div style="display: inline-flex; align-items: center; background: ' + btnBg + '; border: ' + border + '; border-radius: 8px; overflow: hidden;">' +
               '<button onclick="playMatchByIndex(' + mIdx + ', ' + sIdx + ')" style="background: none; border: none; color: ' + color + '; font-size: 11.5px; font-weight: 700; padding: 6px 9px; cursor: pointer;" title="Ver aquí en DuarteTV">' +
@@ -3135,16 +3308,25 @@
       if(!m) return;
       var s = m.servers && m.servers[sIdx];
       if(!s) return;
-      playMatchOption(m.desc, s.name, s.url, mIdx, sIdx);
+      playMatchOption(m.desc, s.name, s.url, mIdx, sIdx, false);
     }
 
-    function playMatchOption(matchTitle, serverName, streamUrl, mIdx, sIdx){
+    function playMatchOption(matchTitle, serverName, streamUrl, mIdx, sIdx, isReload){
       var video = document.getElementById('tvPlayer');
       var iframe = document.getElementById('tvIframe');
       var placeholder = document.getElementById('videoPlaceholder');
       var notice = document.getElementById('matchWaitingNotice');
       if(placeholder) placeholder.classList.add('hidden');
       if(notice) notice.style.display = 'none';
+
+      lastPlayedMode = 'match';
+      currentMatchState = {
+        title: matchTitle,
+        serverName: serverName,
+        url: streamUrl,
+        mIdx: mIdx,
+        sIdx: sIdx
+      };
 
       destroyActiveEngines();
 
@@ -3177,22 +3359,18 @@
       video.pause();
       video.style.display = 'none';
 
-      // Decode direct player URL to eliminate white Pelota Libre header and prevent volume/controls clipping
-      var targetUrl = streamUrl;
-      if(streamUrl.includes('?r=') || streamUrl.includes('&r=')){
-        try {
-          var uObj = new URL(streamUrl);
-          var b64Param = uObj.searchParams.get('r');
-          if(b64Param){
-            targetUrl = atob(b64Param).trim();
-          }
-        } catch(e){
-          targetUrl = streamUrl;
-        }
-      }
+      var targetUrl = normalizeMatchEmbedUrl(streamUrl);
 
       iframe.style.display = 'block';
-      iframe.src = targetUrl;
+      if(isReload){
+        iframe.src = 'about:blank';
+        setTimeout(function(){
+          var sep = targetUrl.indexOf('?') !== -1 ? '&' : '?';
+          iframe.src = targetUrl + sep + '_t=' + Date.now();
+        }, 90);
+      } else {
+        iframe.src = targetUrl;
+      }
 
       var popBtn = document.getElementById('btnPopoutStream');
       if(popBtn){
@@ -3202,7 +3380,7 @@
 
       // Scroll to player smoothly
       var stage = document.getElementById('playerStage');
-      if(stage) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if(stage && !isReload) stage.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function openCurrentStreamInNewTab(){
